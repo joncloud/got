@@ -1,0 +1,56 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: 'ubuntu-22.04'
+
+    steps:
+    - name: 'Git checkout'
+      uses: actions/checkout@v3
+
+    - name: 'Install dosbox-x (apt)'
+      run: sudo snap install dosbox-x
+
+    - name: 'Make build dir'
+      run: |
+        mkdir build
+
+    - name: 'Compile'
+      uses: 'joncloud/dos-build-action@main'
+      timeout-minutes: 2
+      with:
+        programs: |
+          $/turbo-asm/2.01:c:\tasm
+          $/turbo-c++/3.00:c:\tc
+          src:c:\src
+          build:c:\build
+        run: |
+          c:
+          cd \src\digisnd
+          make > c:\build\build.txt
+          cd \src\utility
+          make >> c:\build\build.txt
+          cd \src\_g1
+          make >> c:\build\build.txt
+          cd \src\_g2
+          make >> c:\build\build.txt
+          cd \src\_g3
+          make >> c:\build\build.txt
+        conf: |
+          [dosbox]
+          memsize=256
+
+          [cpu]
+          cycles=max
+          turbo=true
+
+    - name: 'Prepare Results'
+      if: always()
+      run: |
+        cat build/BUILD.TXT
+        rm build/BUILD.TXT
+        cp src/_g1/_G1.EXE build/
+        cp src/_g2/_G2.EXE build/
+        cp src/_g3/_G3.EXE build/
+        cp src/utility/PCXRES.EXE build/
+        cp src/utility/RES.EXE build/

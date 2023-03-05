@@ -1,0 +1,11 @@
+build
+*.OBJ
+*.MAP
+*.dsk
+*.DSK
+*.prj
+*.PRJ
+*.exe
+*.EXE
+*.sym
+*.SYM
