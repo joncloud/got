@@ -9,7 +9,6 @@
 #include "eg_proto.h"
 #undef outportb
 #undef inportb
-// #include <r_proto.h>
 
 typedef struct{                 //size=512
        char icon[12][20];       //0   grid of icons

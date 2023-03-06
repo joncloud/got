@@ -17,6 +17,8 @@ OBJ=\
 	mapgen.obj\
 	mu_man.obj\
 	pcxres.obj\
+	pcx.obj\
+	pcx_imp.obj\
 	res.obj\
 	res_abrt.obj\
 	res_add.obj\
@@ -39,9 +41,9 @@ EXE=\
 	lvlbuild.exe\
 	mapgen.exe\
 	pcxres.exe\
+	pcx_imp.exe\
 	res.exe
 #	mixtest.exe
-#	pcx_imp.exe
 #	pcxres.exe
 #	qsprite.exe
 #	spriteed.exe
@@ -94,6 +96,8 @@ c:\tc\lib\cm.lib
 pcx_imp.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
+eg.obj+
+pcx.obj+
 pcx_imp.obj
 pcx_imp,pcx_imp
 c:\tc\lib\cm.lib

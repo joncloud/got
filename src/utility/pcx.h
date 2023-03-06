@@ -1,3 +1,6 @@
+#ifndef PCX_H_
+#define PCX_H_
+
 struct pcx_hdr{
 	unsigned char manufac;          /* manufacturer             */
 	unsigned char version;          /* paintbrush version #     */
@@ -17,4 +20,6 @@ struct pcx_hdr{
    unsigned char filler[58];       /* fill out 128 byte header */
 };
 
-
+void pcx_load(const char* filename);
+
+#endif

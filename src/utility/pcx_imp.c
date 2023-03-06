@@ -6,10 +6,10 @@
 #include <string.h>
 #include <dir.h>
 
-#include <eg_proto.h>
+#include "eg_proto.h"
 #undef outportb
 #undef inportb
-
+#include "pcx.h"
 
 //===========================================================================
 char tempstr[255];

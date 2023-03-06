@@ -4,6 +4,10 @@ void setmcga(void) {
   // TODO
 }
 
+void setvga(void) {
+  // TODO
+}
+
 void initgraf(int a, int b, int c) {
   // TODO
   (void)a;

@@ -55,4 +55,5 @@ jobs:
         cp src/utility/LVLBUILD.EXE build/
         cp src/utility/MAPGEN.EXE build/
         cp src/utility/PCXRES.EXE build/
+        cp src/utility/PCX_IMP.EXE build/
         cp src/utility/RES.EXE build/
