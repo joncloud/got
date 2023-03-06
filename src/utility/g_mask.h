@@ -1,3 +1,6 @@
+#ifndef G_MASK_H_
+#define G_MASK_H_
+
 //XMASKIM.H: structures used for storing and manipulating masked images
 
 //Describes one alignment of a mask-image pair
@@ -16,3 +19,5 @@ typedef struct {
                                       //structs for four possible destination
                                       //image alignments
 } MaskedImage;
+
+#endif

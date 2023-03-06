@@ -10,6 +10,7 @@ OBJ=\
 	adlib.obj\
 	fx_man.obj\
 	g_asm.obj\
+	g_lib.obj\
 	lvlbuild.obj\
 	lzss.obj\
 	mu_man.obj\
@@ -28,12 +29,14 @@ OBJ=\
 	res_pack.obj\
 	res_read.obj\
 	res_renm.obj\
-	res_repl.obj
+	res_repl.obj\
+	res_writ.obj\
+	xmouse.obj
 
 EXE=\
+	lvlbuild.exe\
 	pcxres.exe\
 	res.exe
-#	lvlbuild.exe
 #	mapgen.exe
 #	mixtest.exe
 #	pcx_imp.exe
@@ -53,14 +56,18 @@ clean:
 lvlbuild.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
-g_asm.obj+
+g_lib.obj+
 lvlbuild.obj+
 lzss.obj+
+res_add.obj+
+res_del.obj+
 res_enco.obj+
 res_fall.obj+
 res_find.obj+
 res_init.obj+
-res_read.obj
+res_read.obj+
+res_writ.obj+
+xmouse.obj
 lvlbuild,lvlbuild
 c:\tc\lib\cm.lib
 |

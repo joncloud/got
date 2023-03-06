@@ -123,6 +123,8 @@ unsigned int word;
 unsigned int page[3]={PAGE0,PAGE1,PAGE2};
 long
 
+char slow_mode, main_loop;
+
 // mouse curosr 8x8
 
 static char mcursor[]={
