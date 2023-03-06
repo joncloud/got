@@ -19,6 +19,7 @@ OBJ=\
 	pcxres.obj\
 	pcx.obj\
 	pcx_imp.obj\
+	qsprite.obj\
 	res.obj\
 	res_abrt.obj\
 	res_add.obj\
@@ -42,10 +43,9 @@ EXE=\
 	mapgen.exe\
 	pcxres.exe\
 	pcx_imp.exe\
+	qsprite.exe\
 	res.exe
 #	mixtest.exe
-#	pcxres.exe
-#	qsprite.exe
 #	spriteed.exe
 #	th.exe
 #	xp_imp.exe
@@ -114,7 +114,16 @@ c:\tc\lib\cm.lib
 qsprite.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
-qsprite.obj
+g_lib.obj+
+lzss.obj+
+qsprite.obj+
+res_del.obj+
+res_enco.obj+
+res_find.obj+
+res_init.obj+
+res_read.obj+
+res_writ.obj+
+xmouse.obj
 qsprite,qsprite
 c:\tc\lib\cm.lib
 |

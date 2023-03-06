@@ -9,11 +9,11 @@
 #include <conio.h>
 #include <alloc.h>
 
-#include <maskim.h>
-#include <modex.h>
-#include <xmouse.h>
-#include <res_man.h>
-#include <cb_make.h>
+#include "maskim.h"
+#include "modex.h"
+#include "xmouse.h"
+#include "res_man.h"
+// #include "cb_make.h"
 //==========================================================================
 //typedefs & defines
 
@@ -235,6 +235,7 @@ unsigned int xpoint(int X, int Y, unsigned int PageBase);
 xsetpal(unsigned char color, unsigned char R,unsigned char G,unsigned char B);
 xgetpal(char far * pal, int num_colrs, int start_index);
 int xpcx_load(char *fname);
+int RLI_MakePlanar(char far* img, char far* rli, int x, int y);
 
 //from XIMP.C
 
@@ -2677,4 +2678,12 @@ while(py<sy && px<sx){
 //
 fclose(fp);
 return 1;
+}
+
+int RLI_MakePlanar(char far* img, char far* rli, int x, int y) {
+  (void)img;
+  (void)rli;
+  (void)x;
+  (void)y;
+  return 0;
 }
