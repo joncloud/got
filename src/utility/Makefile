@@ -42,6 +42,7 @@ OBJ=\
 	th.obj\
 	ximp.obj\
 	xp_imp.obj\
+	xsprite.obj\
 	xmouse.obj
 
 EXE=\
@@ -53,9 +54,9 @@ EXE=\
 	res.exe\
 	spriteed.exe\
 	th.exe\
-	xp_imp.exe
+	xp_imp.exe\
+	xsprite.exe
 #	mixtest.exe
-#	xsprite.exe
 
 all: $(OBJ) $(EXE)
 
@@ -190,6 +191,15 @@ c:\tc\lib\cm.lib
 xsprite.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
+g_lib.obj+
+lzss.obj+
+res_del.obj+
+res_enco.obj+
+res_find.obj+
+res_init.obj+
+res_read.obj+
+res_writ.obj+
+xmouse.obj+
 xsprite.obj
 xsprite,xsprite
 c:\tc\lib\cm.lib
