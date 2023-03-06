@@ -6,10 +6,10 @@
 #include <string.h>
 #include <dir.h>
 
-#include <eg_proto.h>
+#include "eg_proto.h"
 #undef outportb
 #undef inportb
-#include <r_proto.h>
+// #include <r_proto.h>
 
 typedef struct{                 //size=512
        char icon[12][20];       //0   grid of icons
@@ -29,6 +29,12 @@ typedef struct{                 //size=512
 //===========================================================================
 char tempstr[255];
 #define COLOR 64
+
+void devcdump(int a, int b, int c, int d, int e, int f, int g);
+void clearscr(int a);
+void file_read(const char* src_file, char* dst, size_t total_size, size_t record_size);
+void setprnth(void);
+
 //===========================================================================
 void main(void){
 int i,r,x,y,l;
@@ -62,4 +68,32 @@ if(getch()!=27){
   devcdump(0,3,0,0,1,1,0);
 }
 textmode(C80);
+}
+
+void devcdump(int a, int b, int c, int d, int e, int f, int g) {
+  // TODO
+  (void)a;
+  (void)b;
+  (void)c;
+  (void)d;
+  (void)e;
+  (void)f;
+  (void)g;
+}
+
+void clearscr(int a) {
+  // TODO
+  (void)a;
+}
+
+void file_read(const char* src_file, char* dst, size_t total_size, size_t record_size) {
+  // TODO
+  (void)src_file;
+  (void)dst;
+  (void)total_size;
+  (void)record_size;
+}
+
+void setprnth(void) {
+  // TODO
 }

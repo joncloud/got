@@ -53,5 +53,6 @@ jobs:
         cp src/_g2/_G2.EXE build/
         cp src/_g3/_G3.EXE build/
         cp src/utility/LVLBUILD.EXE build/
+        cp src/utility/MAPGEN.EXE build/
         cp src/utility/PCXRES.EXE build/
         cp src/utility/RES.EXE build/

@@ -8,11 +8,13 @@ LINK=tlink.exe
 LINKFLAGS=/s/c/d
 OBJ=\
 	adlib.obj\
+	eg.obj\
 	fx_man.obj\
 	g_asm.obj\
 	g_lib.obj\
 	lvlbuild.obj\
 	lzss.obj\
+	mapgen.obj\
 	mu_man.obj\
 	pcxres.obj\
 	res.obj\
@@ -35,9 +37,9 @@ OBJ=\
 
 EXE=\
 	lvlbuild.exe\
+	mapgen.exe\
 	pcxres.exe\
 	res.exe
-#	mapgen.exe
 #	mixtest.exe
 #	pcx_imp.exe
 #	pcxres.exe
@@ -75,6 +77,7 @@ c:\tc\lib\cm.lib
 mapgen.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
+eg.obj+
 mapgen.obj
 mapgen,mapgen
 c:\tc\lib\cm.lib
