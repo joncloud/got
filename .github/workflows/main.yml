@@ -61,3 +61,8 @@ jobs:
         cp src/utility/TH.EXE build/
         cp src/utility/XP_IMP.EXE build/
         cp src/utility/XSPRITE.EXE build/
+
+    - uses: 'actions/upload-artifact@v3'
+      with:
+        name: 'build'
+        path: build
