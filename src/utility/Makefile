@@ -41,6 +41,7 @@ OBJ=\
 	spriteed.obj\
 	th.obj\
 	ximp.obj\
+	xp_imp.obj\
 	xmouse.obj
 
 EXE=\
@@ -51,9 +52,9 @@ EXE=\
 	qsprite.exe\
 	res.exe\
 	spriteed.exe\
-	th.exe
+	th.exe\
+	xp_imp.exe
 #	mixtest.exe
-#	xp_imp.exe
 #	xsprite.exe
 
 all: $(OBJ) $(EXE)
@@ -179,6 +180,8 @@ c:\tc\lib\cm.lib
 xp_imp.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
+eg.obj+
+pcx.obj+
 xp_imp.obj
 xp_imp,xp_imp
 c:\tc\lib\cm.lib

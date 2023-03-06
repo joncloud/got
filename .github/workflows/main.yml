@@ -59,3 +59,4 @@ jobs:
         cp src/utility/RES.EXE build/
         cp src/utility/SPRITEED.EXE build/
         cp src/utility/TH.EXE build/
+        cp src/utility/XP_IMP.EXE build/

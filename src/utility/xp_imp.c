@@ -6,10 +6,13 @@
 #include <string.h>
 #include <dir.h>
 
-#include <eg_proto.h>
+#include "eg_proto.h"
+#include "pcx.h"
 #undef outportb
 #undef inportb
 
+void typedot(int a);
+char readpix(int x, int y);
 
 void write_rim(int x1,int y1,int i);
 int  select_rim(int *nx,int *ny);
@@ -151,3 +154,12 @@ while(1){
 }
 }
 
+void typedot(int a) {
+  (void)a;
+}
+
+char readpix(int x, int y) {
+  (void)x;
+  (void)y;
+  return 0;
+}
