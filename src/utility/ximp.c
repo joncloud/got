@@ -1,7 +1,10 @@
-int  pcx_imp(void);
-void import_rim(int x1,int y1);
-int  select_rim(int *nx,int *ny);
+#include "ximp.h"
+#include "g_define.h"
+#include <string.h>
 //===========================================================================
+void xbox(int x1,int y1,int x2,int y2,unsigned page,int color);
+//===========================================================================
+#define NULL 0
 extern char tempstr[255];
 extern char pic[4][300];
 char far *buffer=NULL;
@@ -99,4 +102,3 @@ while(1){
      xbox(x,y,x+63,y+15,255,PAGE0);
 }
 }
-

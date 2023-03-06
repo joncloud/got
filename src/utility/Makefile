@@ -36,6 +36,8 @@ OBJ=\
 	res_renm.obj\
 	res_repl.obj\
 	res_writ.obj\
+	spriteed.obj\
+	ximp.obj\
 	xmouse.obj
 
 EXE=\
@@ -44,9 +46,9 @@ EXE=\
 	pcxres.exe\
 	pcx_imp.exe\
 	qsprite.exe\
-	res.exe
+	res.exe\
+	spriteed.exe
 #	mixtest.exe
-#	spriteed.exe
 #	th.exe
 #	xp_imp.exe
 #	xsprite.exe
@@ -152,7 +154,10 @@ c:\tc\lib\cm.lib
 spriteed.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
 c:\tc\lib\c0m.obj+
-spriteed.obj
+g_lib.obj+
+spriteed.obj+
+ximp.obj+
+xmouse.obj
 spriteed,spriteed
 c:\tc\lib\cm.lib
 |

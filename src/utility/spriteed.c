@@ -8,9 +8,10 @@
 #include <ctype.h>
 #include <conio.h>
 
-#include <maskim.h>
-#include <modex.h>
-#include <xmouse.h>
+#include "maskim.h"
+#include "modex.h"
+#include "xmouse.h"
+#include "ximp.h"
 //==========================================================================
 //typedefs & defines
 
@@ -178,11 +179,6 @@ unsigned int xpoint(int X, int Y, unsigned int PageBase);
 xsetpal(unsigned char color, unsigned char R,unsigned char G,unsigned char B);
 xgetpal(char far * pal, int num_colrs, int start_index);
 
-//from XIMP.C
-
-int  pcx_imp(void);
-void import_rim(int x1,int y1);
-int  select_rim(int *nx,int *ny);
 //==========================================================================
 //global variables
 
@@ -2397,15 +2393,3 @@ for(y=0;y<16;y++){
 }
 xget(204,1,219,16,PAGE0,pic[0],0);
 }
-
-
-
-
-
-
-
-
-
-
-
-

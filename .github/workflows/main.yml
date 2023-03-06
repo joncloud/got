@@ -57,3 +57,4 @@ jobs:
         cp src/utility/PCXRES.EXE build/
         cp src/utility/PCX_IMP.EXE build/
         cp src/utility/RES.EXE build/
+        cp src/utility/SPRITEED.EXE build/
