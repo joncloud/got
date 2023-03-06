@@ -9,16 +9,16 @@
 #include <alloc.h>
 #include <dir.h>
 
-#include <maskim.h>
-#include <modex.h>
-#include <sbc.h>
-#include <sbcvoice.h>
+#include "maskim.h"
+#include "modex.h"
+#include "sbc.h"
+#include "sbcvoice.h"
 
 #undef outportb
 #undef inportb
 //==========================================================================
 //typedefs & defines
- 
+
 typedef struct{
    MaskedImage *pic[4][4]; //pointers to objects
    int  width;             //width-1 in pixels

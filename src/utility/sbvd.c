@@ -6,8 +6,8 @@
 #include  <string.h>
 #include  <stdlib.h>
 #include  <alloc.h>
-#include  <sbc.h>
-#include  <sbcvoice.h>
+#include  "sbc.h"
+#include  "sbcvoice.h"
 
 char far *load_voice_file(char *filename) ;
 char	  far *voice_buffer ;
@@ -83,7 +83,7 @@ char far*load_voice_file(char *filename)
 
 #pragma loop_opt (off)
 
-output_voice(char far *buffer)
+void output_voice(char far *buffer)
 {
 //	unsigned    key ;
 
@@ -124,4 +124,3 @@ output_voice(char far *buffer)
 //}
 }
 #pragma loop_opt(on)
-
