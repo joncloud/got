@@ -38,18 +38,18 @@ jobs:
         run: |
           c:
           cd \src\digisnd
-          make > c:\build\build.txt
+          make > c:\build\digisnd.txt
           cd \src\utility
-          make >> c:\build\build.txt
+          make > c:\build\utility.txt
           cd \src\_g1
-          make >> c:\build\build.txt
+          make > c:\build\_g1.txt
           cd \src\_g2
-          make >> c:\build\build.txt
+          make > c:\build\_g2.txt
           cd \src\_g3
-          make >> c:\build\build.txt
+          make > c:\build\_g3.txt
           SET PATH=c:\src\utility;%PATH%
           cd \
-          c:\build\assets.bat >> c:\build\build.txt
+          c:\build\assets.bat > c:\build\assets.txt
 
         conf: |
           [dosbox]
@@ -62,9 +62,28 @@ jobs:
     - name: 'Prepare Results'
       if: always()
       run: |
-        cat build/BUILD.TXT
-        rm build/BUILD.TXT
+        echo "DIGISND"
+        cat build/DIGISND.TXT
+        echo "UTILITY"
+        cat build/UTILITY.TXT
+        echo "_G1"
+        cat build/_G1.TXT
+        echo "_G2"
+        cat build/_G2.TXT
+        echo "_G3"
+        cat build/_G3.TXT
+        echo "ASSETS"
+        cat build/ASSETS.TXT
+
+        rm build/DIGISND.TXT
+        rm build/UTILITY.TXT
+        rm build/_G1.TXT
+        rm build/_G2.TXT
+        rm build/_G3.TXT
+        rm build/ASSETS.TXT
+
         rm build/assets.bat
+
         cp src/_g1/_G1.EXE build/
         cp src/_g2/_G2.EXE build/
         cp src/_g3/_G3.EXE build/
