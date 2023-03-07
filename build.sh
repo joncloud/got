@@ -20,12 +20,6 @@ cd \src\digisnd
 make ${CLEAN}> c:\build\build.txt
 cd \src\utility
 make ${CLEAN}>> c:\build\build.txt
-cd \src\_g1
-make ${CLEAN}>> c:\build\build.txt
-cd \src\_g2
-make ${CLEAN}>> c:\build\build.txt
-cd \src\_g3
-make ${CLEAN}>> c:\build\build.txt
 END
 )
 

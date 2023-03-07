@@ -98,7 +98,7 @@ long lzss_decompress(char far* src, char far* dst, long size) {
     }
   }
 
-  return decompressed_size;
+  return (long)decompressed_size;
 }
 
 unsigned int lzss_compress(long origsize, char far* src, char far* dst) {

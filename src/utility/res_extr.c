@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "res_man.h"
+#include "lzss.h"
 //==========================================================================
 int res_extract_file(char *fname,char *name){
 int  num,ret;
@@ -61,7 +62,7 @@ else{
       size--;
     }
   }
-  size=lzss_decompress(res_lzss_buff,fb);
+  size=lzss_decompress(res_lzss_buff,fb,total);
   fbp=fb;
   while(size){
     ch=*fbp;

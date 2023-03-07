@@ -1,0 +1,887 @@
+|100
+SAY
+"~1Good afternoon, Sir!~0
+"Would you like to buy some
+"~1Golden Apples~0?
+"I'll sell you all you need
+"for only ~47~0 jewels each.
+""
+"You'd better fill up now
+"so you don't faint while
+"working in the ~3Teflor~0
+"mine!
+j=0
+a=0
+ASK a,"How many would like?",1
+"I'll Take 5"
+"Fill 'er Up!"
+"None, thank you"
+if a=0 then end
+else if a=1 then b=5: gosub EATEM
+else if a=2 then b=150: gosub EATEM
+else if a=3 then GOTO JUSTKID
+if j=0 then end
+SAY
+""
+"Thank you Sir,"
+"Come back anytime."
+""
+end
+
+EATEM:
+if @health > 149 then gosub ALLNEED: return
+if @jewels > 6 then sound @GULP:pause 20:addjewels -7:addhealth 5:j=j+1
+else gosub NOMONEY: return
+b=b-1
+if b=0 then return
+goto EATEM
+
+ALLNEED:
+SAY
+""
+"You have all the apples
+"that you need."
+""
+return
+NOMONEY:
+SAY
+""
+"You don't have enough
+"jewels...Come back later.
+""
+end
+JUSTKID:
+SAY
+""
+"Thank you anyway.
+"You may come back anytime.
+""
+end
+|STOP
+'---------
+|509
+ITEMSAY 9
+"You have found:
+"    ~1The Hypno-Stone~0!
+""
+"This stone can hypnotize
+"people with weaker minds.
+"You'd better drop the
+"shovel, you won't be
+"needing it anymore.
+setflag 26
+|STOP
+|5509
+ITEMSAY 9
+"This stone can hypnotize
+"people with weaker minds.
+""
+""
+""
+"Better not stare at it
+"too long.
+|STOP
+|510
+sound @punch
+pause 60
+sound @ow
+pause 60
+ITEMSAY 10
+""
+"You have found a ~1Shovel~0...
+""
+""
+""
+"with your face.
+setflag 25
+|STOP
+|5510
+a=0
+exec 3
+if a=0 then goto NODIG
+end
+
+NODIG:
+if @flag20=0 then goto NODIG1
+end
+
+NODIG1:
+pause 60
+setflag 20
+ITEMSAY 10
+""
+"You can't dig in that spot.
+""
+|STOP
+
+|518
+ITEMSAY 18
+"You have found:
+"~1Winged Boots!~0
+""
+"Use these to run like
+"the wind!
+|STOP
+
+|519
+ITEMSAY 19
+"You have found the ~1Power
+"of the Wind~0!
+""
+"Use this to blast enemies
+"around corners!
+|STOP
+
+|1000
+SAY
+""
+"Intro Story
+""
+|STOP
+|1001
+ITEMSAY 12
+"Well done my son! You have
+"destroyed ~2Nognir~0 and freed
+"all of the citizens of
+"~1Milgrund~0 from their slave
+"labor!
+"I now give you my own
+"~1Golden Armor~0. I wore this
+"armor in the great ~2Frost
+"Giant~0 war.
+""
+"It will lessen the effect
+"of enemy damage even more
+"than your silver armor.
+|STOP
+|1002
+SAY
+"Now cross ~1Bifrost~0, the
+"Rainbow Bridge to rest
+"until you begin your
+"final mission!
+|STOP
+
+|2001
+SAY
+""
+"Sound card with support for
+"digitized sound not found.
+""
+"See the GOT.DOC file.
+|STOP
+
+|2002
+SAY
+""
+"Sound card not found.
+""
+"See the GOT.DOC file.
+""
+|STOP
+
+|2003
+SAY
+""
+"You need a ~1KEY~0 to open
+"this door.
+""
+|STOP
+
+|2004
+SAY
+""
+"You must gather ~1100 JEWELS~0
+"to remove this door.
+""
+|STOP
+
+|2005
+SAY
+""
+"You must gather ~110 JEWELS~0
+"to remove this door.
+""
+|STOP
+
+|2006
+SAY
+""
+"You do not have enough
+"magic to use this item.
+""
+|STOP
+
+|2007
+SAY
+""
+"You cannot carry any more
+"of this item.
+""
+|STOP
+
+|2008
+ltoa @screen,s$
+a$="  ~1Hint Reference: ~4"+s$
+SAY
+"Press:"
+"~1  Arrows - ~0Move
+"~1  ALT    - ~0Throw Hammer
+"~1  SPACE  - ~0Select Item
+"~1  CTRL   - ~0Use Item
+"~1  ESC    - ~0Options Menu
+"~1  D      - ~0Die
+"~1  S      - ~0Save Game
+"~1  L      - ~0Load Game
+a$
+|STOP
+
+|2009
+SAY
+""
+""
+"Your Game Has Been Saved.
+""
+""
+|STOP
+
+|2010
+SAY
+""
+"Didn't I tell you not to
+"shoot your friends...back
+"in Part I...remember?
+""
+|STOP
+|113009
+if @flag22=0 then end
+if @flag29=0 then end
+SAY
+"~4I AM THE GREAT ~1SURTUR~4!
+"I KNOW ALL THINGS! I AM
+"NEVER WRONG! SINCE YOU HAVE
+"FOUND ME, I WILL ANSWER ANY
+"QUESTION YOU HAVE!~0
+"(Pay no attention to the
+"man behind the curtain
+"over there).
+
+LOOP:
+ask a,"WHAT IS YOUR QUESTION?",1
+"How many licks ~1DOES~0 it take?
+"Why can't you tickle yourself?
+"Where is the ~1Hypno-Stone~0?
+if a=0 then end
+if a=1 then goto DO1
+if a=2 then goto DO2
+if @flag26=1 then goto YOUHAVE
+SAY
+"Old man ~1Blakter~0 buried
+"it by the mushroom patch
+"behind his house.
+placetile 13,150,177
+setflag 28
+goto LOOP
+
+YOUHAVE:
+SAY
+"It's in your pocket.
+""
+goto LOOP
+DO1:
+SAY
+""
+"Let's find out.
+""
+""
+""
+SAY
+""
+"A one.....
+""
+""
+""
+SAY
+""
+"Ta-whoooo...
+""
+""
+""
+sound @gulp
+pause 60
+SAY
+"I guess the world will
+"have to wait a while
+"longer for that one.
+goto LOOP
+
+DO2:
+SAY
+"I don't know. And that ~1IS~0
+"the correct answer to your
+"question.
+goto LOOP
+|STOP
+|113007
+run 113009
+|STOP
+|113008
+run 113009
+|STOP
+|113010
+run 113009
+|STOP
+|106003
+SAY
+"Are you here looking for
+"~1Surtur~0 too? I have heard
+"that you can ask him ANY
+"question and he will answer
+"it for you.
+"I have a question that I
+"must ask him, but I can't
+"find him. I had ~1Sammy~0 fix
+"my shoes so I could climb
+"the ~3Teflor~0 slope, and
+"I have a shovel to uncover
+"the secret entrance to his
+"lair...I just don't know
+"where to dig!
+""
+"If there were just some
+"clue...some landmark...
+"anything!
+setflag 23
+|STOP
+|113011
+if @flag22=1 then goto HASAPP
+if @flag29=1 then goto IN5
+
+TEXT
+""
+""
+"        ~3Out to Lunch~0
+""
+setflag 21
+end
+
+IN5:
+TEXT
+""
+"     ~3Back in 5 Minutes~0
+""
+setflag 21
+end
+HASAPP:
+TEXT
+""
+"~4NO~0 shirt, ~4NO~0 shoes,
+"~4NO~0 answers. ~4NO~0 exceptions!
+"
+|STOP
+|106004
+SAY
+"Ooo....Ahhh!
+|STOP
+|27006
+SAY
+"Shhhhh...
+"I'm trying to escape!
+|STOP
+|14003
+TEXT
+"    ~3Andy's Armor Repair~0
+""
+"You Scuff 'em, We Buff 'em
+|STOP
+|79003
+SAY
+""
+"Hi, and welcome to ~1Andy's
+"Armor Repair~0!
+""
+""
+"We have a special on our
+"~4Full Armor Polish, and
+"Dent Removal~0 service for
+"only ~150 jewels~0."
+""
+"It comes with a 3 year,
+"3,000 bad guy warranty.
+
+ASK a,"How about it?",1
+"I'll take it!"
+"No Thanks."
+if a=0 then end
+if a=1 then goto DOIT
+SAY
+"Ok, Sir...Come back if
+"you change your mind.
+end
+
+DOIT:
+if @jewels<50 then goto NOMONEY
+
+say
+"Well then, let's get
+"started.
+""
+"Hold still a moment..."
+""
+gosub FIXIT
+say
+"We usually have our clients
+"take their armor off before
+"we do this, but it's almost
+"lunch time!
+gosub FIXIT
+SAY
+"There you go...good as new!
+""
+"That'll be 50 jewels.
+addjewels -50
+setflag 31
+SAY
+"Thank you sir. Come back
+"anytime!
+end
+
+FIXIT:
+for t=1 to 5
+    sound @clang
+    pause 30
+    sound @ow
+    pause 60
+next
+return
+
+NOMONEY:
+SAY
+"You don't have enough
+"jewels. Come back later.
+end
+|STOP
+|26003
+SAY
+"I am, therefore I dig.
+|STOP
+|26005
+SAY
+"You're new here, aren't
+"you?
+|STOP
+|27007
+SAY
+"How do they get ~3Teflor~0
+"to stick to the pan?
+|STOP
+|37010
+SAY
+"I really miss my wife.
+"I wish someone would
+"free us from this
+"slave labor.
+|STOP
+|47007
+SAY
+"These prison uniforms are
+"uncomfortable, but it's
+"kind of neat how they're
+"red when you face left and
+"orange when you face right!
+|STOP
+|47004
+if @flag24=1 then goto FLAGON
+SAY
+"I haven't seen you around
+"here before. Are you that
+"guy who killed ~2Jormangund~0?
+""
+""
+"Do you think you could kill
+"~2Nognir~0 for us? He makes us
+"dig 18 hours a day for the
+"~3Teflor~0 that he coats his
+"head with.
+"I have accidentally dug up
+"the entrance to some kind
+"of underground cavern.
+"Maybe you should go down
+"there and check it out.
+placetile 47,151,220
+sound @door
+setflag 24
+end
+FLAGON:
+SAY
+"Are you going to kill
+"~2Nognir~0 for us?
+|STOP
+|47003
+SAY
+"If I dig in this spot
+"much longer, I'll reach
+"China!
+|STOP
+|115003
+SAY
+"Is this your house, mister?
+"I'm sorry sir, I thought it
+"was abandoned. I won't play
+"in here anymore. That back
+"room is too scary, anyway.
+|STOP
+|32003
+if @flag27=1 then goto ISHYP
+if @flag26=1 then goto HASIT
+
+SAY
+"No one may enter or leave
+"without a pass.
+""
+"Why aren't you in the
+"~3Teflor~0 mine?
+end
+
+HASIT:
+SAY
+"No one may enter or leave
+"without a....
+"Hey! What's that strange
+"glowing object you're
+"pointing at me?
+"Why are you moving it back
+"and forth like that?
+"Back and forth...
+"Back and forth...
+"Bab and fort...
+"Umm, sure, you can...uh..."
+"pass if...uh...you want to.
+"I'll just...umm...open the
+"gate for you...ok?
+""
+"I'll just ...umm...sit here
+"and ...uh...play with this
+"pretty ball...
+itemtake
+placetile 32,181,177
+sound @door
+setflag 27
+end
+ISHYP:
+SAY
+"This sure is a pretty
+"blue ball!
+|STOP
+|18003
+SAY
+"Where did you come from?
+"I don't think I've ever
+"seen you before. You're
+"NOT one of the inmates.
+""
+"Shouldn't you be working
+"in the ~3Teflor~0 mines?
+"~2Nognir~0 makes all able-
+"bodied men work in the
+"mines.
+"Anyone who won't work, is
+"locked up in this building.
+"~2Nognir~0 converted it into
+"a make-shift prison when
+"he took over our town.
+"You'd better not let the
+"guards see you. No one
+"is allowed outside their
+"house without a pass.
+|STOP
+|5003
+TEXT
+""
+"      ~3The 'Big' House~0
+|STOP
+|86003
+run 100
+|STOP
+|16004
+TEXT
+"     ~3Joe's Fresh Fruit~1
+""
+"       We're talking
+"     Apples & Oranges
+|STOP
+|87003
+if @flag31=0 then goto FLAG31
+if @flag30=1 then goto FLAGON
+SAY
+"Welcome to ~1Joe's~0.
+""
+"Do you have a reservation?
+
+ASK a,"Do you have a reservation?",1
+"Yes, the name's ~1Thor~0"
+"No, I don't"
+if a=0 then end
+if a=1 then goto SAIDYES
+SAY
+"I'm sorry sir. You must
+"call ahead before 5:00pm
+"on weekdays.
+end
+
+SAIDYES:
+SAY
+"I don't see any reservation
+"under that name.
+
+ASK a,"What was your name again?",1
+"I'm sorry, I meant ~1Dr. Thor~0"
+"Nevermind"
+if a<>1 then end
+
+SAY
+"Of course, ~1Dr. Thor~0,
+"Step right this way!
+placetile 87,90,140
+sound @door
+setflag 30
+end
+
+FLAGON:
+SAY
+"Please seat yourself.
+end
+FLAG31:
+SAY
+"I'm sorry sir, but we ~4DO~0
+"have a dress code in this
+"restaurant. Your armor is
+"filthy!
+end
+|STOP
+|86007
+SAY
+"Hello, ~1Thor~0! My name is
+"~1Beltregard~0.
+"Yes, I know who you are.
+"I have been expecting you.
+""
+"Ever since you killed
+"~2Jormangund~0, you have become
+"a hero around here. I knew
+"it was just a matter of
+"time before you showed up.
+"~2Nognir~0 has taken over this
+"town and forced all of the
+"men to work the ~3Teflor~0
+"mine under threat of death.
+""
+"It has been said that
+"~2Nognir~0 is made entirely
+"of ~3Teflor~0. He has the
+"ability to produce smaller
+"versions of himself to use
+"as weapons.
+"So you can understand why
+"~3Teflor~0 is so important to
+"him.
+""
+"To find him you must first
+"escape this village. But,
+"there is a guard posted
+"at the exit.
+""
+"The guard will not open
+"the gate unless you have
+"a pass and I'm sure you
+"can't get a pass anywhere
+"in town.
+"There is, however, a chance
+"that you could get past him
+"if you can locate the lost
+"~1Hypno-Stone~0. You could use
+"it to mesmerize him.
+"But, no one knows where to
+"even start looking for it.
+"I think old man ~1Blakter~0
+"was the last one who saw
+"it.
+"It's possible...No, even
+"you couldn't...well...
+"maybe...
+""
+""
+"If you can find ~1Surtur, the
+"God of Fire~0, the legends
+"say that he knows all there
+"is to know. Maybe he can
+"tell you where it is.
+"That is all I can tell
+"you. Good luck on your
+"journey.
+""
+""
+"By the way, your armor
+"looks nice.
+setflag 29
+|STOP
+|21003
+SAY
+"'ello, young man.
+"I'm ~1Mrs. Blakter~0, I heard
+"'bout you, killin' that
+"~2Jorm'gund~0 an all. Ya
+"mus' be one tough cookie!
+ "Sure wish m' husband was
+"still 'round to meet ya.
+"He went up ta that big
+"magic show in the sky!
+"He was a magician, ya know!
+"He had all sorts a them
+"mag'cal gizmos layin'
+"about. But ever since he
+"passed away, I ain't seen
+"a one of 'em.
+|STOP
+|86004
+SAY
+"You must try the veal...
+"It's delicious!
+|STOP
+|86005
+SAY
+"We only cook in 100%
+"pure ~3Teflor~0 pans.
+|STOP
+|86006
+SAY
+"'scuse me waiter,
+"Where's the dessert bar?
+|STOP
+|20003
+SAY
+"I really miss my husband.
+"I wish someone would free
+"him from that slave labor.
+|STOP
+|88003
+SAY
+"Hiya, misha! 'member me?
+"Thish 'ear hoarding boush
+"ish kinda empt...<hic>
+"empt...<hic>..uhhh...ya!
+|STOP
+|34003
+TEXT
+"   ~3Sammy's Shoe Repair~0
+""
+"     You are the sole
+"     of our business
+|STOP
+|77003
+if @flag19=1 then goto FLAGOFF
+if @flag23=1 then goto FLAGON
+
+FLAGOFF:
+SAY
+""
+"Hi, and welcome to ~1Sammy's
+"Shoe Repair~0!
+""
+""
+"If you ever need your
+"shoes repaired, I'm your
+"man.
+end
+FLAGON:
+
+SAY
+""
+"Hi, and welcome to ~1Sammy's
+"Shoe Repair~0!
+""
+""
+"What...? You want me to
+"fix your shoes so you can
+"climb up the ~3Teflor~0
+"slope?
+""
+"You're the second person
+"that's asked for that
+"today! What's so great
+"about that slope?
+""
+"Hold still...I'll just
+"nail some of this used
+"sandpaper to your boots...
+""
+gosub FIXIT
+SAY
+"There you go. You shouldn't
+"have any trouble climbing
+"that slope now!
+setflag 19
+end
+
+FIXIT:
+for t=1 to 5
+    sound @clang
+    pause 30
+    sound @ow
+    pause 60
+next
+return
+|STOP
+|67003
+SAY
+"You're the guy who beat
+"up that mean ~2Jormangund~0,
+"aren't you? My daddy says
+"you ain't so tough!
+""
+"He said 'If that long
+"haired sissy comes around
+"here, I'll teach him a
+"lesson about fighting!'
+""
+"Didn't you say that, daddy?
+"..........
+"..........
+"Daddy???
+|STOP
+|57005
+SAY
+""
+"Please don't hurt me, sir!
+""
+|STOP
+|101006
+SAY
+"You have found ~2Nognir's~0
+"Lair, my son! He is very
+"powerful, but if you are
+"patient and do not panic
+"you will defeat him!
+|STOP
+|23003
+'put script here
+|STOP
+|36003
+'put script here
+|STOP
+|50003
+SAY
+"You have done well, my son.
+""
+"Even now, word of your
+"bravery is spreading across
+"the land.
+"~2Nognir~0 has heard about you
+"and has sent out all of his
+"minions to stop you. This
+"mission will not be easy.
+""
+"I know that you will make
+"me proud!
+|STOP
+|EOF

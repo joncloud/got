@@ -1,0 +1,1118 @@
+'normal,good,bad,sign,emphasis
+|100
+SAY
+"~0Pssst! Hey buddy... Wanna
+"buy some ~1Golden Apples~0?
+"I'll sell you all you need
+"for only ~410~0 jewels each.
+""
+"I know that's kinda steep,
+"but with ~2Loki~0 makin' them
+"illegal and all, I'm takin'
+"quite a risk.
+""
+j=0
+a=0
+ASK a,"Well, How many ya want",1
+"I'll Take 5"
+"Fill 'er Up!"
+"I'm telling on you!"
+if a=0 then end
+else if a=1 then b=5: gosub EATEM
+else if a=2 then b=150: gosub EATEM
+else if a=3 then GOTO JUSTKID
+if j=0 then end
+SAY
+""
+"Thanks buddy,"
+"Come back anytime."
+""
+end
+
+EATEM:
+if @health > 149 then gosub ALLNEED: return
+if @jewels > 9 then sound @GULP:pause 20:addjewels -10:addhealth 5:j=j+1
+else gosub NOMONEY: return
+b=b-1
+if b=0 then return
+goto EATEM
+
+ALLNEED:
+SAY
+""
+"You have all the apples
+"that you need."
+""
+return
+NOMONEY:
+SAY
+""
+"You don't have enough
+"jewels...Come back later.
+""
+end
+JUSTKID:
+SAY
+""
+"Calm down, buddy!"
+"I'm only kidding."
+""
+end
+|STOP
+'---------
+|101
+pause 120
+exec 2
+c$="~1"+a$+"~0"
+SAY
+""
+"You are under arrest for:
+c$
+""
+b$
+exec 1
+|STOP
+'------------
+|504
+ITEMSAY 4
+""
+"You found a ~1Skeleton Key~0.
+""
+"This opens the last door to
+"the ~2Hall of Loki~0!
+|STOP
+'------------
+|5504
+ITEMSAY 4
+""
+"This opens the last door to
+"the ~2Hall of Loki~0!
+""
+|STOP
+'------------
+|505
+ITEMSAY 5
+""
+""
+"You found an ~1Electric Saw~0.
+""
+""
+"Good luck finding somewhere
+"to plug it in!
+""
+|STOP
+'------------
+|5505
+ITEMSAY 5
+""
+"It's not plugged in.
+""
+|STOP
+'------------
+|506
+ITEMSAY 6
+""
+"You found a ~1Bracelet~0.
+""
+"It was probably taken from
+"a prisoner.
+|STOP
+'------------
+|5506
+ITEMSAY 6
+""
+"I think maybe you should
+"just return it to it's
+"owner.
+""
+|STOP
+'------------
+|507
+ITEMSAY 7
+"You found
+"    ~1A Mystic Mushroom~0.
+""
+"It could probably be used
+"to cast magic spells...
+""
+"But not by you.
+""
+|STOP
+'------------
+|5507
+ITEMSAY 7
+"You chant the ancient spell
+"you heard as a child.
+""
+"Fleegad...Hepturk...Seepwon
+"Zraxik...Hike!
+""
+"Nothin'.
+""
+|STOP
+'------------
+|520
+ITEMSAY 20
+"You have obtained the
+"~1Amulet of Protection~0.
+"This will shield you from
+"many lesser damages.
+""
+""
+"~1Take Heed~0, My son. The
+"Amulet is not effective
+"against stronger forces.
+""
+|STOP
+'------------
+|521
+ITEMSAY 21
+"You have found the ~1Power
+"of Thunder~0!
+""
+"This will damage all 
+"enemies in sight!
+|STOP
+'------------
+|1000
+SAY
+"My son...This is your final
+"mission.  Now you must find
+"and defeat ~2Loki~0 himself!
+""
+""
+"He has personally taken
+"over the town of ~1Blechton~0
+"and renamed it ~2Lokisburg~0.
+"He is very oppressive and
+"cruel to its people.
+"Your journey will not be
+"an easy one.  You will
+"encounter many more dangers
+"than in your previous"
+"missions.
+"Just remember that I am
+"with you, always.
+""
+|STOP
+'------------
+|1001
+SAY
+"~4Congratulations, my son!~0
+""
+"You have defeated ~2Loki~0
+"and restored freedom to
+"all of ~1Midgard~0."
+"The people of this town
+"are waiting outside to
+"thank you.
+""
+""
+"Go to them my son, and
+"celebrate your victory!
+|STOP
+'------------
+|1002
+SAY
+"So, dear '~4brother~0'!
+"It appears that you have
+"found me!"
+""
+"But it will do you ~4NO GOOD~0.
+"You will find that I am
+"no longer afraid of you
+"~4OR~0 your vaunted hammer,
+"as I was in my youth. It
+"can not harm me anymore!
+"I am the greatest sorcerer
+"in the ~1ENTIRE REALM~0, as you
+"are about to find out!
+""
+""
+""
+"Now feel the wrath of
+"~2LOKI, God of Mischief!~0
+|STOP
+'------------
+|1003
+SAY
+"Did you really think I
+"could be defeated so
+"easily?
+""
+""
+"Up to now I have merely
+"been toying with you.
+""
+""
+""
+""
+"~4TIME TO DIE! '~1THUNDER GOD~4'~0
+|STOP
+'------------
+|2001
+SAY
+""
+"Sound card with support for
+"digitized sound not found.
+""
+"See the GOT.DOC file.
+|STOP
+'------------
+|2002
+SAY
+""
+"Sound card not found.
+""
+"See the GOT.DOC file.
+""
+|STOP
+'------------
+|2003
+SAY
+""
+"You need a ~1KEY~0 to open
+"this door.
+""
+|STOP
+'------------
+|2004
+SAY
+""
+"You must gather ~1100 JEWELS~0
+"to remove this door.
+""
+|STOP
+'------------
+|2005
+SAY
+""
+"You must gather ~110 JEWELS~0
+"to remove this door.
+""
+|STOP
+'------------
+|2006
+SAY
+""
+"You do not have enough
+"magic to use this item.
+""
+|STOP
+'------------
+|2007
+SAY
+""
+"You cannot carry any more
+"of this item.
+""
+|STOP
+'------------
+|2008
+ltoa @screen, b$
+a$="  ~4Hint Reference: ~1"+b$
+SAY
+"Press:"
+"~1  Arrows - ~0Move
+"~1  ALT    - ~0Throw Hammer
+"~1  SPACE  - ~0Select Item
+"~1  CTRL   - ~0Use Item
+"~1  ESC    - ~0Options Menu
+"~1  D      - ~0Die
+"~1  S      - ~0Save Game
+"~1  L      - ~0Load Game
+a$
+|STOP
+'------------
+|2009
+SAY
+""
+""
+"Your Game Has Been Saved.
+""
+""
+|STOP
+'------------
+|2010
+SAY
+"Ok, have it your way,
+"kill all your friends.
+"Then you'll probably have
+"to order a hint book to
+"finish the game.
+|STOP
+'------------
+|2011
+SAY
+""
+"The bars on this sewer
+"grate look a little weak.
+""
+|STOP
+'------------
+|2012
+SAY
+""
+"Use your ~1Electric Saw~0!
+"I will power it with my...
+"uhh...my...
+"Omnipotent Odin-ness!
+for t=1 to 50
+  sound @swish
+  pause 3
+next
+itemtake
+placetile 109,129,221
+sound @door
+|STOP
+'-------
+|33003
+run 1000
+|STOP
+'------------
+|109003
+if @flag13=1 then goto FLAGON
+SAY
+"It's a shame they caught
+"you, young man...
+""
+"You say you're here to
+"defeat ~2Loki~0?
+"In that case, let me help
+"you. I have been scratching
+"around this sewer grate
+"for months now, and I have
+"finally broken it loose.
+""
+"However, I am too scared
+"to go down there, so I have
+"never left.
+""
+"Just go down this hole
+"and you'll come up on
+"the edge of town.
+""
+"Good luck against ~2Loki~0!
+placetile 109,21,220
+sound @door
+setflag 13
+end
+FLAGON:
+SAY
+""
+"No way am ~1I~0 going down
+"that hole!
+""
+|STOP
+|109010
+if @FLAG12=1 then goto FLAGON
+if @FLAG11=1 then goto FLAGON
+if @ITEM=6 then goto GOTBRACE
+goto DEFAULT
+
+GOTBRACE:
+SAY
+""
+"My bracelet!  You took this
+"from the guard shack.  You
+"must be on our side!
+""
+"My name is ~1Ilidia~0.
+"~2Loki~0 imprisoned me to get
+"at my husband, who is the
+"leader of the Rebellion.
+""
+"His name is ~1Markus~0. If you
+"find him, the password is
+"~1SASAFRASS~0.  He may know
+"someone who can help you.
+""
+setflag 11
+itemtake
+end
+FLAGON:
+SAY
+""
+"Did you find ~1Markus~0 yet?
+""
+end
+DEFAULT:
+SAY
+"I don't know if I can
+"trust you yet.  Go and get
+"my bracelet from the guard
+"shack. They took it from me
+"when they put me in here.
+""
+"If you will do this, then
+"that would prove that you
+"really are on our side and
+"I could help you.
+|STOP
+|109011
+SAY
+"Hi mister!
+"~2Loki~0 threw me in here
+"because I dropped my ice
+"cream cone on his foot.
+""
+|STOP
+|63003
+a=1
+if @flag12=0 then goto loop
+if @flag17=1 then goto SEEN1
+SAY
+""
+"Come on in!
+""
+end
+SEEN1:
+SAY
+""
+"Kinda spooky how I can be
+"in the house ~4AND~0 out here
+"at the same time, ain't it?
+""
+end
+LOOP:
+if @flag11=1 then goto FLAGON
+ASK a,"What's the Password?",a
+"Sasquatch?"
+"Saskatchewan?"
+"Saspirilla?"
+"Nevermind"
+goto LAB1
+FLAGON:
+ASK a,"What's the Password?",a
+"Sasquatch?"
+"Saskatchewan?"
+"Saspirilla?"
+"Sasafrass?"
+LAB1:
+if a=0 then end
+if a=1 then goto ANS1
+if a=2 then goto ANS2
+if a=3 then goto ANS3
+if a=4 then goto ANS4
+
+ANS1:
+SAY
+""
+"Sorry...
+""
+goto loop
+ANS2:
+SAY
+""
+"Nice Try.
+""
+goto loop
+ANS3:
+SAY
+""
+"That was last week.
+""
+goto loop
+ANS4:
+if @flag11=1 then goto ANS41
+SAY
+""
+"No, that's not it either.
+""
+"Oh, wait! You meant..
+"Ok I get it."
+end
+ANS41:
+SAY
+""
+"Come on in!
+""
+setflag 11
+placetile 63,88,224
+sound @door
+setflag 12
+|STOP
+
+|63004
+run 101
+|STOP
+|93003
+SAY
+"Hi, I'm ~1Markus~0.
+"I am the leader of the
+"Rebellion. We have all
+"been praying for someone
+"like you to help us.
+""
+"There are not many of us
+"and most of us are either
+"gutless or stupid, so we
+"need your help."
+setflag 17
+|STOP
+|93004
+SAY
+""
+"~1It's Markus~0!
+"He's the leader of the
+"Rebell...
+""
+"Oops, I thought you were
+"~2Loki.~0
+""
+|STOP
+|93005
+SAY
+""
+""
+"I'm just the cook.
+""
+""
+"Would you like some Apple
+"Pine Downside-up Cake?
+|STOP
+|103003
+SAY
+""
+"Do ya think that the Force
+"will be with us since
+"we're the Rebels?
+""
+|STOP
+|103004
+SAY
+""
+"~2Loki~0 put my little brother
+"in jail just for dropping
+"his ice cream cone!
+""
+|STOP
+|83003
+SAY
+"Hi!  My name is ~1Nilford~0.
+"My daddy owns a tool shop
+"on the northwest side of
+"town.  His shop should be
+"opening about now.
+""
+"If you ever need any tools,
+"go see him.
+""
+placetile 40,185,224
+|STOP
+|83004
+SAY
+"My husband was thrown in
+"jail many months ago.
+"I long to see him again.
+|STOP
+|21009
+run 100
+|STOP
+|40003
+text
+"   ~3Woody's Tool Chest~0
+""
+""
+"    'Where the hammer
+"     meets the nail'
+|STOP
+|30003
+'if @flag10=1 then goto FLAGON
+SAY
+"Here at Woody's we have
+"everything you need for
+"the home, office or local
+"rebellion.
+""
+a=1
+r=0
+LOOP:
+ASK a,"What can I get for ya?",a
+"Hammer        - ~11~0 Jewel"
+"Chisel        - ~11~0 Jewel"
+"'C' clamp     - ~11~0 Jewel"
+"Screwdriver   - ~11~0 Jewel"
+"Tonic & Gin   - ~11~0 Jewel"
+"Electric Saw  - ~1500~0 Jewels"
+"Nothing       - ~10~0 Jewels"
+if a=0 then end
+if a=7 then end
+if a<6 then gosub SOLDOUT:goto loop
+if @flag14=1 then gosub SOLDOUT:goto loop
+if @jewels< 500 then gosub NOMONEY:goto loop
+
+SAY
+""
+"This just might be your
+"lucky day! I think I have
+"one of those left.........
+"..........................
+"..........................
+"Ah yes, here it is,
+"But I don't know where
+"you're going to plug it in.
+""
+addjewels -500
+setflag 14
+itemgive 5
+sound @YAH
+end
+NOMONEY:
+SAY
+""
+"Sorry, You don't have
+"enough jewels."
+""
+return
+
+SOLDOUT:
+b$="Sorry, we're sold out of"
+if r=0 then a$="that."
+if r=1 then a$="that, too."
+if r=2 then a$="that, also."
+if r=3 then a$="that, also too."
+if r>3 then b$="You don't catch on very":a$="quick, do you?"
+r=r+1
+SAY
+""
+b$
+a$
+""
+return
+|STOP
+|64005
+SAY
+"If you're going into the
+"village, watch out for
+"the ~2Red Guards~0. They will
+"throw you in jail for
+"almost anything!
+""
+"You sure don't want to
+"end up there...
+"~1or do you~0?
+""
+|STOP
+|82007
+run 101
+|STOP
+|70004
+run 101
+|STOP
+|41005
+run 101
+|STOP
+|51004
+run 101
+|STOP
+|61003
+run 101
+|STOP
+|61004
+run 101
+|STOP
+|61005
+run 101
+|STOP
+|61006
+run 101
+|STOP
+|61007
+run 101
+|STOP
+|81003
+text
+"    ~3Martha's Magic Mall~0
+""
+" Double Coupons on Fridays
+|STOP
+|113003
+if @item=7 then goto HASIT
+if @flag15=1 then goto FLAGON
+SAY
+"So you want the ~1Skeleton
+"Key~0, do you? You think you
+"can defeat ~2Loki~0, eh?
+"Your fight with him does
+"not interest me, however...
+""
+"I need a single ~1Mystic
+"Mushroom~0 for a spell.
+"Find it for me and you
+"may have the ~1Skelton Key~0.
+end
+HASIT:
+SAY
+"~1The Mystic Mushroom!~0
+"Here is your Skeleton Key.
+""
+"Now go play with ~1Loki~0 if
+"you want, just leave me be.
+placetile 113,108,140
+sound @door
+setflag 15
+itemtake
+end
+FLAGON:
+SAY
+""
+"~1I SAID, LEAVE ME BE!~0
+""
+"You ~4asked~0 for this, buddy!
+""
+""
+"Nygfeld...Butreff...Negome
+"Phleemak...Urpsat..Hike!
+""
+addhealth -150
+|STOP
+|72004
+TEXT
+"    ~1Ye Olde Guard Shack~0
+""
+" Authorized Personnel Only
+|STOP
+|92003
+if @flag18=1 then goto FLAGON
+
+SAY
+"~1Darla?~0 Oh, I thought you
+"might be my wife. she went
+"east of the village to
+"collect firewood for 
+"cooking.
+""
+"I would have gone but I've
+"got this bad back, you see.
+"I can't lift anything over
+"5 pounds.
+""
+"The doctors say there's
+"nothing wrong with me,
+"but I know there is.
+""
+"Anyway, she had better be
+"back soon. My stomach is
+"starting to growl and she
+"has the key to the pantry.
+placetile 56,66,174
+end
+FLAGON:
+SAY
+"~1WHAT!~0 Well, what does she
+"expect me to eat...a couple
+"of pop-tarts? I'm a meat
+"and potatoes man!
+""
+"Keep the silly key, I need
+"REAL food!
+""
+|STOP
+|56004
+if @flag18 = 1 then goto FLAGON
+SAY
+"My husband is mad at me?
+""
+"I have only managed to cut
+"down this one tree so far.
+"I need much more than that.
+"Can you bring this key
+"to him so he can eat
+"something out of the
+"pantry to tide him over
+"until I return?
+setflag 18
+addkeys 1
+sound @YAH
+end
+FLAGON:
+SAY
+""
+"I am still looking for
+"firewood.
+""
+|STOP
+|31003
+SAY
+"~1Guards! Guards! Help!~0
+""
+"There's a strange man
+"in my house!
+""
+visible 1
+visible 2
+|STOP
+|64006
+TEXT
+"    ~3Welcome To Lokisburg~0
+""
+" Have a pleasant stay, but
+" remember these few rules:
+""
+SAY
+"~1NO~0 Cussing
+"~1NO~0 Smoking
+"~1NO~0 Spitting
+"~1NO~0 Jaywalking
+"~1NO~0 Speeding
+"~1NO~0 Rebellions
+"~1NO~0 Kissing Your Mother
+"   or Father 'Goodbye'
+"~1NO~0 Golden Apple Selling
+"~1NO~0 Door-to-Door Sales
+"~1NO~0 Drinking
+"~1NO~0 Unlicensed Pets
+"~1NO~0 Unauthorized Opinions
+"~1NO~0 People Taller Than
+"   Sixteen Pixels
+"~1NO~0 Bad, Inside Jokes
+"~1NO~0 Dropping Ice Cream
+"   On the Governor's Foot
+"~1And especially,
+"~4NO Red Haired Thunder Gods!
+|STOP
+|31005
+run 101
+|STOP
+|31004
+run 101
+|STOP
+|91012
+run 101
+|STOP
+|91013
+run 101
+|STOP
+|91016
+run 101
+|STOP
+|91014
+run 101
+|STOP
+|91017
+run 101
+|STOP
+|91015
+run 101
+|STOP
+|20003
+SAY
+"Ahh, mighty Thor!  Thank
+"goodness you're here!  I'm
+"afraid to go outside any
+"more!
+""
+"~2Loki~0 is so mean, he once
+"shot a man just for snorin'.
+|STOP
+|85003
+SAY
+""
+"Have you ever wondered
+"why all our houses are
+"shaped so funny?
+""
+|STOP
+|111003
+SAY
+""
+"Hee, hee, hee!
+""
+|STOP
+|77014
+SAY
+"~1Hee, Hee, Hee!~0
+"So you made it this far,
+"did you? Well, ~2Loki~0 is in
+"the next room, so you'd
+"better be prepared!
+|STOP
+|52005
+TEXT
+""
+"          ~3McLoki's~0
+""
+"     Your Kind of Place
+""
+|STOP
+|21010
+SAY
+"Welcome to McLoki's, the
+"best eatin' in town!
+"Today's special is Gruel
+"Loaf.  We also have a
+"vat of delicious Gruel
+"Stew left over from
+"yesterday!  I'm sorry we
+"have no entertainment for
+"your viewing pleasure.
+"We used to have a clown
+"that would come in and
+"entertain the children,
+"but he was arrested.
+|STOP
+|3
+SAY
+"You can destroy moveable
+"logs and blocks by pushing
+"them onto pegs and then
+"raising the peg.
+""
+end
+"If you would have saved
+"your game before opening
+"all these doors, you could
+"have reloaded your game and
+"gotten this info for free!
+""
+"Too late! Ha! Ha! Ha!
+""
+|STOP
+|108003
+SAY
+"Welcome to ~1Ken's House
+"of Wonders~0.
+""
+"If you survive your trip,
+"it will be well worth it!
+|STOP
+|11003
+SAY
+"Hmmm... that leaves..
+"x=3*(sqrt(!y*.37)^perk())
+"I got it!
+"Not everyone in this town
+"is an idiot.
+|STOP
+|82008
+SAY
+"Can't stop to talk right
+"now. We might get arrested.
+|STOP
+|71004
+SAY
+"~2Loki~0 lives right behind
+"this brick wall. Are you
+"going to beat him up?
+|STOP
+|50004
+SAY
+""
+"My dad was thrown in jail
+"by ~2Loki~0, but he escaped
+"through a sewer grate.
+""
+"Sometimes he gets put in
+"jail on purpose, so he can
+"relay information to other
+"rebels.
+|STOP
+|51005
+SAY
+"This is old lady ~1Melgahads~0
+"place. She's really mean!
+""
+"I think she likes ~2Loki~0
+"being in charge!
+|STOP
+|53007
+SAY
+"~2Loki's~0 guards are very
+"crude.  They constantly
+"harass us, especially
+"the women folk.
+|STOP
+|102003
+SAY
+"Hi, mister.
+"Loki is so evil, he made
+"all of us paint our roofs
+"grey just to make the town
+"look more gloomy.
+|STOP
+|106006
+SAY
+"~4Thank you, Thor.~0
+""
+"The rebellion didn't stand
+"a chance without your help!
+|STOP
+|106007
+SAY
+"Thank you so much for
+"reuniting my wife and I!
+|STOP
+|106014
+SAY
+"We will never forget you!
+|STOP
+|106003
+SAY
+"I wanna be just like you
+"when I grow up!
+|STOP
+|106010
+SAY
+"If you ever need any more
+"~1Golden Apples~0, I can get
+"'em for you ~4WHOLESALE~0!
+|STOP
+|106012
+SAY
+"Want to come over to
+"my house for dinner?
+|STOP
+|106011
+SAY
+"~4Thanks, mister!~0
+""
+"Wanna lick my ice cream
+"cone?
+|STOP
+|106004
+SAY
+"~1Hee, Hee, Hee!~0
+""
+"I knew you could do it,
+"sonny!
+|STOP
+|106015
+SAY
+"I will never forget you,
+"~1Thunder God!~0
+|STOP
+|106016
+SAY
+"Still kinda spooky,
+"ain't it?
+|STOP
+|106009
+SAY
+"~4You're my hero!~0
+""
+"They should make a comic
+"book about you!
+|STOP
+|106005
+SAY
+"Thank you for freeing
+"me from prison!
+|STOP
+|106013
+SAY
+"I made you a cake for
+"your long journey home!
+|STOP
+|106008
+SAY
+"The game is over...
+"You won!
+|STOP
+|119007
+run 100
+|STOP
+|48003
+run 100
+|STOP
+|EOF

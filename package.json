@@ -1,0 +1,12 @@
+{
+  "name": "got",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This is a copy of the MS-DOS Game God of Thunder. The intention of this project is to build and compile the game in order to preserve compatibility with its original system requirements.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

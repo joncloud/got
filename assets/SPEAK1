@@ -1,0 +1,1397 @@
+|10099
+SAY
+"Hey there, young man!
+"I'm the local ~1Golden Apple~0
+"merchant. I have the ~1best
+"prices ~0in the ~1entire realm.
+""
+"~0I'll sell these DEE-licious
+"~1Golden Apples~0 fer a mere
+"~15 jewels~0 apiece. Ya sure
+"look like ya could use a
+"few!
+j=0
+a=0
+ASK a,"How many ya want?",1
+"I'll Take 5"
+"Fill 'er Up!"
+"None, thank you"
+if a=0 then end
+else if a=1 then b=5: gosub EATEM
+else if a=2 then b=150: gosub EATEM
+else if a=3 then GOTO JUSTKID
+if j=0 then end
+SAY
+""
+"Thanks, buddy!"
+"Come back anytime."
+""
+end
+
+EATEM:
+if @health > 149 then gosub ALLNEED: return
+if @jewels > 6 then sound @GULP:pause 20:addjewels -7:addhealth 5:j=j+1
+else gosub NOMONEY: return
+b=b-1
+if b=0 then return
+goto EATEM
+
+ALLNEED:
+SAY
+""
+"You have all the apples
+"that you need."
+""
+return
+NOMONEY:
+SAY
+""
+"You don't have enough
+"jewels...Come back later.
+""
+end
+JUSTKID:
+SAY
+""
+"Thanks anyway, bud.
+"Come on back anytime.
+""
+end
+|STOP
+'---------
+|502
+ITEMSAY 2
+"You've found a child's doll.
+""
+"Put it under your shirt...
+"and ~1P-L-E-A-S-E~0 don't let
+"anyone see you carrying it!
+|STOP
+//-----
+|501
+ITEMSAY 1
+"You've found a ~1Shrub~0.
+""
+""
+""
+""
+"And does it ever smell ~1BAD!~0
+|STOP
+//-----
+|5502
+ITEMSAY 2
+"~1WILL YOU PUT THAT AWAY!~0
+""
+"What would Hercules think
+"if he saw you playing with
+"that?
+|STOP
+//-----
+|5501
+sound @gulp
+pause 30
+ITEMSAY 1
+"Why would you go and eat
+"a ~3poisonous~0 shrub?
+addhealth -150
+|STOP
+//-----
+|516
+ITEMSAY 16
+"You've found the ~1Enchanted
+"Apple~0.
+""
+"This item will heal your
+"wounds.
+"Hold down [Ctrl] to use it.
+|STOP
+//-----
+|517
+ITEMSAY 17
+"You've found the power of
+"~1Lightning~0!
+"Use it when you become
+"surrounded by enemies to
+"destroy them all!
+|STOP
+//-----
+|1001
+ITEMSAY 3
+"~0Congratulations, my son.
+"You have defeated vile
+"~2Jormangund, the Serpent~0!
+"The people of this land
+"are now free!
+"As a reward, I give you
+"this suit of armor, made
+"by the royal blacksmiths
+"of ~1Asgard~0. It will lessen
+"the effect of enemy blows.
+"I will also enhance your
+"hammer. You will need this
+"if you are to defeat the
+"mighty ~2Nognir~0.
+|STOP
+|1002
+SAY
+"Now cross ~1Bifrost~0, the
+"Rainbow Bridge to rest and
+"rejuvenate for your next
+"mission!
+|STOP
+//-----
+|2001
+SAY
+"Sound card with support for
+"digitized sound not found.
+""
+"See the GOT.DOC file.
+|STOP
+//-----
+|2002
+SAY
+"Sound card not found.
+""
+"See the GOT.DOC file.
+|STOP
+//-----
+|2003
+SAY
+"You need a ~1KEY~0 to open
+"this door.
+|STOP
+//-----
+|2004
+SAY
+"You must gather ~1100 JEWELS~0
+"to remove this door.
+|STOP
+//-----
+|2005
+SAY
+"You must gather ~110 JEWELS~0
+"to remove this door.
+|STOP
+//-----
+|2006
+SAY
+"You do not have enough
+"magic to use this item.
+|STOP
+//-----
+|2007
+SAY
+"You cannot carry any more
+"of this item.
+|STOP
+//-----
+|2008
+ltoa @screen,s$
+a$="  ~1Hint Reference: ~4"+s$
+SAY
+"Press:"
+"~1  Arrows - ~0Move
+"~1  ALT    - ~0Throw Hammer
+"~1  SPACE  - ~0Select Item
+"~1  CTRL   - ~0Use Item
+"~1  ESC    - ~0Options Menu
+"~1  D      - ~0Die
+"~1  S      - ~0Save Game
+"~1  L      - ~0Load Game
+a$
+|STOP
+//-----
+|2009
+SAY
+""
+"Your Game Has Been Saved.
+|STOP
+//-----
+|2010
+SAY
+"My son, I know it is fun
+"to shoot people, but if
+"you kill all the good
+"guys you'll never complete
+"your mission.
+"You lose points, too!
+|STOP
+//-----
+|100
+SAY
+"~1Good afternoon, Sir!~0
+"Would you like to buy some
+"~1Golden Apples~0?
+"I'll sell you all you need
+"for only ~47~0 jewels each.
+""
+"You'd better fill up now
+"so you don't faint while
+"working in the ~3Teflor~0
+"mine!
+j=0
+a=0
+ASK a,"How many would like?",1
+"I'll Take 5"
+"Fill 'er Up!"
+"None, thank you"
+if a=0 then end
+else if a=1 then b=5: gosub EATEM
+else if a=2 then b=150: gosub EATEM
+else if a=3 then GOTO JUSTKID
+if j=0 then end
+SAY
+""
+"Thank you Sir,"
+"Come back anytime."
+""
+end
+
+EATEM:
+if @health > 149 then gosub ALLNEED: return
+if @jewels > 6 then sound @GULP:pause 20:addjewels -7:addhealth 5:j=j+1
+else gosub NOMONEY: return
+b=b-1
+if b=0 then return
+goto EATEM
+
+ALLNEED:
+SAY
+""
+"You have all the apples
+"that you need."
+""
+return
+NOMONEY:
+SAY
+""
+"You don't have enough
+"jewels...Come back later.
+""
+end
+JUSTKID:
+SAY
+""
+"Thank you anyway.
+"You may come back anytime.
+end
+|STOP
+|13003
+SAY
+"You must be the one sent
+"down by ~1Almighty Odin~0.
+"The one who will free us
+"from ~2Jormangund's~0 rule.
+""
+"~2Loki~0 sent him to rule our
+"land in his stead. ~2Loki~0 is
+"the ~2God of Mischief~0, but
+"I'm not sure anyone could
+"be as cruel as ~2Jormangund~0!
+"I wouldn't want to be in
+"your shoes!
+|STOP
+//----------
+|21003
+TEXT
+"   ~3Welcome to Spegville~0
+""
+"      Population: ~423~0
+|STOP
+//----------
+|21005
+SAY
+"Are you the one spoken of
+"by the prophets? The one
+"who will free us from the
+"tyranny of ~2Jormangund~0?
+""
+"The one who was sent down
+"from ~1Asgard~0 by ~1Odin~0 to
+"break the cast iron grip
+"of...
+""
+"Naaaa, it couldn't be you.
+"All you have is a little
+"hammer. You must be ~1Relg's~0
+"new helper.
+|STOP
+//----------
+|23004
+SAY
+"My son, you must find and
+"destroy ~2Jormangund~0! His
+"evil rule must be put to
+"an end.
+""
+"When you see one of these
+"glowing oracles, touch it,
+"and I will help you if I
+"can.
+""
+"I have dispatched some of
+"my most trusted angels to
+"help you along the way.
+""
+"~1Good Luck, my son!~0
+|STOP
+//----------
+|34009
+SAY
+"~1Leave me alone!~0"
+""
+"I'm looking for something!
+|STOP
+//----------
+|40003
+SAY
+"G'evin to ya misha!  How
+"shlary day! <hic>
+"~1Blarg~0 serves fany moul
+"bevarageses, but this <hic>
+"brew is starpickularly
+"prong. I <hic> seem to
+"have ingrested bwite a
+"crit of it. I think ya
+"thay <hic> may wanna talk
+"to ~1Blarg~0.
+|STOP
+//----------
+|40004
+TEXT
+"  ~3The Low Key Bar & Grill~0
+""
+"     Dancers Nightly
+|STOP
+//----------
+|41003
+SAY
+"These guards were sent by
+"~2Jormangund~0 to keep us from
+"leaving the village.
+""
+""
+"They even tore down the
+"bridge on the east side
+"of town!
+|STOP
+//----------
+|42004
+TEXT
+"     ~3Hermit's Bridge
+""
+"     ~1Private Property
+""
+"         ~0Go Away!
+|STOP
+//----------
+|49005
+TEXT
+"          ~3Warning!~0
+""
+" Tempting preview of the
+" registered version ahead!
+|STOP
+//----------
+|49004
+SAY
+"Get yer registered ~1God of
+"Thunder!~0 Only ~1$29.95~0 a
+"copy, and ~1three~0 times the
+"size of the shareware
+"version!
+"Sure, you beat ~2Jormangund~0
+"but you can't let ~2Nognir~0
+"and ~2Loki~0 get away with
+"all their evil deeds, can
+"you?
+""
+"What kind of ~1God of Thunder~0
+"would you be if you did
+"that? Besides, you ~4GOTTA~0
+"try that cool new armor!
+
+ASKLOOP:
+ASK a,"How we gonna do this?",1
+"I want to order by phone"
+"I want to order by mail"
+if a=0 then end
+if a=2 then goto BYMAIL
+
+SAY
+"Call Software Creations
+""
+"Order line: 1-508-368-8654
+"       FAX: 1-508-365-7214
+"VISA/MC Accepted!
+goto ASKLOOP
+
+BYMAIL:
+SAY
+"Write to:
+""
+"   Software Creations
+"   26 Harris Street
+"   Clinton, MA 01510
+goto ASKLOOP
+|STOP
+//============================================================================
+// BY PHONE
+|3028
+Call Software Creations
+
+Order line: 1-508-368-8654
+       FAX: 1-508-365-7214
+VISA/MC Accepted!
+:END
+//----------
+|49003
+SAY
+""
+"How did you like being the
+"~1God of Thunder~0?
+""
+""
+"See ~1Dan, the Apple Seller~0
+"about continuing your
+"adventure in the registered
+"version!
+|STOP
+//----------
+|50003
+SAY
+"Nice day today! Or at least
+"it would be if someone
+"would free us from that
+"tyrant ~2Jormangund~0.
+|STOP
+//----------
+|51003
+TEXT
+"         ~3McElroy's~0
+""
+"    Fresh Food Product
+""
+|STOP
+//----------
+|52003
+if @flag1=1 then goto SEENIT
+
+TEXT
+"      ~3Creekin's Bridge~0
+""
+"DANGER: Bridge is Broken!
+""
+setflag 5
+end
+
+SEENIT:
+TEXT
+"      ~3Creekin's Bridge~0
+""
+" Another fine job done by
+"~1Relg's TV and Bridge Repair~0!
+|STOP
+//----------
+|54009
+run 10099
+|STOP
+//----------
+|60003
+TEXT
+"     ~3Sorcery & Such~0
+""
+" Our 33rd year of going
+"    out of business
+|STOP
+//----------
+|62005
+SAY
+"Hi, I'm ~1Berlida~0!  I live
+"by ~1Sorcery and Such~0!  I can
+"stand on my head!  My
+"brother ~1Bevil~0 can too, but
+"I can do it longer!
+"He fell on our ~1shrub~0 once!
+"He's such a goof! We had 
+"the best ~1shrub~0 in town!  
+"But he squashed it, so we 
+"sold it to some stranger!  
+"There are a lot of 
+"strangers around town
+"lately!  My mom says they
+"were sent by ~2Lucky~0!  I'm
+"gonna go swim!  I can swim
+"better than my brother!
+"Can you swim mister? If
+"you can't, I could teach
+"you!
+|STOP
+//----------
+|62004
+SAY
+"Hey mister!  Want to go
+"swimming with us?"
+""
+""
+""
+"Well, that's ok. Just
+"watch out for ~1Berlida's~0
+"cannonball, you might get
+"a bit soaked!
+|STOP
+//----------
+|64005
+SAY
+"Hmmmmm, I'm stumped too!
+"Maybe we should use
+"something that lets us
+"kill things through walls?
+|STOP
+//----------
+|68013
+SAY
+"I know ~2Jormangund~0 is just
+"past that door...I just
+"can't figure out how to
+"get there.
+""
+"And I'm not real sure that
+"I want to, now that you're
+"here.
+""
+""
+"I heard that ~2Jormangund~0
+"uses a crown to cover his
+"only weak spot, so I
+"brought a board with a
+"nail in it to kill him,
+"but your hammer looks much
+"more powerful.
+|STOP
+//----------
+|71003
+SAY
+"Greetings, stranger!  Don't
+"mind my wife, she's a bit
+"upset that we had to sell
+"our ~1shrub~0.  Personally,
+"I didn't really care for
+"the darn thing.  The town
+"drunk bought it for his
+"aunt, but why is anyone's
+"guess.
+|STOP
+//----------
+|71007
+SAY
+"Oooh, hooh, hooh!
+"Raaahhh! haaa haaa!
+"<sob> Please excuse me
+"stranger. I am very upset
+"that <sob> we had to sell
+"our ~1shrub~0. Those ~2Rock
+"Trolls~0 <sob> would come
+"around at night and try
+"to steal it. It was just
+"too dangerous to keep.
+|STOP
+//----------
+|72004
+if @item=2 then goto GIVEDOLL
+if @flag4=0 then goto NODOLL
+goto ASKHERM
+
+GIVEDOLL:
+ITEMSAY 2
+"~1Where did you find ~4Miss
+"Muffy~0!
+""
+"I've been looking for
+"her for months!
+"I can't thank you enough,
+"stranger!
+"Is there anything I can
+"do for you?
+setflag 4
+itemtake
+
+ASKHERM:
+if @flag42=1 then goto ALLDONE
+ASK a,"What would you like to know?",1
+"What's with the doll?"
+"How do I find ~1Jormangund~0?"
+"Nothing"
+if a=1 then goto DOLLFOR
+if a=2 then goto FINDHIM
+end
+
+DOLLFOR:
+random r,500
+if r<100 then a$="Mind your own business!"
+else if r<200 then a$="It's a personal matter."
+else If r<300 then a$="~1Miss Muffy~0 is ~4NOT~0 a doll!"
+else if r<400 then a$="She's my only friend."
+else a$="Shhh...she might hear you!"
+SAY
+a$
+goto ASKHERM
+
+FINDHIM:
+if @flag1=0 then goto INFO1
+if @flag2=0 then goto INFO2
+if @flag3=0 then goto INFO3
+
+ALLDONE:
+SAY
+"That's about all I can
+"tell you. You're on your
+"own now...~1Good Luck~0!
+end
+
+INFO1:
+SAY
+"You must first get someone
+"to fix the bridge just
+"south of here. ~2Jormangund's~0
+"guards tore it down to
+"keep us from leaving.
+"~1Relg~0, who lives on the
+"northwest side of town may
+"be able to help you.
+""
+""
+"Come back when you're
+"done and I will tell
+"you more.
+""
+""
+"Come now Miss Muffy, you
+"must be starved!
+setflag 40
+goto ASKHERM
+
+INFO2:
+SAY
+"You must now get through
+"the barrier the ~2Rock Trolls~0
+"have put up to keep you
+"from reaching ~2Jormangund~0.
+""
+"I can't tell you exactly
+"how to get through the
+"barrier, but I will tell
+"what I know:
+""
+"There are some rocks just
+"southwest of the lake that
+"are not what they appear
+"to be.
+""
+"I believe there must be
+"something on the other
+"side of those rocks that
+"will help you get through
+"the barrier.
+goto ASKHERM
+
+INFO3:
+SAY
+"I believe that ~2Rock Trolls~0
+"like to eat a certain
+"type of shurbbery.
+"~1Miss Elgmar~0 who lives near
+"the center of town used
+"to have one.
+setflag 41
+goto ASKHERM
+
+NODOLL:
+SAY
+"I know it appears that I
+"am walking around randomly,
+"But I am actually looking
+"for something very, very
+"important to me.
+"~1Go Away!~0
+""
+"I can't help you until
+"I've found what I'm
+"looking for.
+setflag 6
+end
+
+|STOP
+//----------
+|80004
+SAY
+"Greetings, Thor!  We are
+"all-knowing seers of
+"destiny!
+""
+""
+"I have a vision...  There
+"is a foul presence in our
+"town!  It is infesting a
+"hut by the eastern entrance
+"of town!
+|STOP
+//----------
+|80003
+SAY
+"Greetings, Thor!  We are
+"all-knowing seers of
+"destiny!
+""
+""
+"~1Blarg~0, the barkeep has
+"some important information
+"for you. Go see him!
+|STOP
+//----------
+|80006
+SAY
+"I have something in my eye.
+"I can't see anything.
+|STOP
+//----------
+|80007
+SAY
+"You can make out nothing
+"in the swirling contents
+"of the ball.
+|STOP
+//----------
+|80008
+
+run 80007
+|STOP
+//----------
+|80005
+
+run 80007
+|STOP
+//----------
+|81007
+SAY
+"Be wary of these mystical
+"arts, my son.  Even those
+"with much knowledge and
+"power are but slaves to
+"its control...
+|STOP
+//----------
+|81004
+if @magic<150 then goto NOMAGIC
+if @flag7=1 then goto NODEAL
+
+SAY
+"Hello there, stranger!
+"If you're looking for magic
+"you won't find any here.
+""
+""
+"Matter of fact, I'm buying
+"magic right now. Did you
+"see my ad in the paper?
+""
+""
+"Tell you what, I'll give
+"you 200 jewels for the
+"magic you have on you.
+"How's that sound?
+""
+"You say you don't need any
+"jewels? Ok then, How bout
+"I give you the key to my
+"house?
+""
+"You can take anything you
+"find there, I just need
+"magic. What's a sorcery
+"shop without magic to sell?
+""
+
+ASKHIM:
+ASK a,"Do you want to trade?",1
+"Yes
+"No
+"Will you throw in the jewels?
+if a=1 then goto YES
+if a=2 then goto NO
+if a=3 then goto NOWAY
+end
+
+YES:
+SAY
+"Here is your key.
+"Be careful not to hurt
+"any of my pets!
+setflag 7
+addmagic -150
+addkeys 1
+sound @YAH
+end
+
+NO:
+SAY
+"Come back if you change
+"your mind!
+""
+""
+""
+"And you will!
+end
+
+NOWAY:
+SAY
+"Hey, I'm trying to do you
+"a favor here!
+"You need this key to finish
+"the game, so quit being
+"such a tight-wad!
+goto ASKHIM
+end
+
+NODEAL:
+SAY
+"I have all the magic
+"that I need.
+end
+
+NOMAGIC:
+SAY
+"You don't have enough
+"magic. Come back when
+"you have more and we can
+"do business.
+|STOP
+//----------
+|83003
+if @item=1 then goto HASSHRUB
+if @flag3=1 then goto PASSED
+
+SAY
+"If you want to pass, bring
+"me something to eat.
+setflag 2
+end
+
+HASSHRUB:
+ITEMSAY 1
+"Hey! that ~1shrub~0 smells
+"good. Can I have it?
+ASK a,"Can I have it?",1
+"Yes"
+"No"
+if a=1 then goto YES
+if a=2 then goto NO
+end
+
+YES:
+itemtake
+sound @gulp
+SAY
+"Just because I let you
+"pass, doesn't mean my
+"brothers will!
+""
+"~4<Har> <Har> <Har>~0
+exec 5
+setflag 3
+end
+
+NO:
+SAY
+"Then ~4GO AWAY~0, little man,
+"before I eat ~4YOU~0!
+end
+
+PASSED:
+SAY
+"Get going, shrimp!
+"Before I decide that I'm
+"still hungry!
+|STOP
+
+//----------
+|85003
+if @jewels<100 then goto NOMONEY
+
+ASK a,"Can I have 100 jewels?",2
+"Yes"
+"No"
+if a=1 then goto THANKS
+end
+
+THANKS:
+SAY
+"Thanks!
+addjewels -100
+end
+
+NOMONEY:
+SAY
+"Nice day today!
+
+|STOP
+//----------
+|85005
+SAY
+"My son, know that if you
+"find yourself surrounded
+"on all sides by one of
+"~2Jormangund's~0 diabolical
+"traps, you can call down
+"the ~1Valkyries~0 from ~1Asgard~0
+"to give you a second chance
+"at life.
+""
+""
+"(in other words, if you go
+"and trap yourself, press
+"[D] to die and restart the
+"screen.)
+|STOP
+//----------
+|85004
+TEXT
+"~3Turn back...or ~1Die!
+""
+"   Yours Truly,
+"       ~2Jormangund
+|STOP
+//----------
+|91004
+if @flag1=1 then goto CLOSED
+if @flag40=0 then goto NOTOPEN
+
+SAY
+"Hi and welcome to ~1Relg's
+"TV and Bridge Repair~0.
+""
+"We can fix ~4ABSOLUTELY
+"ANYTHING~0.
+"(as long as it's a TV
+"or a bridge.)
+
+ASKHIM:
+ASK a,"What needs fixin'?",1
+"MY TV"
+"A bridge"
+"Nothing"
+if a=1 then goto FIXTV
+if a=2 then goto FIXBR
+end
+
+FIXTV:
+ASK a,"What's wrong with your TV?",1
+"It don't work.
+"I don't know, you tell me.
+"Nothing"
+if a=1 then goto FIXTV1
+if a=2 then goto FIXTV2
+goto ASKHIM
+
+FIXTV1:
+SAY
+"Gee...that was ~4REAL~0
+"informative.
+goto FIXTV
+
+FIXTV2:
+SAY
+"Listen bud, I take enough
+"of that stuff from my wife!
+goto FIXTV
+
+FIXBR:
+
+if @flag5=1 then goto FIX2BR:
+ASK a,"Which bridge needs fixed?",1
+"My dental bridge.
+"London Bridge.
+"The one I need to cross.
+"I don't know."
+if a=1 then goto FIXBR1
+if a=2 then goto FIXBR2
+if a=3 then goto FIXBR3
+goto ASKHIM
+
+FIXBR1:
+SAY
+"Dammit Thor, I'm a TV and
+"bridge repairman, not a
+"dentist!
+goto FIXBR
+
+FIXBR2:
+SAY
+"Sorry, we only work within
+"a 50 mile radius.
+goto FIXBR
+
+FIXBR3:
+SAY
+"And who do I look like...
+"the ~1Amazing Zambini~0?
+""
+""
+""
+"I need a ~4NAME~0!
+goto FIXBR
+
+FIX2BR:
+
+ASK a,"Which bridge needs fixed?",1
+"My dental bridge.
+"London Bridge.
+"Creekin's Bridge.
+if a=1 then goto FIXBR1
+if a=2 then goto FIXBR2
+if a=3 then goto FIXBR31
+goto ASKHIM
+
+FIXBR31:
+SAY
+"Ok...I'll send my crew
+"right over. It'll be
+"fixed before you know it!
+placetile 52,138,147
+placetile 52,158,148
+setflag 1
+end
+
+NOTOPEN:
+SAY
+"We're not open yet...
+"Come back later.
+end
+
+CLOSED:
+SAY
+"Sorry, we close at noon
+"on Arbor day...
+""
+"Union Rules.
+|STOP
+//----------
+|100003
+run 10099
+|STOP
+//----------
+|100005
+SAY
+"Greetings, and welcome to
+"~1McElroy's~0!  I haven't seen
+"you around town before,
+"have you moved here or are
+"you passing through?
+"If you've chosen to reside
+"in our fair town, I must
+"warn you that it may be a
+"grave mistake.
+""
+"The cruel ~2Jormandgund~0
+"torments us to no end!
+|STOP
+//----------
+|101004
+SAY
+"Be you lookin' for my hubby
+"~1Relg~0?  Well he's working on
+"those silly gadgets of his,
+"just like always.  When is
+"he going to spend some time
+"with his wife?  Heh?  Every
+"day he's in that room with
+"his toys while I slave to
+"put a decent meal in front
+"of his ungrateful face.
+"And you, comin' in and
+"encouraging him.  Well go
+"on, get down there and get
+"yer business done.  Don't
+"worry about me, working my
+"fingers to the bone for
+"that undeserving man...
+|STOP
+//----------
+|102003
+SAY
+"Are you here to defeat
+"~2Jormangund~0 and free us
+"from his rule?
+""
+""
+"The hermit who lives just
+"southeast of here can help
+"you. Go see him.
+""
+""
+"But be careful and don't
+"let ~2Jormangund's~0 guards see
+"you.
+|STOP
+//----------
+|110003
+if @flag41=1 then goto CANASK
+
+SAY
+"Hello young man, I'm
+"~1Miss Elgmar...~0
+"You say you're going to rid
+"this town of ~2Jormangund~0 and
+"those nasty ~2Rock trolls~0?
+"Well, good luck to you!
+end
+
+CANASK:
+SAY
+"My ~1Shrub~0? Oh, I don't
+"have that anymore."
+""
+""
+""
+"Those mean ~2Rock Trolls~0
+"love to eat shrubs, and
+"they would stalk my house
+"at night, hoping to steal
+"mine from me.
+"It was just too dangerous
+"to keep around so I hid it
+"deep underground, out past
+"the bridge on the east side
+"of town.
+setflag 42
+|STOP
+//----------
+|112003
+if @flag43=1 then goto ALONE
+if @flag6=1 then goto ENOUGH
+
+
+SAY
+"I'm telling you, I DIDN'T
+"take it. How many times
+"do I have to say it?!?
+"I've never even ~4SEEN~0 the
+"~1Hermit's~0 stupid little...
+"Hey! Who are you?
+end
+
+ENOUGH:
+SAY
+"Ok! Enough already! I admit
+"it! I took it! What's an
+"old man want with something
+"like that, anyway?
+""
+"I hid it in my old room at
+"my mother's house on the
+"northwest side of town.
+"She should be home from the
+"market by now.
+placetile 30,145,224
+setflag 43
+end
+
+ALONE:
+SAY
+"I told you where it was,
+"now ~4LEAVE ME ALONE~0!
+""
+"~1Jack~0! Come over here and
+"punch this guy!
+|STOP
+//----------
+|112004
+SAY
+"Hey! What are you doing
+"in my house?!?
+sound @punch
+pause 30
+sound @ow
+pause 30
+addhealth -5
+pause 30
+|STOP
+//----------
+|113003
+SAY
+"Hold on to your money belt
+"when you talk to ~1Blarg~0!
+|STOP
+//----------
+|113007
+
+if @flag9=1 then goto NOMORE
+if @jewels<100 then goto NOMONEY
+ASK a,"Can I have 100 Jewels?",2
+"Yes"
+"No"
+if a=1 then goto YES
+end
+
+YES:
+if @flag8=1 then goto YES1
+SAY
+"I have heard it spoken in
+"the legends that ~2Jormangund~0
+"wears a crown to cover his
+"only weak spot!
+setflag 8
+addjewels -100
+end
+
+YES1:
+SAY
+"Throw your hammer above
+"~2Jormangund~0, then make him
+"strike. Guide your hammer
+"on it's way back to you to
+"hit his weak spot.
+setflag 9
+addjewels -100
+end
+
+NOMORE:
+SAY
+"I have told you all I know.
+""
+""
+""
+""
+"But, you could still give
+"me the 100 jewels if you
+"wanted to!
+end
+
+NOMONEY:
+SAY
+"You don't have enough
+"jewels...Come back later.
+|STOP
+|19003
+if @flag44=1 then goto HASKEY
+
+SAY
+"and then papa bear said...
+""
+"Oh, Hi Thor! A body sure
+"could get lost in all
+"these caverns!
+"Here, take this key. You
+"will need it later.
+addkeys 1
+sound @YAH
+pause 30
+setflag 44
+end
+
+HASKEY:
+SAY
+"Get going, Thor! you
+"don't have a moment
+"to spare!
+|STOP
+|20004
+TEXT
+"~3Relg's TV & Bridge Repair~0
+""
+"    If I can't fix it,
+"      it ain't broke
+|STOP
+|26003
+
+run 10099
+|STOP
+|83005
+
+run 83003
+|STOP
+|83006
+
+run 83003
+|STOP
+|83004
+
+run 83003
+|STOP
+|82003
+
+addhealth -150
+|STOP
+|82004
+run 82003
+
+|STOP
+|82005
+run 82003
+|STOP
+|82006
+run 82003
+
+|STOP
+|82011
+run 82003
+|STOP
+|82012
+run 82003
+
+|STOP
+|82013
+run 82003
+|STOP
+|82014
+run 82003
+|STOP
+|82007
+run 82003
+|STOP
+|82008
+run 82003
+|STOP
+|82009
+run 82003
+|STOP
+|82010
+run 82003
+|STOP
+|99003
+SAY
+"How ~4DARE~0 you accuse my
+"daughter of stealing!
+""
+"Why, I've got half a mind
+"to smack your face!
+|STOP
+|92005
+
+'random r,500
+'if r<100 then goto WIT1
+'if r<200 then goto WIT2
+'if r<300 then goto WIT3
+'if r<400 then goto WIT4
+'if r<500 then goto WIT5
+'
+WIT1:
+SAY
+"A man who says little is
+"a man who speaks two
+"syllables!
+'goto DONE
+'
+'WIT2:
+'SAY
+'
+'goto DONE
+'
+'
+'DONE:
+'SAY
+'"Come back later...
+'"I got a ton of 'em!
+'end
+|STOP
+|EOF

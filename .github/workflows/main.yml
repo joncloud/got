@@ -15,6 +15,16 @@ jobs:
       run: |
         mkdir build
 
+    - name: 'Setup node'
+      uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+
+    - name: 'Prepare Assets'
+      run: |
+        node scripts/generateAssetsBatch.js assets build/assets.bat
+
     - name: 'Compile'
       uses: 'joncloud/dos-build-action@main'
       timeout-minutes: 2
@@ -36,6 +46,10 @@ jobs:
           make >> c:\build\build.txt
           cd \src\_g3
           make >> c:\build\build.txt
+          SET PATH=c:\src\utility;%PATH%
+          cd \
+          c:\build\assets.bat
+
         conf: |
           [dosbox]
           memsize=256
