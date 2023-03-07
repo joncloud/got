@@ -114,11 +114,9 @@ int  area_num;
 int  changed;
 char tempstr[255];
 
-char byte;
 unsigned int word;
 
 unsigned int page[3]={PAGE0,PAGE1,PAGE2};
-long
 
 char slow_mode, main_loop;
 
@@ -290,9 +288,11 @@ help_level=0;
 changed=0;
 current_bg=0;
 hilite_bg=10;
+main_loop = 1;
 
 
 if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
+  printf("xcreatmaskimage fail\n");
   exit_code();
   exit(0);
 }

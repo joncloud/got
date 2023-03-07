@@ -3,7 +3,7 @@ INCLUDEPATH=c:\tc\include
 LIBPATH=
 CFLAGS=+utility.cfg -I$(INCLUDEPATH) -L$(LIBPATH)
 AS=tasm.exe
-AFLAGS=/MX /ZI /O
+AFLAGS=/ml /o
 LINK=tlink.exe
 LINKFLAGS=/s/c/d
 OBJ=\
@@ -61,8 +61,10 @@ EXE=\
 all: $(OBJ) $(EXE)
 
 clean:
+	@del *.sym
 	@del *.obj
 	@del *.map
+	@del *.exe
 
 lvlbuild.exe: $(OBJ)
 	$(LINK) $(LINKFLAGS) @&&|
@@ -78,7 +80,8 @@ res_find.obj+
 res_init.obj+
 res_read.obj+
 res_writ.obj+
-xmouse.obj
+xmouse.obj+
+g_asm.obj
 lvlbuild,lvlbuild
 c:\tc\lib\cm.lib
 |
@@ -130,7 +133,8 @@ res_find.obj+
 res_init.obj+
 res_read.obj+
 res_writ.obj+
-xmouse.obj
+xmouse.obj+
+g_asm.obj
 qsprite,qsprite
 c:\tc\lib\cm.lib
 |
@@ -162,7 +166,8 @@ c:\tc\lib\c0m.obj+
 g_lib.obj+
 spriteed.obj+
 ximp.obj+
-xmouse.obj
+xmouse.obj+
+g_asm.obj
 spriteed,spriteed
 c:\tc\lib\cm.lib
 |
@@ -173,7 +178,8 @@ c:\tc\lib\c0m.obj+
 g_lib.obj+
 sbc.obj+
 sbvd.obj+
-th.obj
+th.obj+
+g_asm.obj
 th,th
 c:\tc\lib\cm.lib
 |
@@ -200,7 +206,8 @@ res_init.obj+
 res_read.obj+
 res_writ.obj+
 xmouse.obj+
-xsprite.obj
+xsprite.obj+
+g_asm.obj
 xsprite,xsprite
 c:\tc\lib\cm.lib
 |
