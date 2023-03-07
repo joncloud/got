@@ -24,6 +24,7 @@ jobs:
     - name: 'Prepare Assets'
       run: |
         node scripts/generateAssetsBatch.js assets build/assets.bat
+        cat build/assets.bat
 
     - name: 'Compile'
       uses: 'joncloud/dos-build-action@main'
@@ -48,7 +49,7 @@ jobs:
           make >> c:\build\build.txt
           SET PATH=c:\src\utility;%PATH%
           cd \
-          c:\build\assets.bat
+          c:\build\assets.bat >> c:\build\build.txt
 
         conf: |
           [dosbox]
@@ -63,6 +64,7 @@ jobs:
       run: |
         cat build/BUILD.TXT
         rm build/BUILD.TXT
+        rm build/assets.bat
         cp src/_g1/_G1.EXE build/
         cp src/_g2/_G2.EXE build/
         cp src/_g3/_G3.EXE build/
