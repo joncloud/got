@@ -35,6 +35,7 @@ jobs:
           $/turbo-c++/3.00:c:\tc
           src:c:\src
           build:c:\build
+          assets:c:\assets
         run: |
           c:
           cd \src\digisnd
