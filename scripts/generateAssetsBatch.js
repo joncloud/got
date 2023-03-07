@@ -15,11 +15,11 @@ if (!srcFolder || !dstBatchFile) {
 
 const files = await readdir(srcFolder);
 
-let batch = 'res.exe build\\gotres.dat c > build\\assets.txt\r\n';
+let batch = 'res.exe \\build\\gotres.dat c > build\\assets.txt\r\n';
 
 // TODO eventually allow encoding / lzss compression of files
 for (const file of files) {
-  batch += `res.exe build\\gotres.dat a ${srcFolder}\\${file} ${file} 0 >> build\\assets.txt\r\n`;
+  batch += `res.exe \\build\\gotres.dat a \\${srcFolder}\\${file} ${file} 0 >> build\\assets.txt\r\n`;
 }
 
 await writeFile(dstBatchFile, batch);
