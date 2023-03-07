@@ -37,10 +37,6 @@
 
 #define MSHIDE xmouse_hide(mx,my)
 #define MSSHOW xmouse_show(mx,my)
-#define MLB xmouse_lb
-#define MRB xmouse_rb
-#define MPX xmouse_x
-#define MPY xmouse_y
 
 //==========================================================================
 //internal prototypes
@@ -110,6 +106,7 @@ xgetpal(char far * pal, int num_colrs, int start_index);
 
 union REGS in,out;
 struct SREGS seg;
+xmouse mouse;
 int xmouse_x,xmouse_y,xmouse_lb,xmouse_rb;
 int xmouse_cnt;
 int mx,my,fg,bg;
@@ -280,9 +277,9 @@ xmouse_init();
 xmouse_off();
 xmouse_set_bounds(0,0,624,231);
 xmouse_set_pos(320,120);
-xmouse_stat();
-mx=MPX;
-my=MPY;
+xmouse_stat(&mouse);
+mx=mouse.x;
+my=mouse.y;
 xmouse_cnt=1;
 MSSHOW;
 lflag=0;
@@ -344,13 +341,13 @@ while(1){
 	if(do_key_function()) break;
        flush_buff();
      }
-     xmouse_stat();
-     if(MPX!=mx || MPY!=my){
+     xmouse_stat(&mouse);
+     if(mouse.x!=mx || mouse.y!=my){
 	lflag=0;
 	rflag=0;
 	MSHIDE;
-	mx=MPX;
-	my=MPY;
+	mx=mouse.x;
+	my=mouse.y;
 	MSSHOW;
      }
      x=mx/16;
@@ -368,7 +365,7 @@ while(1){
          xprint(28*8,218,s,14,PAGE0);
        }
      }
-     if(MLB){
+     if(XMOUSE_LEFT(mouse)){
         lflag=lflag;
         if(alt_flag) place_object();
 	else if(point_within(mx,my,0,200,320,216)){
@@ -393,7 +390,7 @@ while(1){
           }
         }
      }
-     if(MRB){
+     if(XMOUSE_RIGHT(mouse)){
         rflag=rflag;
         if(alt_flag) delete_object();
 	else if(point_within(mx,my,0,0,320,192)){
@@ -749,7 +746,7 @@ changed=0;
 /*=========================================================================*/
 void no_button(void){
 
-while(MLB || MRB) xmouse_stat();
+while(mouse.button) xmouse_stat(&mouse);
 }
 /*=========================================================================*/
 #define DAC_READ_INDEX	03c7h
@@ -857,7 +854,7 @@ int load_bg_pics(void){
 char s[80];
 
 itoa(area_num,s,10);
-strcpy(tempstr,"BGPICS");
+strcpy(tempstr,"BPICS");
 strcat(tempstr,s);
 
 bg_pics=res_falloc_read(tempstr);
@@ -1048,17 +1045,17 @@ while(1){
        beep();
        return;
      }
-     xmouse_stat();
-     if(mx!=MPX || my!=MPY){
+     xmouse_stat(&mouse);
+     if(mx!=mouse.x || my!=mouse.y){
        MSHIDE;
-       mx=MPX;
-       my=MPY;
+       mx=mouse.x;
+       my=mouse.y;
        MSSHOW;
      }
-     if(MRB) break;
-     if(MLB){
+     if(XMOUSE_RIGHT(mouse)) break;
+     if(XMOUSE_LEFT(mouse)){
        scrn.actor_type[num]=type;
-       scrn.actor_loc[num]=(MPX/16)+((MPY/16)*20);
+       scrn.actor_loc[num]=(mouse.x/16)+((mouse.y/16)*20);
        display_actors();
        no_button();
      }
@@ -1154,17 +1151,17 @@ int i,x,y,d;
 
 status_line("CLICK ON ACTOR TO FLIP",14);
 while(1){
-     xmouse_stat();
-     if(mx!=MPX || my!=MPY){
+     xmouse_stat(&mouse);
+     if(mx!=mouse.x || my!=mouse.y){
        MSHIDE;
-       mx=MPX;
-       my=MPY;
+       mx=mouse.x;
+       my=mouse.y;
        MSSHOW;
      }
-     if(MRB) break;
-     if(MLB){
-       x=(MPX & 0xfff0);
-       y=(MPY & 0xfff0);
+     if(XMOUSE_RIGHT(mouse)) break;
+     if(XMOUSE_LEFT(mouse)){
+       x=(mouse.x & 0xfff0);
+       y=(mouse.y & 0xfff0);
        for(i=0;i<MAX_ACTORS;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
 //          if(x==scrn.actor_x[i] && y==scrn.actor_y[i]){
@@ -1246,8 +1243,8 @@ if(o==-1){
   beep();
   return;
 }
-x=MPX/16;
-y=MPY/16;
+x=mouse.x/16;
+y=mouse.y/16;
 
 for(i=0;i<32;i++){
    p=(x/16)+((y/16)*20);
@@ -1267,8 +1264,8 @@ no_button();
 void delete_object(void){
 int x,y,i,p;
 
-x=MPX/16;
-y=MPY/16;
+x=mouse.x/16;
+y=mouse.y/16;
 
 for(i=0;i<32;i++){
    p=(x/16)+((y/16)*20);
@@ -1393,7 +1390,7 @@ int load_sd_data(void){
 char s[80];
 
 itoa(area_num,s,10);
-strcpy(tempstr,"SCRDAT");
+strcpy(tempstr,"SDAT");
 strcat(tempstr,s);
 
 sd_data=res_falloc_read(tempstr);
@@ -1410,7 +1407,7 @@ int save_sd_data(void){
 char s[80];
 
 itoa(area_num,s,10);
-strcpy(tempstr,"SCRDAT");
+strcpy(tempstr,"SDAT");
 strcat(tempstr,s);
 
 movedata(FP_SEG(&scrn),FP_OFF(&scrn),
@@ -1432,10 +1429,10 @@ return 1;
 void pickup_tile(void){
 int x,y,ret;
 
-xmouse_stat();
-if(point_within(mx,my,0,0,320,192)){
-  x=mx/16;
-  y=my/16;
+xmouse_stat(&mouse);
+if(point_within(mouse.x,mouse.y,0,0,320,192)){
+  x=mouse.x/16;
+  y=mouse.y/16;
   ret=scrn.icon[y][x];
   current_bg=ret-10;
   if(current_bg<0) current_bg+=230;
@@ -1510,11 +1507,11 @@ while(1){
          break;
        }
      }
-     xmouse_stat();
-     if(MPX!=x || MPY !=y){
+     xmouse_stat(&mouse);
+     if(mouse.x!=x || mouse.y !=y){
        xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE1,320,320);
-       x=MPX;
-       y=MPY;
+       x=mouse.x;
+       y=mouse.y;
        xcopyd2d(x,y,x+8,y+8,x,y,PAGE1,PAGE2,320,320);
        xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,PAGE1,320);
        i=((y/16)*20)+(x/16);
@@ -1530,12 +1527,12 @@ while(1){
 
        }
      }
-     if(MLB){
+     if(XMOUSE_LEFT(mouse)){
        if(i<0) break;
        if(actor_flag[i] && fn<=frames_left) break;
        beep();
      }
-     if(MRB){ i=-1;break;}
+     if(XMOUSE_RIGHT(mouse)){ i=-1;break;}
 }
 xcls(0,PAGE1);
 xshowpage(PAGE0);
@@ -1549,17 +1546,17 @@ int i,x,y;
 
 status_line("CLICK ON ACTOR TO CHANGE",14);
 while(1){
-     xmouse_stat();
-     if(mx!=MPX || my!=MPY){
+     xmouse_stat(&mouse);
+     if(mx!=mouse.x || my!=mouse.y){
        MSHIDE;
-       mx=MPX;
-       my=MPY;
+       mx=mouse.x;
+       my=mouse.y;
        MSSHOW;
      }
-     if(MRB) break;
-     if(MLB){
-       x=(MPX & 0xfff0);
-       y=(MPY & 0xfff0);
+     if(XMOUSE_RIGHT(mouse)) break;
+     if(XMOUSE_LEFT(mouse)){
+       x=(mouse.x & 0xfff0);
+       y=(mouse.y & 0xfff0);
        for(i=0;i<MAX_ACTORS;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
             edit_actor_value(i);
@@ -1646,11 +1643,11 @@ while(1){
             break;
        }
      }
-     xmouse_stat();
-     if(MPX!=mx || MPY!=my){
+     xmouse_stat(&mouse);
+     if(mouse.x!=mx || mouse.y!=my){
 	MSHIDE;
-	mx=MPX;
-	my=MPY;
+	mx=mouse.x;
+	my=mouse.y;
 	MSSHOW;
      }
      x=mx/16;
@@ -1668,14 +1665,14 @@ while(1){
          xprint(28*8,218,s,14,PAGE0);
        }
      }
-     if(MLB){
+     if(XMOUSE_LEFT(mouse)){
 	if(point_within(mx,my,0,0,320,192)){
           x=mx/16;
           y=my/16;
           if(y<12 && x<20) return (y*20)+x;
        }
      }
-     if(MRB) return -1;
+     if(XMOUSE_RIGHT(mouse)) return -1;
 }
 }
 //===========================================================================
@@ -1750,17 +1747,17 @@ int pick_actor(void){
 int i,x,y,ret;
 
 while(1){
-     xmouse_stat();
-     if(mx!=MPX || my!=MPY){
+     xmouse_stat(&mouse);
+     if(mx!=mouse.x || my!=mouse.y){
        MSHIDE;
-       mx=MPX;
-       my=MPY;
+       mx=mouse.x;
+       my=mouse.y;
        MSSHOW;
      }
-     if(MRB){ret=-1;break;}
-     if(MLB){
-       x=(MPX & 0xfff0);
-       y=(MPY & 0xfff0);
+     if(XMOUSE_RIGHT(mouse)){ret=-1;break;}
+     if(XMOUSE_LEFT(mouse)){
+       x=(mouse.x & 0xfff0);
+       y=(mouse.y & 0xfff0);
        for(i=0;i<MAX_ACTORS;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
             ret=i;
@@ -1951,7 +1948,7 @@ xmouse_init();
 xmouse_off();
 xmouse_set_bounds(0,0,624,231);
 xmouse_set_pos(320,120);
-xmouse_stat();
+xmouse_stat(&mouse);
 if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
   exit_code();
   exit(0);

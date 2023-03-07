@@ -36,10 +36,6 @@
 
 #define MSHIDE xmouse_hide(mx,my)
 #define MSSHOW xmouse_show(mx,my)
-#define MLB xmouse_lb
-#define MRB xmouse_rb
-#define MPX xmouse_x
-#define MPY xmouse_y
 
 typedef struct{                    //size=40
        char move;                  //movement pattern (0=none)
@@ -184,6 +180,7 @@ xgetpal(char far * pal, int num_colrs, int start_index);
 
 union REGS in,out;
 struct SREGS seg;
+xmouse mouse;
 int xmouse_x,xmouse_y,xmouse_lb,xmouse_rb;
 int xmouse_cnt;
 int mx,my,fg,bg;
@@ -340,9 +337,9 @@ xmouse_init();
 xmouse_off();
 xmouse_set_bounds(0,0,624,231);
 xmouse_set_pos(320,120);
-xmouse_stat();
-mx=MPX;
-my=MPY;
+xmouse_stat(&mouse);
+mx=mouse.x;
+my=mouse.y;
 xmouse_cnt=1;
 MSSHOW;
 lflag=0;
@@ -419,18 +416,18 @@ while(1){
 	if(do_key_function()) break;
        flush_buff();
      }
-     xmouse_stat();
-     if(MPX!=mx || MPY!=my){
+     xmouse_stat(&mouse);
+     if(mouse.x!=mx || mouse.y!=my){
 	lflag=0;
 	rflag=0;
 	MSHIDE;
-	mx=MPX;
-	my=MPY;
+	mx=mouse.x;
+	my=mouse.y;
 	MSSHOW;
 	display_mouse_pos(mx,my);
 	display_color(mx,my);
      }
-     if(MLB && (!lflag)){
+     if(XMOUSE_LEFT(mouse) && (!lflag)){
 	if(point_within(mx,my,0,0,191,191)){
          fill_grid_box(mx,my,fg);
          changed=1;
@@ -475,7 +472,7 @@ while(1){
 	}
 	lflag=1;
      }
-     else if(MRB && (!rflag)){
+     else if(XMOUSE_RIGHT(mouse) && (!rflag)){
 	if(point_within(mx,my,0,0,191,191)) fill_grid_box(mx,my,bg);
 	else if(point_within(mx,my,0,200,320,221)) get_new_bg(mx,my);
 	else if(point_within(mx,my,203,0,221,17)) copy_pic_to_pic(0);
@@ -1366,7 +1363,7 @@ changed=1;
 /*=========================================================================*/
 void no_button(void){
 
-while(MLB || MRB) xmouse_stat();
+while(XMOUSE_LEFT(mouse) || XMOUSE_RIGHT(mouse)) xmouse_stat(&mouse);
 }
 /*=========================================================================*/
 #define DAC_READ_INDEX	03c7h
@@ -1533,11 +1530,11 @@ xshowpage(PAGE1);
 li=-1;
 while(1){
      if(kbhit()) if(getch()==27) return -1;
-     xmouse_stat();
-     if(MPX!=x || MPY !=y){
+     xmouse_stat(&mouse);
+     if(mouse.x!=x || mouse.y !=y){
        xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE1,320,320);
-       x=MPX;
-       y=MPY;
+       x=mouse.x;
+       y=mouse.y;
        xcopyd2d(x,y,x+8,y+8,x,y,PAGE1,PAGE2,320,320);
        xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,PAGE1,320);
        i=((y/16)*20)+(x/16);
@@ -1556,11 +1553,11 @@ while(1){
          li=i;
        }
      }
-     if(MLB){
+     if(XMOUSE_LEFT(mouse)){
        xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE1,320,320);
        return i;
      }
-     if(MRB) return -1;
+     if(XMOUSE_RIGHT(mouse)) return -1;
 }
 }
 /*=========================================================================*/
@@ -1970,9 +1967,9 @@ xmouse_init();
 xmouse_off();
 xmouse_set_bounds(0,0,624,231);
 xmouse_set_pos(320,120);
-xmouse_stat();
-mx=MPX;
-my=MPY;
+xmouse_stat(&mouse);
+mx=mouse.x;
+my=mouse.y;
 xmouse_cnt=1;
 MSSHOW;
 
