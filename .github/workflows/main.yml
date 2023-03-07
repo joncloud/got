@@ -49,7 +49,7 @@ jobs:
           make > c:\build\_g3.txt
           SET PATH=c:\src\utility;%PATH%
           cd \
-          c:\build\assets.bat > c:\build\assets.txt
+          c:\build\assets.bat
 
         conf: |
           [dosbox]
