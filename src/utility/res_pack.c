@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "modern.h"
+
+#ifdef modern
+#include <unistd.h>
+#endif
+
 #include "res_man.h"
 
 int res_pack(const char* filename) {
@@ -39,7 +45,7 @@ int res_pack(const char* filename) {
     while (strlen(name) < 8) {
       strcat(name, " ");
     }
-    printf("\r\nPacking: %s  Size:%.6ld...", name, res_header[num].length);
+    printf("\r\nPacking: %s  Size:%.6u...", name, res_header[num].length);
     if (fseek(res_fp, res_header[num].offset, SEEK_SET)) {
       fclose(fp);
       return RES_CANT_SEEK;

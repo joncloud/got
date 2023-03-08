@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "modern.h"
+
 #include "res_man.h"
 
 FILE* res_fp;
@@ -58,7 +60,7 @@ int res_close(void) {
   return RES_CANT_CLOSE;
 }
 
-void res_encrypt(char far* buff, long len, char key) {
+void res_encrypt(char far* buff, long len, unsigned char key) {
   while (len) {
     len--;
     *buff ^= key;
@@ -67,7 +69,7 @@ void res_encrypt(char far* buff, long len, char key) {
   }
 }
 
-void res_decrypt(char far* buff, long len, char key) {
+void res_decrypt(char far* buff, long len, unsigned char key) {
   while (len) {
     len--;
     *buff ^= key;

@@ -3,12 +3,18 @@
 //07-28-93
 //==========================================================================
 #include <stdio.h>
-#include <dos.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 #include <time.h>
+#include "modern.h"
+
+#ifdef modern
+
+#else
+#include <dos.h>
+#include <conio.h>
 #include <alloc.h>
+#endif
 
 #include "res_man.h"
 //==========================================================================
@@ -28,7 +34,7 @@ printf("                     (L)ist\r\n\r\n");
 printf("EXAMPLE: RES RESFILE.000 A GRAPHICS.DAT GRPDATA 1\r\n\r\n");
 }
 //==========================================================================
-void main(int argc, char *argv[]){
+int main(int argc, char *argv[]){
 int  ret,i;
 char filename[128];
 char name[1024];
@@ -61,17 +67,16 @@ if(!fb){
   exit(0);
 }
 res_init(fb);
-for(i=0;i<argc;i++) strupr(argv[i]);
 
 strcpy(filename,argv[1]);
 
-if(!strcmp(argv[2],"C")){
+if(!strcmpi(argv[2],"C")){
   printf("\r\nCreating Resource File: %s...",filename);
   printf("%s\r\n\r\n",res_error(res_create(filename)));
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"A")){
+else if(!strcmpi(argv[2],"A")){
   strcpy(fname,argv[3]);
   strncpy(name,argv[4],8);
   name[8]=0;
@@ -86,7 +91,7 @@ else if(!strcmp(argv[2],"A")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"E")){
+else if(!strcmpi(argv[2],"E")){
   strcpy(fname,argv[4]);
   strncpy(name,argv[3],8);
   name[8]=0;
@@ -100,7 +105,7 @@ else if(!strcmp(argv[2],"E")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"L")){
+else if(!strcmpi(argv[2],"L")){
   printf("\r\nOpening Resource File: %s...",filename);
   ret=res_open(filename);
   if(ret<0){
@@ -126,7 +131,7 @@ else if(!strcmp(argv[2],"L")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"D")){
+else if(!strcmpi(argv[2],"D")){
   printf("\r\nOpening Resource File: %s...",filename);
   ret=res_open(filename);
   if(ret<0){
@@ -142,7 +147,7 @@ else if(!strcmp(argv[2],"D")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"P")){
+else if(!strcmpi(argv[2],"P")){
   printf("\r\nOpening Resource File: %s...",filename);
   ret=res_open(filename);
   if(ret<0){
@@ -155,7 +160,7 @@ else if(!strcmp(argv[2],"P")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"U")){
+else if(!strcmpi(argv[2],"U")){
   strcpy(fname,argv[3]);
   strncpy(name,argv[4],8);
   name[8]=0;
@@ -170,7 +175,7 @@ else if(!strcmp(argv[2],"U")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"R")){
+else if(!strcmpi(argv[2],"R")){
   printf("\r\nOpening Resource File: %s...",filename);
   ret=res_open(filename);
   if(ret<0){
@@ -188,7 +193,7 @@ else if(!strcmp(argv[2],"R")){
   if(fb) farfree(fb);
   exit(0);
 }
-else if(!strcmp(argv[2],"B")){
+else if(!strcmpi(argv[2],"B")){
   printf("\r\nOpening Resource File: %s...",filename);
   ret=res_open(filename);
   if(ret<0){
@@ -254,4 +259,5 @@ else{
   if(fb) farfree(fb);
   exit(0);
 }
+return 0;
 }
