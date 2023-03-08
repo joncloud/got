@@ -1,11 +1,34 @@
 #ifndef RES_MAN_H_
 #define RES_MAN_H_
 
+#include "modern.h"
+
 typedef struct{
+  /**
+   * The name of the resource in the archive. This is what
+   * is used to find, extract and manipulate records.
+   */
   char name[9];
+  /**
+   * The offset within the archive that this entry's data is at.
+   */
   long offset;
-  long length;   //original len
+  /**
+   * The total length of the data within the archive.
+   */
+  long length;
+  /**
+   * The total length of the data after uncompressing.
+   * This value is the same as @ref length when data is
+   * not compressed.
+   */
   long original_size;
+
+  /**
+   * This stores a boolean value of 0 when data is not
+   * compressed, and 1 when data is compressed using
+   * an LZSS algorithm.
+   */
   int  key;
 } RES_HEADER;
 
@@ -83,13 +106,70 @@ void res_encrypt(char far* buff, long len, char key);
  */
 void res_decrypt(char far* buff, long len, char key);
 
-int  res_abort(void);
-int  res_create(char *filename);
-long res_encode(char far *buff,long length);
+/**
+ * This function should be called when a program needs to abort
+ * in order to clean up any internal resources to the resource
+ * manager.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_abort(void);
+
+/**
+ * Creates a new resource archive located at @ref filename. Upon
+ * successful creation, the archive is then opened using @ref res_open.
+ * @param filename The path to where the archive should be created.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_create(const char* filename);
+
+/**
+ * Compresses the data in @ref buff using LZSS.
+ * @param buff A memory location with data to compress.
+ * @param length How many bytes long @ref buff is.
+ * @returns The total number of bytes the compressed size is.
+ */
+long res_encode(char far* buff, long length);
+
+/**
+ * Decompresses the data in @ref buff with LZSS.
+ * @param buff A memory location with data to decompress.
+ * @param length How many bytes long @ref buff is.
+ * @returns The total number of bytes the decompressed size is.
+ */
 long res_decode(char far *buff, long len);
-int  res_find_name(char *name);
-int  res_find_empty(void);
-int  res_write(char *name,char far *buff,long length,int encode_flag);
+
+/**
+ * Finds the resource index by the name specified at @ref name.
+ * @param name The name of the resource to find.
+ * @returns If the return value is >= 0, then it is the index in the
+ * @ref res_header array, otherwise returns an enumeration. Use the
+ * `RES_*` constants, or @ref res_error to determine a text description.
+ */
+int res_find_name(const char* name);
+
+/**
+ * Finds the first resource index for an empty entry.
+ * @returns If the return value is >= 0, then it is the index in the
+ * @ref res_header array, otherwise returns an enumeration. Use the
+ * `RES_*` constants, or @ref res_error to determine a text description.
+ */
+int res_find_empty(void);
+
+/**
+ * Writes a new resource to the archive.
+ * @param name The name of the resource.
+ * @param buff The memory location with the data for the resource.
+ * @param length The total number of bytes of data to write.
+ * @param encode_flag 1 when the data should be compressed with LZSS, otherwise false.
+ * @returns 1 if the entry was successfully written, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text description.
+ */
+int res_write(const char* name, char far* buff, long length, int encode_flag);
+
 long res_read(char *name,char far *buff);
 long res_read_element(char *name,char far *buff,long offset,long size);
 void far *res_falloc_read(char *name);

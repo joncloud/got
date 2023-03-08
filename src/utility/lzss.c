@@ -1,4 +1,4 @@
-#include "LZSS.H"
+#include "lzss.h"
 
 int lzss_read_uint16le(const char far* src, long* size, unsigned int* value);
 
@@ -101,7 +101,7 @@ long lzss_decompress(char far* src, char far* dst, long size) {
   return (long)decompressed_size;
 }
 
-unsigned int lzss_compress(long origsize, char far* src, char far* dst) {
+long lzss_compress(long origsize, char far* src, char far* dst) {
   (void)origsize;
   (void)src;
   (void)dst;
