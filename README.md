@@ -4,32 +4,32 @@ This is a copy of the MS-DOS Game God of Thunder. The intention of this project 
 
 ## Files
 
-## _G1.EXE
+### _G1.EXE
 
 This program is contains all of the code to play the first episode - Part I: Serpent Surprise.
 
-## _G2.EXE
+### _G2.EXE
 
 This program is contains all of the code to play the first episode - Part II: Non-Stick Nognir.
 
-## _G3.EXE
+### _G3.EXE
 
 This program is contains all of the code to play the first episode - Part II: Lookin' for Loki.
 
-## GOTRES.DAT
+### GOTRES.DAT
 
 This contains all of the game assets necessary to play the game episodes.
 
-## LVLBUILD.EXE
+### LVLBUILD.EXE
 
 This program is used to manipulate screen data within `GOTRES.DAT`. By default it loads `GOTRES.DAT` out of `C:\GOT\GOTRES.DAT` and edits Episode 1's data (`SDAT1`).
 
-### Arguments
+#### Arguments
 
 * `/AREA:num` - Overrides the Episode screen data to load, e.g., num=2 will load `SDAT2`
 * `/FILE:name` - Overrides the path to the `GOTRES.DAT` file to load and save
 
-### Keyboard Shortcuts
+#### Keyboard Shortcuts
 
 * F1 - Save
 * F2 - Load
@@ -51,11 +51,11 @@ This program is used to manipulate screen data within `GOTRES.DAT`. By default i
 * Left - Shift Tile Palette Left
 * Right - Shift Tile Palette Right
 
-## RES.EXE
+### RES.EXE
 
 This program provides an interface for managing the `GOTRES.DAT` archive.
 
-### Arguments
+#### Arguments
 
 RES.EXE is a command based program, which has dynamic arguments. All commands first argument is filename, e.g., `RES.EXE [filename]`. When no arguments are passed, a help dialog is displayed. The following are the various argument combinations to run the program.
 
