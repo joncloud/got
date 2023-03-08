@@ -208,7 +208,6 @@ void xpset(int X, int Y, unsigned int PageBase, int Color);
 void xget(int x1,int y1,int x2,int y2,unsigned int pagebase,
           char *buff,int invis);
 void xput(int x,int y,unsigned int pagebase,char *buff);
-void xtext(int x,int y,unsigned int pagebase,char *buff,int color);
 void xfillrectangle(int StartX, int StartY, int EndX, int EndY,
                     unsigned int PageBase, int Color);
 unsigned int xcreatemaskimage(MaskedImage * ImageToSet,
@@ -303,7 +302,7 @@ static MaskedImage mouse_image;
 ACTOR_DATA actor;
 int actor_num;
 
-char text[94][72];
+char far text[94][72];
 
 struct picf{
        char width;
@@ -361,7 +360,6 @@ int *ip;
 mkdir("rim");
 mkdir("pcx");
 
-memset(text,0x00,94*72);
 memset(pcx_filename,0,9);
 memset(pic_file,0,12);
 bg_buff=(char far *) 0;

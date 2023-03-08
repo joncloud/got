@@ -138,7 +138,7 @@ static char mmask[]={
 		  1,0,0,0,0,1,1,0};
 static MaskedImage mouse_image;
 
-char text[94][72];
+char far text[94][72];
 
 char far *bg_pics;
 char objects[32][262];
@@ -217,8 +217,6 @@ char lflag,rflag;
 int help_level,hl;
 char s[21];
 int lx,ly;
-
-memset(text,0x00,94*72);
 
 strcpy(res_file,"\\GOT\\GOTRES.DAT");
 area_num=1;
@@ -590,7 +588,8 @@ return 1;
 }
 /*=========================================================================*/
 void xmouse_show(int x,int y){
-
+  (void)x;
+  (void)y;
 // TODO this makes the program unpredictable
 // if(xmouse_cnt==1){
 //   xcopyd2d(x,y,x+8,y+8,x,y,PAGE0,PAGE2,320,320);
@@ -601,7 +600,8 @@ void xmouse_show(int x,int y){
 }
 /*=========================================================================*/
 void xmouse_hide(int x,int y){
-
+  (void)x;
+  (void)y;
 // TODO this makes the program unpredictable
 // if(xmouse_cnt==0) xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
 // xmouse_cnt++;
@@ -1434,7 +1434,7 @@ if(point_within(mouse.x,mouse.y,0,0,320,192)){
 }
 //===========================================================================
 int load_actors(void){
-int i,r,x,y;
+int i;
 char s[21];
 
 memset(actor_flag,0,100);

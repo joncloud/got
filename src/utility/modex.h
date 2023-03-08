@@ -26,7 +26,7 @@ void xpset(int X, int Y, unsigned int PageBase, int Color);
 void xget(int x1,int y1,int x2,int y2,unsigned int pagebase,
           char *buff,int invis);
 void xput(int x,int y,unsigned int pagebase,char *buff);
-void xtext(int x,int y,unsigned int pagebase,char *buff,int color);
+void xtext(int x, int y, unsigned int pagebase, char far* buff, int color);
 void xfillrectangle(int StartX, int StartY, int EndX, int EndY,
                     unsigned int PageBase, int Color);
 
