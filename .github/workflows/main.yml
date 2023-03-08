@@ -1,6 +1,30 @@
 on: [push]
 
 jobs:
+  native:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ 'windows-latest', 'ubuntu-latest', 'macos-latest' ]
+
+    steps:
+    - name: 'Git checkout'
+      uses: actions/checkout@v3
+
+    - name: 'Make build dir'
+      run: |
+        mkdir build
+
+    - name: 'Make'
+      run: |
+        make
+
+    - uses: 'actions/upload-artifact@v3'
+      with:
+        name: 'build'
+        path: build
+
   build:
     runs-on: 'ubuntu-22.04'
 
