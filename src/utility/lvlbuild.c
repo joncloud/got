@@ -107,16 +107,11 @@ xgetpal(char far * pal, int num_colrs, int start_index);
 union REGS in,out;
 struct SREGS seg;
 xmouse mouse;
-int xmouse_x,xmouse_y,xmouse_lb,xmouse_rb;
 int xmouse_cnt;
 int mx,my,fg,bg;
 int  area_num;
 int  changed;
 char tempstr[255];
-
-unsigned int word;
-
-unsigned int page[3]={PAGE0,PAGE1,PAGE2};
 
 char slow_mode, main_loop;
 
@@ -145,9 +140,6 @@ static MaskedImage mouse_image;
 
 char text[94][72];
 
-unsigned int display_page;
-unsigned int draw_page;
-int bg_flag;
 char far *bg_pics;
 char objects[32][262];
 
@@ -210,10 +202,8 @@ char actor_nf[100];
 int  frames_left;
 char res_file[80];
 
-int sd_flag;
 int current_bg;
 int hilite_bg;
-int screen_num;
 int alt_flag;
 int current_object;
 char far *sd_data;
@@ -250,7 +240,7 @@ if(argc>1){                        //parse the command line
 fb=farmalloc(30000u);
 if(!fb) exit_error("Out of Memory");
 
-mkdir("sdf");
+mkdir("c:\\sdf");
 res_init(fb);
 if(res_open(res_file)<0){
   sprintf(tempstr,"Cannot Open: %s\r\n\r\n",res_file);
@@ -261,11 +251,8 @@ if(res_read("TEXT",(char far *) text)<0) exit_error("Can't Read TEXT");
 
 load_sd_data();
 
-screen_num=999;
-bg_flag=0;
 bg_pics=0;
 load_bg_pics();
-sd_flag=0;
 
 load_objects();
 
@@ -273,8 +260,8 @@ current_object=0;
 xsetmode();
 xmouse_init();
 xmouse_off();
-xmouse_set_bounds(0,0,624,231);
-xmouse_set_pos(320,120);
+xmouse_set_bounds(0,0,320,240);
+xmouse_set_pos(160,120);
 xmouse_stat(&mouse);
 mx=mouse.x;
 my=mouse.y;
@@ -290,7 +277,6 @@ current_bg=0;
 hilite_bg=10;
 main_loop = 1;
 
-
 if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
   printf("xcreatmaskimage fail\n");
   exit_code();
@@ -301,6 +287,7 @@ if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
 xshowpage(PAGE0);
 display_help(0);
 load_palette();
+
 if(!load_actors()){
   printf("Cannot Load Actors\r\n");
   exit_code();
@@ -381,12 +368,14 @@ while(1){
           if(y<12 && x<20){
             ret=current_bg+hilite_bg;
             if(ret>229) ret-=230;
-               MSHIDE;
-               xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_tile*262)));
-               xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(ret*262)));
-               MSSHOW;
-               scrn.icon[y][x]=ret;
-               changed=1;
+              if (scrn.icon[y][x] != ret) {
+                MSHIDE;
+                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_tile*262)));
+                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(ret*262)));
+                MSSHOW;
+                scrn.icon[y][x]=ret;
+                changed=1;
+              }
           }
         }
      }
@@ -602,18 +591,20 @@ return 1;
 /*=========================================================================*/
 void xmouse_show(int x,int y){
 
-if(xmouse_cnt==1){
-  xcopyd2d(x,y,x+8,y+8,x,y,PAGE0,PAGE2,320,320);
-  xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,0,320);
-  xmouse_cnt=0;
-}
-else xmouse_cnt--;
+// TODO this makes the program unpredictable
+// if(xmouse_cnt==1){
+//   xcopyd2d(x,y,x+8,y+8,x,y,PAGE0,PAGE2,320,320);
+//   xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,0,320);
+//   xmouse_cnt=0;
+// }
+// else xmouse_cnt--;
 }
 /*=========================================================================*/
 void xmouse_hide(int x,int y){
 
-if(xmouse_cnt==0) xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
-xmouse_cnt++;
+// TODO this makes the program unpredictable
+// if(xmouse_cnt==0) xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
+// xmouse_cnt++;
 }
 /*=========================================================================*/
 void xbox(int x1,int y1,int x2,int y2,int color,unsigned page){
@@ -1459,14 +1450,15 @@ for(i=1;i<100;i++){
      actor_nf[i]=actor_buff.actor_info.frames*actor_buff.actor_info.directions;
      actor_nf[i]+=actor_buff.shot_info.frames*actor_buff.shot_info.directions;
      actor_flag[i]=1;
-     xfillrectangle(0,0,16,16,PAGE0,0);
-     r=0;
-     for(y=0;y<16;y++){
-        for(x=0;x<16;x++){
-           xpset(x,y,PAGE0,actor_buff.pic[1][r++]);
-        }
-     }
-     xget(0,0,15,15,PAGE0,actor[i],0);
+    // TODO this seems unnecessary and is slow
+    //  xfillrectangle(0,0,16,16,PAGE0,0);
+    //  r=0;
+    //  for(y=0;y<16;y++){
+    //     for(x=0;x<16;x++){
+    //        xpset(x,y,PAGE0,actor_buff.pic[1][r++]);
+    //     }
+    //  }
+    //  xget(0,0,15,15,PAGE0,actor[i],0);
    }
    MSSHOW;
 }
@@ -1863,7 +1855,7 @@ fclose(fp);
 fp=(FILE *) 0;
 
 regset.x.ax = 0x0003; int86(0x10, &regset, &regset);
-system("BLEDIT BL$$$$$$.TMP");
+// system("BLEDIT BL$$$$$$.TMP");
 reset_mode();
 
 status_line("Save Changes to Script? (Y/N)",12);
