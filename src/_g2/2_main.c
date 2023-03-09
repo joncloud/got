@@ -117,8 +117,6 @@ int last_oracle;
 int hourglass_flag,thunder_flag,shield_on,lightning_used,tornado_used;
 int apple_flag,bomb_flag;
 int switch_flag;
-unsigned int joy_x,joy_y;
-char joy_b1,joy_b2;
 int joystick,joylx,joyly,joyhx,joyhy;
 char res_file[16];
 char odin[4][262];

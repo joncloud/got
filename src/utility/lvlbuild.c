@@ -14,6 +14,7 @@
 #include "modex.h"
 #include "xmouse.h"
 #include "res_man.h"
+#include "level.h"
 //==========================================================================
 //typedefs & defines
 
@@ -39,23 +40,24 @@
 #define MSSHOW xmouse_show(mx,my)
 
 //==========================================================================
+//external prototypes
+xsetpal(unsigned char color, unsigned char R,unsigned char G,unsigned char B);
+xgetpal(char far * pal, int num_colrs, int start_index);
 //internal prototypes
-void xget(int x1,int y1,int x2,int y2,unsigned int pagebase,
-          char *buff,int invis);
-void exit_error(char *error_msg);
+void xprint(int x, int y, const char* string, int color, unsigned int page);
+void exit_error(const char* error_msg);
 void exit_code(void);
-void xprint(int x,int y,char *string,int color,unsigned int page);
-void xmouse_show(int x,int y);
-void xmouse_hide(int x,int y);
+void xmouse_show(int x, int y);
+void xmouse_hide(int x, int y);
 void display_help(int level);
-void status_line(char *message,int color);
+void status_line(const char* message, int color);
 int  do_key_function(void);
 void view_screen(int num);
 void load_file(void);
 int  xinput(int x,int y,char *buff,int fg,int bg,int max,int min,unsigned int page);
 void save_screen(void);
 void save_file(void);
-int  are_you_sure(char *mess);
+int  are_you_sure(const char* mess);
 void set_undo(void);
 void undo(void);
 void flush_buff(void);
@@ -63,7 +65,7 @@ void ask_to_save(void);
 void no_button(void);
 void load_palette(void);
 void set_screen_pal(void);
-int  point_within(int x,int y,int x1,int y1,int x2,int y2);
+int  point_within(int x, int y, int x1, int y1, int x2, int y2);
 void show_screen(void);
 void show_bg(void);
 int  load_bg_pics(void);
@@ -98,17 +100,14 @@ void pick_warp(void);
 int  pick_actor(void);
 void actor_script(void);
 void reset_mode(void);
-
-xsetpal(unsigned char color, unsigned char R,unsigned char G,unsigned char B);
-xgetpal(char far * pal, int num_colrs, int start_index);
 //==========================================================================
 //global variables
 
-union REGS in,out;
+union REGS in, out;
 struct SREGS seg;
 xmouse mouse;
 int xmouse_cnt;
-int mx,my,fg,bg;
+int mx, my, fg, bg;
 int  area_num;
 int  changed;
 char tempstr[255];
@@ -118,81 +117,37 @@ char slow_mode, main_loop;
 // mouse curosr 8x8
 
 static char mcursor[]={
-		  0,0,0,0,0,0,0,0,
-		  0,7,7,7,7,7,0,0,
-		  0,7,7,7,7,0,0,0,
-		  0,7,7,7,7,0,0,0,
-		  0,7,7,7,7,7,0,0,
-		  0,7,0,0,7,7,7,0,
-		  0,0,0,0,0,7,7,0,
-		  0,0,0,0,0,0,0,0};
+  0,0,0,0,0,0,0,0,
+  0,7,7,7,7,7,0,0,
+  0,7,7,7,7,0,0,0,
+  0,7,7,7,7,0,0,0,
+  0,7,7,7,7,7,0,0,
+  0,7,0,0,7,7,7,0,
+  0,0,0,0,0,7,7,0,
+  0,0,0,0,0,0,0,0,
+};
 
 static char mmask[]={
-		  1,1,1,1,1,1,1,1,
-		  1,1,1,1,1,1,1,0,
-		  1,1,1,1,1,1,0,0,
-		  1,1,1,1,1,1,0,0,
-		  1,1,1,1,1,1,1,0,
-		  1,1,1,1,1,1,1,1,
-		  1,1,0,0,1,1,1,1,
-		  1,0,0,0,0,1,1,0};
+  1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,0,
+  1,1,1,1,1,1,0,0,
+  1,1,1,1,1,1,0,0,
+  1,1,1,1,1,1,1,0,
+  1,1,1,1,1,1,1,1,
+  1,1,0,0,1,1,1,1,
+  1,0,0,0,0,1,1,0,
+};
 static MaskedImage mouse_image;
 
 char far text[94][72];
 
-char far *bg_pics;
+char far* bg_pics;
 char objects[32][262];
 
-struct sdd{                 //size=512
-       char icon[12][20];       //0   grid of icons
-       char bg_tile;            //240 background color
-       char actor_type[32];     //241 type of enemies (32 max)
-       char actor_loc[32];      //273 location of enemies
-       char actor_value[32];    //305 pass value
-       char actor_dir[32];      //337 initial dir
-       char static_obj[32];     //369 static objects (treasure, keys,etc)
-       char static_loc[32];     //401 location of object
-       char type;
-       char pal_colors[3];
-       char future[75];         //465
-};
+#include "actornfo.h"
+#include "actordat.h"
 
-typedef struct{                    //size=40
-       char move;                  //movement pattern (0=none)
-       char width;                 //physical width
-       char height;                //physical height
-       char directions;            //1,2 or 4 (1=uni-directional)
-       char frames;                //# frames per direction
-       char frame_speed;           //# cycles between frame changes
-       char frame_sequence[4];     //sequence
-       char speed;                 //move every Nth cycle
-       char size_x;                 //non-physical padding on X coor
-       char size_y;                 //non-phsyical padding on Y coor
-       char strength;              //hit strength
-       char health;                //
-       char num_moves;             //# of moves every <speed> cycles
-       char shot_type;             //actor # of shot
-       char shot_pattern;          //func number to decide to shoot
-       char shots_allowed;         //# shots allowed on screen
-       char solid;                 //1=solid (not ghost,etc)
-       char flying;                //
-       char rating;                //rnd(100) < rating = jewel
-       char type;                  //actor (0=thor,1=hammer,2=enemy,3=shot)
-       char name[9];               //actors name
-       char func_num;              //special function when thor touches
-       char func_pass;             //value to pass to func
-       int  magic_hurts;           //bitwise magic hurts flags
-       char future1[4];
-} ACTOR_NFO;
-
-typedef struct {                     //size=16373
-       char pic[16][256];            //4096
-       char shot[4][256];            //1024
-       ACTOR_NFO actor_info;         //40
-       ACTOR_NFO shot_info;          //40
-} ACTOR_DATA;
-
-struct sdd scrn;
+LEVEL scrn;
 ACTOR_DATA actor_buff;
 char afb[100];
 
@@ -208,7 +163,6 @@ int alt_flag;
 int current_object;
 char far *sd_data;
 char current_screen;
-int  joy_x,joy_y,joy_b1,joy_b2;
 char far *fb;
 //==========================================================================
 void main(int argc, char *argv[]){
@@ -368,7 +322,7 @@ while(1){
             if(ret>229) ret-=230;
               if (scrn.icon[y][x] != ret) {
                 MSHIDE;
-                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_tile*262)));
+                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_color*262)));
                 xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(ret*262)));
                 MSSHOW;
                 scrn.icon[y][x]=ret;
@@ -386,9 +340,9 @@ while(1){
           if(y<12 && x<20){
             MSHIDE;
             xfillrectangle(x*16,y*16,(x*16)+16,(y*16)+16,PAGE0,0);
-            xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_tile*262)));
+            xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_color*262)));
             MSSHOW;
-            scrn.icon[y][x]=scrn.bg_tile;
+            scrn.icon[y][x]=scrn.bg_color;
             changed=1;
           }
         }
@@ -398,170 +352,196 @@ exit_code();
 exit(0);
 }
 //===========================================================================
-void exit_error(char *error_msg){
-
-exit_code();
-printf("ERROR: %s\r\n\r\n",error_msg);
-exit(0);
+void exit_error(const char* error_msg) {
+  exit_code();
+  printf("ERROR: %s\r\n\r\n", error_msg);
+  exit(0);
 }
 //===========================================================================
-void exit_code(void){
-union REGS regset;
+void exit_code(void) {
+  union REGS regset;
 
-res_close();
-if(sd_data) farfree(sd_data);
-if(bg_pics) farfree(bg_pics);
-regset.x.ax = 0x0003; int86(0x10, &regset, &regset);
+  res_close();
+  if (sd_data) {
+    farfree(sd_data);
+  }
+  if (bg_pics) {
+    farfree(bg_pics);
+  }
+  regset.x.ax = 0x0003;
+  int86(0x10, &regset, &regset);
 }
 //===========================================================================
 int do_key_function(void){
-int key,hl;
+  int key, hl;
 
-key=getch();
-if(key==9){
-  pickup_tile();
+  key = getch();
+  if (key == 9) {
+    pickup_tile();
+    return 0;
+  }
+  if (key != 0) {
+    return 0;
+  }
+  key = getch();
+
+  hl = 0;
+  in.h.ah = 2;
+  int86(0x16, &in, &out);
+  if (out.h.al & 1) {      //shift
+    hl = 1;
+  }
+  else if (out.h.al & 2) { //shift
+    hl = 1;
+  }
+
+  switch (key) {
+  case 77:       //right
+    if (hl) {
+      if (current_screen < 119) {
+        save_screen();
+        current_screen++;
+        view_screen(current_screen);
+      }
+    }
+    else {
+      if (current_bg < 229) {
+        current_bg++;
+      }
+      else {
+        current_bg = 0;
+      }
+      show_bg();
+    }
+    return 0;
+  case 75:      //left
+    if (hl) {
+      if (current_screen > 0) {
+        save_screen();
+        current_screen--;
+        view_screen(current_screen);
+      }
+    }
+    else {
+      if (current_bg > 0) {
+        current_bg--;
+      }
+      else {
+        current_bg = 229;
+      }
+      show_bg();
+    }
+    return 0;
+  case 72:       //up
+    if (hl) {
+      if (current_screen > 9) {
+        save_screen();
+        current_screen -= 10;
+        view_screen(current_screen);
+      }
+    }
+    return 0;
+  case 80:      //down
+    if (hl) {
+      if (current_screen < 110) {
+        save_screen();
+        current_screen += 10;
+        view_screen(current_screen);
+      }
+    }
+    return 0;
+  case 71:      //home
+    current_bg = 0;
+    show_bg();
+    return 0;
+  case 116:       //ctrl-right
+    current_bg += 10;
+    if (current_bg > 229) {
+      current_bg -= 230;
+    }
+    show_bg();
+    return 0;
+  case 115:      //ctrl-left
+    current_bg -= 10;
+    if (current_bg < 0) {
+      current_bg += 230;
+    }
+    show_bg();
+    return 0;
+  case 59:           //F1
+    save_file();
+    break;
+  case 60:           //F2
+    load_file();
+    break;
+  case 61:           //F3
+    change_bg_color();
+    break;
+  case 62:           //F4
+    key = current_bg+hilite_bg;
+    if (key > 229) {
+      key -= 230;
+    }
+    scrn.bg_color = key;
+    changed = 1;
+    fill_screen(key);
+    break;
+  case 63:           //F5
+    ask_to_save();
+    if (are_you_sure("Quit")) {
+      return 1;
+    }
+    break;
+  case 64:           //F6
+    pickup_tile();
+    break;
+  case 84:          //shft-F1
+    scrn.type++;
+    if (scrn.type > 4) {
+      scrn.type = 0;
+    }
+    changed = 1;
+  case 85:          //shft-F2
+    MSHIDE;
+    show_screen();
+    show_objects();
+    MSSHOW;
+    break;
+  case 86:          //shft-F3
+    edit_level_data();
+    break;
+  case 87:          //shft-F4
+    pick_warp();
+    break;
+  case 88:          //shft-F5
+    edit_pal_data();
+    break;
+  case 94:          //ctrl-F1
+    add_actor();
+    break;
+  case 95:          //ctrl-F2
+    delete_actor();
+    break;
+  case 96:          //ctrl-F3
+    flip_actor();
+    break;
+  case 97:          //ctrl-F4
+    actor_value();
+    break;
+  case 98:          //ctrl-F5
+    actor_script();
+    break;
+  case 104:          //alt-F1
+    inc_object();
+    break;
+  case 105:          //alt-F2
+    dec_object();
+    break;
+  }
   return 0;
 }
-if(key!=0)  return 0;
-key=getch();
-
-hl=0;
-in.h.ah = 2;
-int86(0x16,&in,&out);
-if(out.h.al & 1) hl=1;         //shift
-else if(out.h.al & 2) hl=1;    //shift
-
-switch(key){
-      case 77:       //right
-            if(hl){
-
-              if(current_screen<119){
-                save_screen();
-                current_screen++;
-                view_screen(current_screen);
-              }
-            }
-            else{
-              if(current_bg<229) current_bg++;
-              else current_bg=0;
-              show_bg();
-            }
-            return 0;
-      case 75:      //left
-            if(hl){
-              if(current_screen>0){
-                save_screen();
-                current_screen--;
-                view_screen(current_screen);
-              }
-            }
-            else{
-              if(current_bg>0) current_bg--;
-              else current_bg=229;
-              show_bg();
-            }
-            return 0;
-      case 72:       //up
-            if(hl){
-              if(current_screen>9){
-                save_screen();
-                current_screen-=10;
-                view_screen(current_screen);
-              }
-            }
-            return 0;
-      case 80:      //down
-            if(hl){
-              if(current_screen<110){
-                save_screen();
-                current_screen+=10;
-                view_screen(current_screen);
-              }
-            }
-            return 0;
-      case 71:      //home
-            current_bg=0;
-            show_bg();
-            return 0;
-      case 116:       //ctrl-right
-            current_bg+=10;
-            if(current_bg>229) current_bg-=230;
-            show_bg();
-            return 0;
-      case 115:      //ctrl-left
-            current_bg-=10;
-            if(current_bg<0) current_bg+=230;
-            show_bg();
-            return 0;
-
-      case 59:           //F1
-	    save_file();
-	    break;
-      case 60:           //F2
-	    load_file();
-	    break;
-      case 61:           //F3
-            change_bg_color();
-	    break;
-      case 62:           //F4
-            key=current_bg+hilite_bg;
-            if(key>229) key-=230;
-            scrn.bg_tile=key;
-            changed=1;
-            fill_screen(key);
-	    break;
-      case 63:           //F5
-           ask_to_save();
-           if(are_you_sure("Quit")) return 1;
-	    break;
-      case 64:           //F6
-            pickup_tile();
-	    break;
-      case 84:          //shft-F1
-           scrn.type++;
-           if(scrn.type>4) scrn.type=0;
-           changed=1;
-      case 85:          //shft-F2
-           MSHIDE;
-           show_screen();
-           show_objects();
-           MSSHOW;
-           break;
-      case 86:          //shft-F3
-           edit_level_data();
-           break;
-      case 87:          //shft-F4
-           pick_warp();
-           break;
-      case 88:          //shft-F5
-           edit_pal_data();
-           break;
-      case 94:          //ctrl-F1
-           add_actor();
-           break;
-      case 95:          //ctrl-F2
-           delete_actor();
-           break;
-      case 96:          //ctrl-F3
-           flip_actor();
-           break;
-      case 97:          //ctrl-F4
-           actor_value();
-           break;
-      case 98:          //ctrl-F5
-           actor_script();
-           break;
-      case 104:          //alt-F1
-           inc_object();
-           break;
-      case 105:          //alt-F2
-           dec_object();
-           break;
-}
-return 0;
-}
 //===========================================================================
-void xprint(int x,int y,char *string,int color,unsigned int page){
+void xprint(int x, int y, const char* string, int color, unsigned int page) {
 char ch;
 char str[3];
 
@@ -576,7 +556,7 @@ while(*string){
      color=atoi(str);
      continue;
    }
-   if(ch>32 && ch<94) xtext(x,y,page,text[ch-32],color);
+   if(ch>32 && ch<126) xtext(x,y,page,text[ch-32],color);
    x+=8;
 }
 }
@@ -587,23 +567,27 @@ if((x<x1) || (x>x2) || (y<y1) || (y>y2)) return 0;
 return 1;
 }
 /*=========================================================================*/
-void xmouse_show(int x,int y){
+void xmouse_show(int x, int y){
   (void)x;
   (void)y;
 // TODO this makes the program unpredictable
-// if(xmouse_cnt==1){
-//   xcopyd2d(x,y,x+8,y+8,x,y,PAGE0,PAGE2,320,320);
-//   xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,0,320);
-//   xmouse_cnt=0;
+// if (xmouse_cnt == 1) {
+//   xcopyd2d(x, y, x + 8, y + 8, x, y, PAGE0, PAGE2, 320, 320);
+//   xcopyd2dmasked(0, 0, 8, 8, x, y, &mouse_image, 0, 320);
+//   xmouse_cnt = 0;
 // }
-// else xmouse_cnt--;
+// else {
+//   xmouse_cnt--;
+// }
 }
 /*=========================================================================*/
-void xmouse_hide(int x,int y){
+void xmouse_hide(int x, int y) {
   (void)x;
   (void)y;
 // TODO this makes the program unpredictable
-// if(xmouse_cnt==0) xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
+// if (xmouse_cnt == 0) {
+//   xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
+// }
 // xmouse_cnt++;
 }
 /*=========================================================================*/
@@ -615,102 +599,110 @@ xline(x1,y1,x1,y2,color,page);
 xline(x2,y1,x2,y2,color,page);
 }
 //=========================================================================
-int xinput(int x,int y,char *buff,int fg,int bg,
-           int max,int min,unsigned int page){
+int xinput(int x, int y, char* buff, int fg, int bg,
+           int max, int min, unsigned int page) {
+  int key;
+  int pos;
+  char ch;
+  char s[2];
 
-int key;
-int pos;
-char ch;
-char s[2];
-MSHIDE;
-xfillrectangle(x,y,x+(max*8),y+8,page,bg);
-xprint(x,y,buff,fg,page);
-pos=strlen(buff);
+  MSHIDE;
+  xfillrectangle(x, y, x + (max * 8), y + 8, page, bg);
+  xprint(x, y, buff, fg, page);
+  pos = strlen(buff);
 
-while(1){
-     if(kbhit()){
-	key=getch();
-	if(key==0){getch(); continue;}
-	else if(key==13){
-	   if(pos>=min){
-	     buff[pos]=0;
-	     MSSHOW;
-	     return 1;
-	   }
-	}
-	else if(key==27){
-	  buff[pos]=0;
-	  MSSHOW;
-	  return 0;
-	}
-	else if(key==8 && pos>0){
-	  pos--;
-	  xfillrectangle(x+(pos*8),y,x+(pos*8)+8,y+8,page,bg);
-	  buff[pos]=0;
-	}
-	else if(isprint(key) && (pos<max)){
-	  key=toupper(key);
-	  ch=key;
-	  s[0]=ch;
-	  s[1]=0;
-	  xprint(x+(pos*8),y,s,fg,page);
-	  buff[pos++]=ch;
-	  buff[pos]=0;
-	}
-     }
-}
+  while (1) {
+    if (kbhit()) {
+      key = getch();
+      if (key == 0) {
+        getch();
+        continue;
+      }
+      else if (key == 13) {
+        if (pos >= min) {
+          buff[pos] = 0;
+          MSSHOW;
+          return 1;
+        }
+      }
+      else if (key == 27) {
+        buff[pos] = 0;
+        MSSHOW;
+        return 0;
+      }
+      else if (key == 8 && pos > 0) {
+        pos--;
+        xfillrectangle(x + (pos * 8), y, x + (pos * 8) + 8, y + 8, page, bg);
+        buff[pos] = 0;
+      }
+      else if (isprint(key) && (pos < max)) {
+        key = toupper(key);
+        ch = key;
+        s[0] = ch;
+        s[1] = 0;
+        xprint(x + (pos * 8), y, s, fg, page);
+        buff[pos++] = ch;
+        buff[pos] = 0;
+      }
+    }
+  }
 }
 /*=========================================================================*/
-void status_line(char *message,int color){
-
-strupr(message);
-MSHIDE;
-xfillrectangle(0,231,320,240,PAGE0,0);
-xprint(0,231,message,color,PAGE0);
-MSSHOW;
+void status_line(const char* message, int color) {
+  MSHIDE;
+  xfillrectangle(0, 231, 320, 240, PAGE0, 0);
+  xprint(0, 231, message, color, PAGE0);
+  MSSHOW;
 }
 /*=========================================================================*/
 void display_help(int level){
-
-MSHIDE;
-xfillrectangle(0,231,320,240,PAGE0,0);
-switch(level){
-      case 0:
-	    xprint(0,231,
-     	    "F1 /15/SV/14/ F2 /15/LD/14/ F3 /15/BGTILE/14/ F4 /15/FILL/14/ F5 /15/QUIT",14,PAGE0);
-	     break;
-      case 1:
-	    xprint(0,231,
-	    "F1 /15/MUSIC/14/ F2 /15/REDRAW/14/ F3 /15/EDT WRP/14/ F4 /15/PCK WRP",14,PAGE0);
-	     break;
-      case 2:
-	    xprint(0,231,
-	    "F1 /15/ADD ACTOR/14/ F2 /15/DEL ACTOR/14/ F3 /15/FLIP/14/ F4 /15/VALUE",14,PAGE0);
-	     break;
-      case 3:
-	    xprint(0,231,
-	    "F1 /15/INC/14/ F2 /15/DEC/14/ LB /15/PLACE/14/ RB /15/DELETE/14/",14,PAGE0);
-	     break;
-}
-MSSHOW;
+  MSHIDE;
+  xfillrectangle(0, 231, 320, 240, PAGE0, 0);
+  #define HELP_TEXT(x) xprint(\
+    0, 231,\
+    x,\
+    14, PAGE0\
+    )
+  switch (level) {
+  case 0:
+    HELP_TEXT("F1 /15/SV/14/ F2 /15/LD/14/ F3 /15/BGTILE/14/ F4 /15/FILL/14/ F5 /15/QUIT");
+    break;
+  case 1:
+    HELP_TEXT("F1 /15/MUSIC/14/ F2 /15/REDRAW/14/ F3 /15/EDT WRP/14/ F4 /15/PCK WRP");
+    break;
+  case 2:
+    HELP_TEXT("F1 /15/ADD ACTOR/14/ F2 /15/DEL ACTOR/14/ F3 /15/FLIP/14/ F4 /15/VALUE");
+    break;
+  case 3:
+    HELP_TEXT("F1 /15/INC/14/ F2 /15/DEC/14/ LB /15/PLACE/14/ RB /15/DELETE/14/");
+    break;
+  }
+  #undef HELP_TEXT
+  MSSHOW;
 }
 /*=========================================================================*/
-int are_you_sure(char *mess){
-int key;
-char s[80];
+int are_you_sure(const char* mess) {
+  int key;
+  char s[80];
 
-strcpy(s,mess);
-strcat(s,": Are You Sure? ");
-strcat(s,"(Y/N)");
-status_line(s,12);
-flush_buff();
-while(1){
-     key=toupper(getch());
-     if(key=='Y'){key=1;break;}
-     else if((key=='N') || (key==27)){key=0;break;}
-}
-display_help(0);
-return key;
+  strcpy(s, mess);
+  strcat(s, ": Are You Sure? ");
+  strcat(s, "(Y/N)");
+  status_line(s, 12);
+  flush_buff();
+  while (1) {
+    key = toupper(getch());
+    if (key == 'Y') {
+      key = 1;
+      break;
+    }
+    else if ((key == 'N') || (key == 27)) {
+      key = 0;
+      break;
+    }
+  }
+  display_help(0);
+  return key;
 }
 /*=========================================================================*/
 void flush_buff(void){
@@ -856,85 +848,91 @@ if(!bg_pics){
 return 1;
 }
 /*=========================================================================*/
-void view_screen(int num){
+void view_screen(int num) {
+  movedata(
+    FP_SEG(sd_data + (num * 512)),
+    FP_OFF(sd_data + (num * 512)),
+    FP_SEG(&scrn),
+    FP_OFF(&scrn),
+    512
+  );
 
-movedata(FP_SEG(sd_data+(num*512)),FP_OFF(sd_data+(num*512)),
-         FP_SEG(&scrn),FP_OFF(&scrn),512);
-
-show_screen();
-show_objects();
-display_help(0);
+  show_screen();
+  show_objects();
+  display_help(0);
 }
 
 /*=========================================================================*/
 void load_file(void){
-char str[21];
-FILE *fp;
+  char str[21];
+  FILE* fp;
 
-status_line("LOAD Filename: ",14);
-flush_buff();
-strcpy(str,"");
-if(!xinput(15*8,231,str,15,4,8,1,PAGE0)){
-  display_help(0);
-  return;
-}
-strcat(str,".sdf");
-strcpy(tempstr,"sdf\\");
-strcat(tempstr,str);
-fp=fopen(tempstr,"rb");
-if(!fp){
-  status_line("File Open Error...Press Any Key.",12);
-  getch();
-  display_help(0);
-  return;
-}
-if(fread(&scrn,512,1,fp) !=1){
+  status_line("LOAD Filename: ", 14);
+  flush_buff();
+  strcpy(str, "");
+  if (!xinput(15 * 8, 231, str, 15, 4, 8, 1, PAGE0)) {
+    display_help(0);
+    return;
+  }
+  strcat(str, ".sdf");
+  strcpy(tempstr, "sdf\\");
+  strcat(tempstr, str);
+  fp=fopen(tempstr, "rb");
+  if (!fp) {
+    status_line("File Open Error...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
+  if (fread(&scrn, 512, 1, fp) != 1) {
+    fclose(fp);
+    status_line("File Read Error...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
   fclose(fp);
-  status_line("File Read Error...Press Any Key.",12);
-  getch();
-  display_help(0);
-  return;
-}
-fclose(fp);
-changed=1;
-movedata(FP_SEG(&scrn),FP_OFF(&scrn),
-         FP_SEG(sd_data+(current_screen*512)),
-         FP_OFF(sd_data+(current_screen*512)),512);
+  changed = 1;
+  movedata(
+    FP_SEG(&scrn),
+    FP_OFF(&scrn),
+    FP_SEG(sd_data + (current_screen * 512)),
+    FP_OFF(sd_data + (current_screen * 512)),
+    512
+  );
 
-show_screen();
-show_objects();
-display_help(0);
+  show_screen();
+  show_objects();
+  display_help(0);
 }
 //===========================================================================
-void show_screen(void){
-int x,y;
-char s[21];
+void show_screen(void) {
+  int x, y;
+  char s[21];
 
-MSHIDE;
-xfillrectangle(0,0,320,192,PAGE0,0);
-if(!scrn.pal_colors[0]){
-  scrn.pal_colors[0]=51;
-  scrn.pal_colors[1]=33;
-  scrn.pal_colors[2]=36;
-}
-set_screen_pal();
-for(y=0;y<12;y++){
-   for(x=0;x<20;x++){
-      xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_tile*262)));
-//      if(scrn.icon[y][x]!=0){
-        xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.icon[y][x]*262)));
-//      }
-   }
-}
-xfillrectangle(32*8,218,38*8,226,PAGE0,0);
-sprintf(s,"M%d",scrn.type);
-xprint(32*8,218,s,14,PAGE0);
+  MSHIDE;
+  xfillrectangle(0, 0, 320, 192, PAGE0, 0);
+  if (!scrn.pal_colors[0]) {
+    scrn.pal_colors[0] = 51;
+    scrn.pal_colors[1] = 33;
+    scrn.pal_colors[2] = 36;
+  }
+  set_screen_pal();
+  for (y = 0; y < 12; y++) {
+    for (x = 0; x < 20; x++) {
+      xfput(x * 16, y * 16, PAGE0, (char far*)(bg_pics + (scrn.bg_color * 262)));
+      xfput(x * 16, y * 16, PAGE0, (char far*)(bg_pics + (scrn.icon[y][x] * 262)));
+    }
+  }
+  xfillrectangle(32 * 8, 218, 38 * 8, 226, PAGE0, 0);
+  sprintf(s, "M%d", scrn.type);
+  xprint(32 * 8, 218, s, 14, PAGE0);
 
-xfillrectangle(35*8,218,38*8,226,PAGE0,0);
-itoa(current_screen,s,10);
-xprint(35*8,218,s,15,PAGE0);
-MSSHOW;
-display_actors();
+  xfillrectangle(35 * 8, 218, 38 * 8, 226, PAGE0, 0);
+  itoa(current_screen, s, 10);
+  xprint(35 * 8, 218, s, 15, PAGE0);
+  MSSHOW;
+  display_actors();
 }
 //===========================================================================
 void show_bg(void){
@@ -964,7 +962,7 @@ char str[21];
 
 status_line("Enter New BG Tile: ",14);
 flush_buff();
-itoa(scrn.bg_tile,str,10);
+itoa(scrn.bg_color,str,10);
 if(!xinput(20*8,231,str,15,4,3,1,PAGE0)){
   display_help(0);
   return;
@@ -976,7 +974,7 @@ if(i<0 || i >229){
   display_help(0);
   return;
 }
-scrn.bg_tile=i;
+scrn.bg_color=i;
 changed=1;
 show_screen();
 show_objects();
@@ -1059,61 +1057,64 @@ no_button();
 changed=1;
 }
 //===========================================================================
-void display_actors(void){
-int i,x,y,d;
-int x1,y1,x2,y2;
+void display_actors(void) {
+  int i, x, y, d;
+  int x1, y1, x2, y2;
 
-memset(afb,0,100);
-frames_left=62;
-MSHIDE;
-for(i=0;i<MAX_ACTORS;i++){
-   scrn.actor_type[i]&=0x3f;
-   if(scrn.actor_type[i]!=0){
-     if(afb[scrn.actor_type[i]]==0) frames_left-=actor_nf[scrn.actor_type[i]];
-     afb[scrn.actor_type[i]]=1;
-     y=(scrn.actor_loc[i]/20)*16;
-     x=(scrn.actor_loc[i]%20)*16;
-     xput(x,y,PAGE0,actor[scrn.actor_type[i]]);
-     d=scrn.actor_dir[i];
-     switch(d){
-       case 0:
-         x=x+8;
-         y=y;
-         x1=x-8;
-         y1=y+15;
-         x2=x+7;
-         y2=y+15;
-         break;
-       case 1:
-         x=x+8;
-         y=y+15;
-         x1=x-8;
-         y1=y-15;
-         x2=x+7;
-         y2=y-15;
-         break;
-       case 2:
-         x=x;
-         y=y+8;
-         x1=x+15;
-         y1=y-8;
-         x2=x+15;
-         y2=y+7;
-         break;
-       case 3:
-         x=x+15;
-         y=y+8;
-         x1=x-15;
-         y1=y-8;
-         x2=x-15;
-         y2=y+7;
-         break;
-     }
-     xline(x,y,x1,y1,15,PAGE0);
-     xline(x,y,x2,y2,15,PAGE0);
-   }
-}
-MSSHOW;
+  memset(afb, 0, 100);
+  frames_left = 62;
+  MSHIDE;
+  for (i = 0; i < MAX_ACTORS; i++) {
+    scrn.actor_type[i]&=0x3f;
+    if (scrn.actor_type[i] == 0) {
+      continue;
+    }
+    if (afb[scrn.actor_type[i]] == 0) {
+      frames_left -= actor_nf[scrn.actor_type[i]];
+    }
+    afb[scrn.actor_type[i]] = 1;
+    y = (scrn.actor_loc[i] / 20) * 16;
+    x = (scrn.actor_loc[i] % 20) * 16;
+    xput(x, y, PAGE0, actor[scrn.actor_type[i]]);
+    d = scrn.actor_dir[i];
+    switch (d) {
+    case 0:
+      x = x + 8;
+      y = y;
+      x1 = x - 8;
+      y1 = y + 15;
+      x2 = x + 7;
+      y2 = y + 15;
+      break;
+    case 1:
+      x = x + 8;
+      y = y + 15;
+      x1 = x - 8;
+      y1 = y - 15;
+      x2 = x + 7;
+      y2 = y - 15;
+      break;
+    case 2:
+      x = x;
+      y = y + 8;
+      x1 = x + 15;
+      y1 = y - 8;
+      x2 = x + 15;
+      y2 = y + 7;
+      break;
+    case 3:
+      x = x + 15;
+      y = y + 8;
+      x1 = x - 15;
+      y1 = y - 8;
+      x2 = x - 15;
+      y2 = y + 7;
+      break;
+    }
+    xline(x, y, x1, y1, 15, PAGE0);
+    xline(x, y, x2, y2, 15, PAGE0);
+  }
+  MSSHOW;
 }
 //===========================================================================
 void delete_actor(void){
@@ -1173,18 +1174,22 @@ display_help(0);
 no_button();
 }
 //===========================================================================
-void show_objects(void){
-int i;
+void show_objects(void) {
+  int i;
 
-MSHIDE;
-for(i=0;i<30;i++){
-   if(scrn.static_obj[i]){
-     xput((scrn.static_loc[i]%20)*16,(scrn.static_loc[i]/20)*16,PAGE0,
-          objects[scrn.static_obj[i]-1]);
-   }
-
-}
-MSSHOW;
+  MSHIDE;
+  for (i = 0; i < 30; i++) {
+    if (!scrn.static_obj[i]) {
+      continue;
+    }
+    xput(
+      scrn.static_x[i] * 16,
+      scrn.static_y[i] * 16,
+      PAGE0,
+      objects[scrn.static_obj[i] - 1]
+    );
+  }
+  MSSHOW;
 }
 //============================================================================
 int load_objects(void){
@@ -1226,51 +1231,60 @@ for(i=0;i<32;i++) if(scrn.static_obj[i]==0) return i;
 return -1;
 }
 //===========================================================================
-void place_object(void){
-int o,x,y,i,p;
+void place_object(void) {
+  int o, x, y, i, p;
 
-o=find_empty_object();
-if(o==-1){
-  beep();
-  return;
-}
-x=mouse.x/16;
-y=mouse.y/16;
+  o = find_empty_object();
+  if (o == -1) {
+    beep();
+    return;
+  }
+  x = mouse.x /16;
+  y = mouse.y /16;
 
-for(i=0;i<32;i++){
-   p=(x/16)+((y/16)*20);
-   if(p==scrn.static_loc[i] && scrn.static_obj[i]){
-     beep();
-     no_button();
-     return;
-   }
-}
-scrn.static_obj[o]=current_object+1;
-scrn.static_loc[o]=p;
-show_objects();
-changed=1;
-no_button();
+  for (i = 0; i < 30; i += 1) {
+    if (scrn.static_obj[i] == 0) {
+      continue;
+    }
+
+    if (scrn.static_x[i] == x && scrn.static_y[i] == y) {
+      beep();
+      no_button();
+      return;
+    }
+  }
+
+  scrn.static_obj[o] = current_object + 1;
+  scrn.static_x[o] = x;
+  scrn.static_y[o] = y;
+
+  show_objects();
+  changed = 1;
+  no_button();
 }
 //===========================================================================
-void delete_object(void){
-int x,y,i,p;
+void delete_object(void) {
+  int x, y, i, p;
 
-x=mouse.x/16;
-y=mouse.y/16;
+  x = mouse.x / 16;
+  y = mouse.y / 16;
 
-for(i=0;i<32;i++){
-   p=(x/16)+((y/16)*20);
-   if(scrn.static_loc[i]==p){
-     scrn.static_obj[i]=0;
-     scrn.static_loc[i]=0;
-     break;
-   }
-  if(i==29) beep();
-}
-changed=1;
-show_screen();
-show_objects();
-no_button();
+  for (i = 0; i < 30; i += 1) {
+    if (scrn.static_obj[i] == 0) {
+      continue;
+    }
+
+    if (scrn.static_x[i] == x && scrn.static_y[i] == y) {
+      scrn.static_obj[i] = 0;
+      scrn.static_x[i] = 0;
+      scrn.static_y[i] = 0;
+    }
+  }
+
+  changed = 1;
+  show_screen();
+  show_objects();
+  no_button();
 }
 //===========================================================================
 void beep(void){

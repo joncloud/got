@@ -503,49 +503,6 @@ xpdone:
         ret
 xput    ENDP
 ;===========================================================================
-EXTRN joy_y:WORD
-EXTRN joy_x:WORD
-EXTRN joy_b1:BYTE
-EXTRN joy_b2:BYTE
-
-PROC    read_joystick
-        PUBLIC  read_joystick
-        USES di
-
-        pushf
-        cli                ;no interrupts
-        xor     di,di
-        xor     bx,bx
-        mov     dx,201h
-        out     dx,al      ;Any random number tell hardware to start
-        mov     cx,-1
-@@10:   in      al,dx
-        test    al,3
-        jz      @@90
-        test    al,1
-        jz      @@20
-        inc     di
-@@20:   test    al,2
-        jz      @@30
-        inc     bx
-@@30:   loop    @@10
-
-@@90:   mov     joy_y,bx
-        mov     joy_x,di
-
-        in      al,dx      ;read buttons
-        mov     joy_b1,al
-        and     joy_b1,10000b
-        xor     joy_b1,10000b
-
-        and     al,100000b
-        xor     al,100000b
-        mov     joy_b2,al
-
-        popf               ;restore flags, (restores int bit)
-        ret
-read_joystick ENDP
-;===========================================================================
 EXTRN timer_cnt:WORD
 EXTRN magic_cnt:WORD
 EXTRN vbl_cnt:WORD

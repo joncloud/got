@@ -273,7 +273,6 @@ unsigned int word;
 unsigned int page[3]={PAGE0,PAGE1,PAGE2};
 
 // TODO this should be abstracted out so its not needed for g_asm.asm
-int  joy_x,joy_y,joy_b1,joy_b2;
 char slow_mode, main_loop;
 
 // mouse curosr 8x8

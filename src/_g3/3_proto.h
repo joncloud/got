@@ -247,7 +247,8 @@ void xdisplay_actors(ACTOR *act,unsigned int page);
 void xerase_actors(ACTOR *act,unsigned int page);
 void pal_fade_in(char *buff);
 void pal_fade_out(char *buff);
-void read_joystick(void);
 void UnLZSS(char far *src,char far *dest,int len);
 #define REPEAT(a) for(rep=0;rep<a;rep++)
 #define IN_RANGE(v,l,h) (v>=l && v<=h)
+
+#include "joy.h"

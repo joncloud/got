@@ -18,25 +18,7 @@ typedef struct {
                                       //image alignments
 } MASK_IMAGE;
 
-typedef struct{                 //size=512
-       char icon[12][20];       //0   grid of icons
-       char bg_color;           //240 background color
-       char type;               //241 music
-       char actor_type[16];     //242 type of enemies (12 max)
-       char actor_loc[16];      //254 location of enemies
-       char actor_value[16];    //pass value
-       char pal_colors[3];      //change 251,253,254 to these three
-       char actor_invis[16];
-       char extra[13];
-       char static_obj[30];     //302 static objects (treasure, keys,etc)
-       int  static_x[30];       //332 X coor of static objects
-       int  static_y[30];       //392 Y coor of static objects
-       char new_level[10];      //452 level jump for icon 200-204
-       char new_level_loc[10];  //462 grid location to jump in to
-       char area;               //472 game area (1=forest,etc)
-       char actor_dir[16];      //initial dir
-       char future[3];          //473
-} LEVEL;
+#include "level.h"
 
 typedef struct{                    //size=256
        //first part loaded from disk    (size=40)
@@ -113,39 +95,8 @@ typedef struct{                    //size=256
        char future2[25];
 } ACTOR;
 
-typedef struct{                    //size=40
-       char move;                  //movement pattern (0=none)
-       char width;                 //physical width
-       char height;                //physical height
-       char directions;            //1,2 or 4 (1=uni-directional)
-       char frames;                //# frames per direction
-       char frame_speed;           //# cycles between frame changes
-       char frame_sequence[4];     //sequence
-       char speed;                 //move every Nth cycle
-       char size_x;                 //non-physical padding on X coor
-       char size_y;                 //non-phsyical padding on Y coor
-       char strength;              //hit strength
-       char health;                //
-       char num_moves;             //# of moves every <speed> cycles
-       char shot_type;             //actor # of shot
-       char shot_pattern;          //func number to decide to shoot
-       char shots_allowed;         //# shots allowed on screen
-       char solid;                 //1=solid (not ghost,etc)
-       char flying;                //
-       char rating;                //rnd(100) < rating = jewel
-       char type;                  //actor (0=thor,1=hammer,2=enemy,3=shot)
-       char name[9];               //actors name
-       char func_num;              //special function when thor touches
-       char func_pass;             //value to pass to func
-       char future1[6];
-} ACTOR_NFO;
-
-typedef struct {                     //5200
-       char pic[16][256];            //4096
-       char shot[4][256];            //1024
-       ACTOR_NFO actor_info;         //40
-       ACTOR_NFO shot_info;          //40
-} ACTOR_DATA;
+#include "actornfo.h"
+#include "actordat.h"
 
 typedef struct sup{
        unsigned int  f00 :1;

@@ -12,6 +12,7 @@ OBJ=\
 	fx_man.obj\
 	g_asm.obj\
 	g_lib.obj\
+	joy.obj\
 	lvlbuild.obj\
 	lzss.obj\
 	mapgen.obj\

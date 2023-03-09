@@ -55,8 +55,6 @@ extern int  rnd_array[];
 extern char demo_key[];
 
 extern THOR_INFO thor_info;
-extern unsigned int joy_x,joy_y;
-extern char joy_b1,joy_b2;
 extern int  joystick,joylx,joyly,joyhx,joyhy;
 
 extern char *tmp_buff;

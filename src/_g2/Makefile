@@ -61,6 +61,7 @@ C:\tc\lib\c0m.obj+
 ..\utility\g_asm.obj+
 ..\utility\adlib.obj+
 ..\utility\fx_man.obj+
+..\utility\joy.obj+
 ..\utility\lzss.obj+
 ..\utility\mu_man.obj+
 ..\utility\res_enco.obj+
