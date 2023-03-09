@@ -34,7 +34,6 @@
 #define SPACE  57
 #define ALT    56
 #define CTRL   29
-#define MAX_ACTORS 32
 
 #define MSHIDE xmouse_hide(mx,my)
 #define MSSHOW xmouse_show(mx,my)
@@ -165,191 +164,204 @@ char far *sd_data;
 char current_screen;
 char far *fb;
 //==========================================================================
-void main(int argc, char *argv[]){
-int i,ret,x,y,ss;
-char lflag,rflag;
-int help_level,hl;
-char s[21];
-int lx,ly;
+void main(int argc, char *argv[]) {
+  int i, ret, x, y;
+  int help_level, hl;
+  char s[21];
+  int lx, ly;
 
-strcpy(res_file,"\\GOT\\GOTRES.DAT");
-area_num=1;
+  strcpy(res_file, "\\GOT\\GOTRES.DAT");
+  area_num = 1;
 
-if(argc>1){                        //parse the command line
-  for(i=1;i<argc;i++){
-     if(argv[i][0]=='/' || argv[i][0]=='\\'){
-       strcpy(&argv[i][0],&argv[i][1]);
-       strupr(argv[i]);
-       if(!strncmp(argv[i],"AREA:",5)){
-         area_num=atoi(&argv[i][5]);
-         if(area_num==0) area_num++;
-       }
-       if(!strncmp(argv[i],"FILE:",5)) strcpy(res_file,&argv[i][5]);
+  if (argc > 1) { //parse the command line
+    for (i = 1; i < argc; i++) {
+      if (argv[i][0] == '/' || argv[i][0] == '\\') {
+        strcpy(&argv[i][0], &argv[i][1]);
+        strupr(argv[i]);
+        if (!strncmp(argv[i], "AREA:", 5)) {
+          area_num = atoi(&argv[i][5]);
+          if (area_num == 0) {
+            area_num++;
+          }
+        }
+        if (!strncmp(argv[i], "FILE:", 5)) {
+          strcpy(res_file,&argv[i][5]);
+        }
+      }
     }
   }
-}
 
-fb=farmalloc(30000u);
-if(!fb) exit_error("Out of Memory");
+  fb = farmalloc(30000u);
+  if (!fb) {
+    exit_error("Out of Memory");
+  }
 
-mkdir("c:\\sdf");
-res_init(fb);
-if(res_open(res_file)<0){
-  sprintf(tempstr,"Cannot Open: %s\r\n\r\n",res_file);
-  exit_error(tempstr);
-}
+  mkdir("c:\\sdf");
+  res_init(fb);
+  if (res_open(res_file) < 0) {
+    sprintf(tempstr, "Cannot Open: %s\r\n\r\n", res_file);
+    exit_error(tempstr);
+  }
 
-if(res_read("TEXT",(char far *) text)<0) exit_error("Can't Read TEXT");
+  if (res_read("TEXT", (char far*)text) < 0) {
+    exit_error("Can't Read TEXT");
+  }
 
-load_sd_data();
+  load_sd_data();
 
-bg_pics=0;
-load_bg_pics();
+  bg_pics = 0;
+  load_bg_pics();
 
-load_objects();
+  load_objects();
 
-current_object=0;
-xsetmode();
-xmouse_init();
-xmouse_off();
-xmouse_set_bounds(0,0,320,240);
-xmouse_set_pos(160,120);
-xmouse_stat(&mouse);
-mx=mouse.x;
-my=mouse.y;
-xmouse_cnt=1;
-MSSHOW;
-lflag=0;
-rflag=0;
-fg=31;
-bg=0;
-help_level=0;
-changed=0;
-current_bg=0;
-hilite_bg=10;
-main_loop = 1;
+  current_object = 0;
+  xsetmode();
+  xmouse_init();
+  xmouse_off();
+  xmouse_set_bounds(0, 0, 320, 240);
+  xmouse_set_pos(160, 120);
+  xmouse_stat(&mouse);
+  mx = mouse.x;
+  my = mouse.y;
+  xmouse_cnt = 1;
+  MSSHOW;
+  fg = 31;
+  bg = 0;
+  help_level = 0;
+  changed = 0;
+  current_bg = 0;
+  hilite_bg = 10;
+  main_loop = 1;
 
-if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
-  printf("xcreatmaskimage fail\n");
-  exit_code();
-  exit(0);
-}
+  if (xcreatmaskimage(&mouse_image, PAGE3, mcursor, 8, 8, mmask) == 0) {
+    exit_error("xcreatmaskimage fail\n");
+  }
 
-//setup background
-xshowpage(PAGE0);
-display_help(0);
-load_palette();
+  // setup background
+  xshowpage(PAGE0);
+  display_help(0);
+  load_palette();
 
-if(!load_actors()){
-  printf("Cannot Load Actors\r\n");
-  exit_code();
-  exit(0);
-}
+  if (!load_actors()) {
+    exit_error("Cannot Load Actors\r\n");
+  }
 
-lx=0;
-ly=0;
+  lx = 0;
+  ly = 0;
 
-show_screen();
-show_objects();
-show_bg();
-show_current_object();
+  show_screen();
+  show_objects();
+  show_bg();
+  show_current_object();
 
-ss=0;
-movedata(FP_SEG(sd_data+(ss*512)),FP_OFF(sd_data+(ss*512)),
-         FP_SEG(&scrn),FP_OFF(&scrn),512);
-view_screen(ss);
-current_screen=ss;
+  current_screen = 0;
+  view_screen(current_screen);
 
-//ultoa(farcoreleft(),s,10);
-//xprint(0,0,s,PAGE0,14);
-while(1){
-     in.h.ah = 2;
-     int86(0x16,&in,&out);
-     if(out.h.al & 1) hl=1;         //shift
-     else if(out.h.al & 2) hl=1;    //shift
-     else if(out.h.al & 4) hl=2;    //ctrl
-     else if(out.h.al & 8) hl=3;    //alt
-     else hl=0;
-     if(hl==3) alt_flag=1;
-     else alt_flag=0;
-     if(hl!=help_level){
-	help_level=hl;
-	display_help(help_level);
-     }
-     if(kbhit()){
-	if(do_key_function()) break;
-       flush_buff();
-     }
-     xmouse_stat(&mouse);
-     if(mouse.x!=mx || mouse.y!=my){
-	lflag=0;
-	rflag=0;
-	MSHIDE;
-	mx=mouse.x;
-	my=mouse.y;
-	MSSHOW;
-     }
-     x=mx/16;
-     y=my/16;
-     if(y!=ly || x!=lx){
-       itoa(scrn.icon[y][x],s,10);
-       xfillrectangle(10*8,218,32*8,226,PAGE0,0);
-       xprint(10*8,218,"CURRENT:",15,PAGE0);
-       xprint(18*8,218,s,14,PAGE0);
-       lx=x;
-       ly=y;
-       if(((y*20)+x)<240){
-         itoa((y*20)+x,s,10);
-         xprint(24*8,218,"POS:",15,PAGE0);
-         xprint(28*8,218,s,14,PAGE0);
-       }
-     }
-     if(XMOUSE_LEFT(mouse)){
-        lflag=lflag;
-        if(alt_flag) place_object();
-	else if(point_within(mx,my,0,200,320,216)){
-          ret=(mx/16)+current_bg;
-          if(ret>229) ret-=230;
-            hilite_bg=mx/16;
-            show_bg();
-            no_button();
+  while (1) {
+    in.h.ah = 2;
+    int86(0x16, &in, &out);
+    if ((out.h.al & 1) || (out.h.al & 2)) {
+      hl = 1; //shift
+    }
+    else if (out.h.al & 4) {
+      hl = 2; //ctrl
+    }
+    else if (out.h.al & 8) {
+      hl = 3; //alt
+    }
+    else {
+      hl = 0;
+    }
+    if (hl == 3) {
+      alt_flag = 1;
+    }
+    else {
+      alt_flag = 0;
+    }
+    if (hl != help_level) {
+      help_level = hl;
+      display_help(help_level);
+    }
+    if (kbhit()) {
+      if (do_key_function()) {
+        break;
+      }
+      flush_buff();
+    }
+    xmouse_stat(&mouse);
+    if (mouse.x != mx || mouse.y != my) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    x = mx/16;
+    y = my/16;
+    if (y != ly || x != lx) {
+      itoa(scrn.icon[y][x], s, 10);
+      xfillrectangle(10 * 8, 218, 32 * 8, 226, PAGE0, 0);
+      xprint(10 * 8, 218, "CURRENT:", 15, PAGE0);
+      xprint(18 * 8, 218, s, 14, PAGE0);
+      lx = x;
+      ly = y;
+      if (((y * 20) + x) < 240) {
+        itoa((y * 20) + x, s, 10);
+        xprint(24 * 8, 218, "POS:", 15, PAGE0);
+        xprint(28 * 8, 218, s, 14, PAGE0);
+      }
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      if (alt_flag) {
+        place_object();
+      }
+      else if (point_within(mx, my, 0, 200, 320, 216)) {
+        ret = (mx / 16) + current_bg;
+        if (ret > 229) {
+          ret -= 230;
         }
-	else if(point_within(mx,my,0,0,320,192)){
-          x=mx/16;
-          y=my/16;
-          if(y<12 && x<20){
-            ret=current_bg+hilite_bg;
-            if(ret>229) ret-=230;
-              if (scrn.icon[y][x] != ret) {
-                MSHIDE;
-                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_color*262)));
-                xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(ret*262)));
-                MSSHOW;
-                scrn.icon[y][x]=ret;
-                changed=1;
-              }
+        hilite_bg = mx / 16;
+        show_bg();
+        no_button();
+      }
+      else if (point_within(mx, my, 0, 0, 320, 192)) {
+        x = mx / 16;
+        y = my / 16;
+        if (y < 12 && x < 20) {
+          ret = current_bg + hilite_bg;
+          if (ret > 229) {
+            ret -= 230;
           }
-        }
-     }
-     if(XMOUSE_RIGHT(mouse)){
-        rflag=rflag;
-        if(alt_flag) delete_object();
-	else if(point_within(mx,my,0,0,320,192)){
-          x=mx/16;
-          y=my/16;
-          if(y<12 && x<20){
+          if (scrn.icon[y][x] != ret) {
             MSHIDE;
-            xfillrectangle(x*16,y*16,(x*16)+16,(y*16)+16,PAGE0,0);
-            xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(scrn.bg_color*262)));
+            xfput(x * 16, y * 16, PAGE0, (char far*)(bg_pics + (scrn.bg_color * 262)));
+            xfput(x * 16, y * 16, PAGE0, (char far*)(bg_pics + (ret * 262)));
             MSSHOW;
-            scrn.icon[y][x]=scrn.bg_color;
-            changed=1;
+            scrn.icon[y][x] = ret;
+            changed = 1;
           }
         }
-     }
-}
-exit_code();
-exit(0);
+      }
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      if (alt_flag) {
+        delete_object();
+      }
+      else if (point_within(mx, my, 0, 0, 320, 192)) {
+        x = mx / 16;
+        y = my / 16;
+        if (y < 12 && x < 20) {
+          MSHIDE;
+          xfillrectangle(x * 16, y * 16, (x * 16) + 16, (y * 16) + 16, PAGE0, 0);
+          xfput(x * 16, y * 16, PAGE0, (char far*)(bg_pics + (scrn.bg_color * 262)));
+          MSSHOW;
+          scrn.icon[y][x] = scrn.bg_color;
+          changed=1;
+        }
+      }
+    }
+  }
+  exit_code();
+  exit(0);
 }
 //===========================================================================
 void exit_error(const char* error_msg) {
@@ -1006,13 +1018,13 @@ MSSHOW;
 void add_actor(void){
 int i,type,num;
 
-for(i=0;i<MAX_ACTORS;i++){
+for(i=0;i<LEVEL_MAX_ACTOR;i++){
    if(!scrn.actor_type[i]){
      num=i;
      break;
    }
 }
-if(i==MAX_ACTORS){
+if(i==LEVEL_MAX_ACTOR){
   beep();
   return;
 }
@@ -1024,13 +1036,13 @@ if(i<0) return;
 
 status_line("POINT TO LOCATION AND CLICK LEFT BUTTON",14);
 while(1){
-     for(i=0;i<MAX_ACTORS;i++){
+     for(i=0;i<LEVEL_MAX_ACTOR;i++){
         if(!scrn.actor_type[i]){
           num=i;
           break;
         }
      }
-     if(i==MAX_ACTORS){
+     if(i==LEVEL_MAX_ACTOR){
        beep();
        return;
      }
@@ -1064,7 +1076,7 @@ void display_actors(void) {
   memset(afb, 0, 100);
   frames_left = 62;
   MSHIDE;
-  for (i = 0; i < MAX_ACTORS; i++) {
+  for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
     scrn.actor_type[i]&=0x3f;
     if (scrn.actor_type[i] == 0) {
       continue;
@@ -1154,7 +1166,7 @@ while(1){
      if(XMOUSE_LEFT(mouse)){
        x=(mouse.x & 0xfff0);
        y=(mouse.y & 0xfff0);
-       for(i=0;i<MAX_ACTORS;i++){
+       for(i=0;i<LEVEL_MAX_ACTOR;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
 //          if(x==scrn.actor_x[i] && y==scrn.actor_y[i]){
             d=scrn.actor_dir[i];
@@ -1232,7 +1244,7 @@ return -1;
 }
 //===========================================================================
 void place_object(void) {
-  int o, x, y, i, p;
+  int o, x, y, i;
 
   o = find_empty_object();
   if (o == -1) {
@@ -1264,7 +1276,7 @@ void place_object(void) {
 }
 //===========================================================================
 void delete_object(void) {
-  int x, y, i, p;
+  int x, y, i;
 
   x = mouse.x / 16;
   y = mouse.y / 16;
@@ -1563,7 +1575,7 @@ while(1){
      if(XMOUSE_LEFT(mouse)){
        x=(mouse.x & 0xfff0);
        y=(mouse.y & 0xfff0);
-       for(i=0;i<MAX_ACTORS;i++){
+       for(i=0;i<LEVEL_MAX_ACTOR;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
             edit_actor_value(i);
             changed=1;
@@ -1764,7 +1776,7 @@ while(1){
      if(XMOUSE_LEFT(mouse)){
        x=(mouse.x & 0xfff0);
        y=(mouse.y & 0xfff0);
-       for(i=0;i<MAX_ACTORS;i++){
+       for(i=0;i<LEVEL_MAX_ACTOR;i++){
           if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
             ret=i;
             goto done;
