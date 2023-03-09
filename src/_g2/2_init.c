@@ -95,6 +95,7 @@ extern char area,cheat;
 char spic1,spic2;
 char byte;
 unsigned int word;
+joystick_input joy;
 void print_mem(void);
 //===========================================================================
 char *err_msg[]={"(null)","Can't Load GOTRES.DAT","Can't Read Font",
@@ -378,28 +379,20 @@ while(key_flag[index]){
 }
 }
 //===========================================================================
-void joy_key(void){
+void joy_key(void) {
+  if (!joystick) {
+    return;
+  }
+  read_joystick(&joy);
 
-if(!joystick) return;
-read_joystick();
-
-if(joy_x<joylx) joy_flag[key_left]=1;
-else joy_flag[key_left]=0;
-
-if(joy_x>joyhx) joy_flag[key_right]=1;
-else joy_flag[key_right]=0;
-
-if(joy_y<joyly) joy_flag[key_up]=1;
-else joy_flag[key_up]=0;
-
-if(joy_y>joyhy) joy_flag[key_down]=1;
-else joy_flag[key_down]=0;
-
-if(joy_b1) joy_flag[key_fire]=1;
-else joy_flag[key_fire]=0;
-
-if(joy_b2) joy_flag[key_magic]=1;
-else joy_flag[key_magic]=0;
+  #define BOOL_COND(x) (x ? 1 : 0)
+  joy_flag[key_left] = BOOL_COND(joy.x < joylx);
+  joy_flag[key_right] = BOOL_COND(joy.x > joylx);
+  joy_flag[key_up] = BOOL_COND(joy.y < joyly);
+  joy_flag[key_down] = BOOL_COND(joy.y > joyly);
+  joy_flag[key_fire] = BOOL_COND(joy.b1);
+  joy_flag[key_magic] = BOOL_COND(joy.b2);
+  #undef BOOL_COND
 }
 //===========================================================================
 void merge_keys(void){
