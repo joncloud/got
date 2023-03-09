@@ -108,7 +108,6 @@ void far *get_file(char *filename,int key);
 void save_game(void);
 int  load_game(int flag);
 void help(void);
-long res_read(char *name,char far *buff);
 int  load_music(int num);
 
 //G_PANEL.C
