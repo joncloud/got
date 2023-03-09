@@ -7,7 +7,10 @@
 #define far
 #define huge
 
-#define strcmpi strcasecmp
+// Map old function names to new ones.
+#define farfree   free
+#define farmalloc malloc
+#define strcmpi   strcasecmp
 
 #endif
 

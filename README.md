@@ -64,7 +64,7 @@ RES.EXE is a command based program, which has dynamic arguments. All commands fi
 * `U [src_filename] [res_name] [encode_flag]` - Updates an existing entry (`[res_name]`) within the archive from a file on disk (`[src_filename]`). When the `[encode_flag]` is non-zero, then the resource will be compressed using LZSS compression before adding to the archive.
 * `E [res_name] [dest_filename]` - Extracts a resource (`[res_name]`) from the archive to disk at `[dest_filename]`.
 * `D [res_name]` - Deletes a resource (`[res_name]`) from the archive.
-* `P` - Does nothing.
+* `P` - Rearranges the entries in the resource archive so that they're aligned at the start of the file.
 * `R [res_oldname] [res_newname]` - Renames a resource (`[res_oldname]`) in the archive with a new name (`[res_newname]`).
 * `B` - Extracts all resources with a .DAT file extension.
 * `L` - Lists all entries in the archive.

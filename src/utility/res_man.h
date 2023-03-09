@@ -53,11 +53,31 @@ typedef struct{
 #define RES_SRC_TOO_LARGE   -16
 #define RES_OUT_OF_MEMORY   -17
 
-extern FILE *res_fp;
+/**
+ * The file pointer to the active resource archive.
+ */
+extern FILE*      res_fp;
+
+/**
+ * The array of resource entries for the active resource archive.
+ */
 extern RES_HEADER res_header[RES_MAX_ENTRIES];
-extern int res_active;
-extern int res_changed;
-extern char far* res_lzss_buff;
+
+/**
+ * Stores whether or not there is an active resource archive.
+ */
+extern int        res_active;
+
+/**
+ * Stores whether or not the active resource archive has unsaved changes.
+ */
+extern int        res_changed;
+
+/**
+ * Stores a reference to a data buffer that can be used for LZSS
+ * compression / decompression. This is not owned by the resource manager.
+ */
+extern char far*  res_lzss_buff;
 
 /**
  * Initializes resource manager. This function should be
@@ -164,23 +184,91 @@ int res_find_empty(void);
  * @param name The name of the resource.
  * @param buff The memory location with the data for the resource.
  * @param length The total number of bytes of data to write.
- * @param encode_flag 1 when the data should be compressed with LZSS, otherwise false.
+ * @param encode_flag 1 when the data should be compressed with LZSS, otherwise 0.
  * @returns 1 if the entry was successfully written, otherwise returns an enumeration.
  * Use the `RES_*` constants, or @ref res_error to determine a text description.
  */
 int res_write(const char* name, char far* buff, long length, int encode_flag);
 
-long res_read(char *name,char far *buff);
-long res_read_element(char *name,char far *buff,long offset,long size);
-void far *res_falloc_read(char *name);
-int  res_add_file(char *fname,char *name,int encode_flag);
-int  res_extract_file(char *fname,char *name);
-int  res_delete_file(char *name);
-int  res_pack(char *filename);
-int  res_replace_file(char *fname,char *name,int encode_flag);
-long res_length(char *name);
-long res_original_size(char *name);
-int  res_rename_file(char *oldname,char *newname);
+/**
+ * Reads an existing resource from the archive into the buffer. If the resource is
+ * compressed, it is uncompressed.
+ * @param name The name of the resource.
+ * @param buff The memory location to read the resource contents into.
+ * @returns When the value is >= 0, then the total number of bytes that were read,
+ * otherwise returns an enumeration. Use the `RES_*` constants, or @ref res_error
+ * to determine a text description.
+ */
+long res_read(const char* name, char far* buff);
+
+/**
+ * Allocates a new block of memory the size of the given resource entry,
+ * and reads it into the memory block.
+ * @param name The name of the resource to read.
+ * @returns The memory block if able to read, otherwise 0.
+ */
+void far* res_falloc_read(const char* name);
+
+/**
+ * Adds a file from disk to the resource archive.
+ * @param fname The name of the file to read from on disk.
+ * @param name The name of the resource entry to create in the archive.
+ * @param encode_flag 1 when the data should be compressed with LZSS, otherwise 0.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_add_file(const char* fname, const char* name, int encode_flag);
+
+/**
+ * Extracts a file from the resource archive to disk.
+ * @param fname The name of the file to create on disk.
+ * @param name The name of the resource entry to extract from the archive.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_extract_file(const char* fname, const char* name);
+
+/**
+ * Deletes a file from the resource archive.
+ * @param name The name of the resource entry to delete.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_delete_file(const char* name);
+
+/**
+ * Rearranges the entries in the opened resource archive, and aligns
+ * them at the beginning of the file removing fragmentation. Upon
+ * successful rearrangement, the new resource archive is opened.
+ * @param filename The new resource archive to create.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_pack(const char* filename);
+
+/**
+ * Updates the existing file in the resource archive with the contents on disk.
+ * @param fname The name of the file on disk to load from.
+ * @param name The name of the resource entry to update.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_replace_file(const char* fname, const char* name, int encode_flag);
+
+/**
+ * Renames an entry in the resource archive to a new name.
+ * @param oldname The current name of the resource entry.
+ * @param newname The desired name of the resource entry.
+ * @returns Returns 1 upon success, otherwise returns an enumeration.
+ * Use the `RES_*` constants, or @ref res_error to determine a text
+ * description.
+ */
+int res_rename_file(const char* oldname, const char* newname);
 
 /**
  * Gets a text description for the error number.
@@ -188,5 +276,10 @@ int  res_rename_file(char *oldname,char *newname);
  * @returns A string with the text description.
  */
 char* res_error(int num);
+
+// TODO these are not actively being used in the codebase.
+// long res_read_element(const char* name, char far* buff, long offset, long size);
+// long res_length(char *name);
+// long res_original_size(char *name);
 
 #endif
