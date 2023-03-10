@@ -46,8 +46,8 @@ This program is used to manipulate screen data within `GOTRES.DAT`. By default i
 * ALT+Right Click - Delete
 * SHIFT+F1 - Music
 * SHIFT+F2 - Redraw
-* SHIFT+F3 - Edit Wrap
-* SHIFT+F4 - Pack Wrap
+* SHIFT+F3 - Edit Warp
+* SHIFT+F4 - Pack Warp
 * Left - Shift Tile Palette Left
 * Right - Shift Tile Palette Right
 

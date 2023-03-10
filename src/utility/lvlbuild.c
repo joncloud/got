@@ -384,7 +384,7 @@ void exit_code(void) {
   int86(0x10, &regset, &regset);
 }
 //===========================================================================
-int do_key_function(void){
+int do_key_function(void) {
   int key, hl;
 
   key = getch();
@@ -554,29 +554,32 @@ int do_key_function(void){
 }
 //===========================================================================
 void xprint(int x, int y, const char* string, int color, unsigned int page) {
-char ch;
-char str[3];
+  char ch;
+  char str[3];
 
-str[2]=0;
-x &= 0xfffc;
-while(*string){
-   ch=*string++;
-   if(ch=='/' && *(string+2)=='/'){
-     str[0]=*string++;
-     str[1]=*string++;
-     string++;
-     color=atoi(str);
-     continue;
-   }
-   if(ch>32 && ch<126) xtext(x,y,page,text[ch-32],color);
-   x+=8;
-}
+  str[2] = 0;
+  x &= 0xfffc;
+  while (*string) {
+    ch = *string++;
+    if (ch == '/' && *(string+2) == '/') {
+      str[0] = *string++;
+      str[1] = *string++;
+      string++;
+      color = atoi(str);
+      continue;
+    }
+    if (ch > 32 && ch < 126) {
+      xtext(x, y, page, text[ch - 32], color);
+    }
+    x += 8;
+  }
 }
 /*=========================================================================*/
-int point_within(int x,int y,int x1,int y1,int x2,int y2){
-
-if((x<x1) || (x>x2) || (y<y1) || (y>y2)) return 0;
-return 1;
+int point_within(int x, int y, int x1, int y1, int x2, int y2) {
+  if ((x < x1) || (x > x2) || (y < y1) || (y > y2)) {
+    return 0;
+  }
+  return 1;
 }
 /*=========================================================================*/
 void xmouse_show(int x, int y){
@@ -603,12 +606,11 @@ void xmouse_hide(int x, int y) {
 // xmouse_cnt++;
 }
 /*=========================================================================*/
-void xbox(int x1,int y1,int x2,int y2,int color,unsigned page){
-
-xline(x1,y1,x2,y1,color,page);
-xline(x1,y2,x2,y2,color,page);
-xline(x1,y1,x1,y2,color,page);
-xline(x2,y1,x2,y2,color,page);
+void xbox(int x1, int y1, int x2, int y2, int color, unsigned page) {
+  xline(x1, y1, x2, y1, color, page);
+  xline(x1, y2, x2, y2, color, page);
+  xline(x1, y1, x1, y2, color, page);
+  xline(x2, y1, x2, y2, color, page);
 }
 //=========================================================================
 int xinput(int x, int y, char* buff, int fg, int bg,
@@ -717,147 +719,155 @@ int are_you_sure(const char* mess) {
   return key;
 }
 /*=========================================================================*/
-void flush_buff(void){
-
-while(kbhit()) getch();
+void flush_buff(void) {
+  while (kbhit()) {
+    getch();
+  }
 }
 /*=========================================================================*/
-void ask_to_save(void){
-int key;
+void ask_to_save(void) {
+  int key;
 
-if(!changed) return;
+  if (!changed) {
+    return;
+  }
 
-status_line("Do You Wish To Save First? (Y/N)",14);
-flush_buff();
-while(1){
-     key=toupper(getch());
-     if(key=='Y') break;
-     else if((key=='N')) return;
-}
-save_sd_data();
+  status_line("Do You Wish To Save First? (Y/N)", 14);
+  flush_buff();
+  while (1) {
+    key = toupper(getch());
+    if (key == 'Y') {
+      break;
+    }
+    else if ((key == 'N')) {
+      return;
+    }
+  }
+  save_sd_data();
 
-changed=0;
+  changed = 0;
 }
 /*=========================================================================*/
-void no_button(void){
-
-while(mouse.button) xmouse_stat(&mouse);
+void no_button(void) {
+  while (mouse.button) {
+    xmouse_stat(&mouse);
+  }
 }
 /*=========================================================================*/
-#define DAC_READ_INDEX	03c7h
+#define DAC_READ_INDEX  03c7h
 #define DAC_WRITE_INDEX 03c8h
-#define DAC_DATA	03c9h
-void load_palette(void){
-int i;
-char buff[768];
-char r,g,b,n;
+#define DAC_DATA        03c9h
+void load_palette(void) {
+  int i;
+  char buff[768];
+  char r, g, b, n;
 
+  if (res_read("PALETTE", (char far*)buff) < 0) {
+    sprintf(buff, "Cannot Read PALETTE\r\n", tempstr);
+    exit_error(buff);
+  }
 
-if(res_read("PALETTE",(char far *) buff)<0){
-  sprintf(buff,"Cannot Read PALETTE\r\n",tempstr);
-  exit_error(buff);
-}
+  in.h.al = 0x10;
+  in.h.ah = 0x10;
 
-in.h.al=0x10;
-in.h.ah=0x10;
+  for (i = 0; i < 256; i++) {
+    n = i;
+    r = buff[i * 3] / 4;
+    g = buff[(i * 3) + 1] / 4;
+    b = buff[(i * 3) + 2] / 4;
+    asm mov  al,n
+    asm mov  dx,DAC_WRITE_INDEX  // Tell DAC what colour index to
+    asm out  dx,al               // write to
+    asm mov  dx,DAC_DATA
 
-for(i=0;i<256;i++){
-   n=i;
-   r=buff[i*3]/4;
-   g=buff[(i*3)+1]/4;
-   b=buff[(i*3)+2]/4;
-   asm mov  al,n
-   asm mov  dx,DAC_WRITE_INDEX  // Tell DAC what colour index to
-   asm out  dx,al               // write to
-   asm mov  dx,DAC_DATA
+    asm mov  bl,r
+    asm mov  al,bl              // Set the red component
+    asm out  dx,al
 
-   asm mov  bl,r
-   asm mov  al,bl              // Set the red component
-   asm out  dx,al
+    asm mov  ch,g
+    asm mov  al,ch              // Set the green component
+    asm out  dx,al
 
-   asm mov  ch,g
-   asm mov  al,ch              // Set the green component
-   asm out  dx,al
-
-   asm mov  cl,b
-   asm mov  al,cl              // Set the blue component
-   asm out  dx,al
-}
-set_screen_pal();
-}
-/*=========================================================================*/
-void set_screen_pal(void){
-char pal[3];
-
-xgetpal((char far*) pal,1,scrn.pal_colors[0]);
-xsetpal(251,pal[0],pal[1],pal[2]);
-xgetpal((char far*) pal,1,scrn.pal_colors[1]);
-xsetpal(252,pal[0],pal[1],pal[2]);
-xgetpal((char far*) pal,1,scrn.pal_colors[2]);
-xsetpal(253,pal[0],pal[1],pal[2]);
+    asm mov  cl,b
+    asm mov  al,cl              // Set the blue component
+    asm out  dx,al
+  }
+  set_screen_pal();
 }
 /*=========================================================================*/
-void xcls(int color,unsigned int page){
+void set_screen_pal(void) {
+  char pal[3];
 
-MSHIDE;
-xfillrectangle(0,0,320,240,page,color);
-MSSHOW;
+  xgetpal((char far*)pal, 1, scrn.pal_colors[0]);
+  xsetpal(251, pal[0], pal[1], pal[2]);
+  xgetpal((char far*)pal, 1, scrn.pal_colors[1]);
+  xsetpal(252, pal[0], pal[1], pal[2]);
+  xgetpal((char far*)pal, 1, scrn.pal_colors[2]);
+  xsetpal(253, pal[0], pal[1], pal[2]);
 }
 /*=========================================================================*/
-void save_screen(void){
-
-movedata(FP_SEG(&scrn),FP_OFF(&scrn),
-         FP_SEG(sd_data+(current_screen*512)),
-         FP_OFF(sd_data+(current_screen*512)),512);
-return;
+void xcls(int color, unsigned int page) {
+  MSHIDE;
+  xfillrectangle(0, 0, 320, 240, page, color);
+  MSSHOW;
 }
 /*=========================================================================*/
-void save_file(void){
-char str[21];
-FILE *fp;
-
-status_line("SAVE Filename: ",14);
-flush_buff();
-
-strcpy(str,"");
-if(!xinput(15*8,231,str,15,4,8,1,PAGE0)){
-  display_help(0);
-  return;
+void save_screen(void) {
+  movedata(
+    FP_SEG(&scrn),
+    FP_OFF(&scrn),
+    FP_SEG(sd_data+(current_screen*512)),
+    FP_OFF(sd_data+(current_screen*512)),
+    512
+  );
 }
-strcat(str,".sdf");
-strcpy(tempstr,"sdf\\");
-strcat(tempstr,str);
-fp=fopen(tempstr,"wb");
-if(!fp){
-  status_line("File Open Error...Press Any Key.",12);
-  getch();
-  display_help(0);
-  return;
-}
-if(fwrite(&scrn,512,1,fp) !=1){
+/*=========================================================================*/
+void save_file(void) {
+  char str[21];
+  FILE* fp;
+
+  status_line("SAVE Filename: ", 14);
+  flush_buff();
+
+  strcpy(str, "");
+  if (!xinput(15 * 8, 231, str, 15, 4, 8, 1, PAGE0)) {
+    display_help(0);
+    return;
+  }
+  strcat(str, ".sdf");
+  strcpy(tempstr, "sdf\\");
+  strcat(tempstr, str);
+  fp = fopen(tempstr, "wb");
+  if (!fp) {
+    status_line("File Open Error...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
+  if (fwrite(&scrn, 512, 1, fp) != 1) {
+    fclose(fp);
+    status_line("File Write Error...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
   fclose(fp);
-  status_line("File Write Error...Press Any Key.",12);
-  getch();
   display_help(0);
-  return;
-}
-fclose(fp);
-display_help(0);
 }
 //===========================================================================
-int load_bg_pics(void){
-char s[80];
+int load_bg_pics(void) {
+  char s[80];
 
-itoa(area_num,s,10);
-strcpy(tempstr,"BPICS");
-strcat(tempstr,s);
+  itoa(area_num, s, 10);
+  strcpy(tempstr, "BPICS");
+  strcat(tempstr, s);
 
-bg_pics=res_falloc_read(tempstr);
-if(!bg_pics){
-  sprintf(s,"Cannot Read %s\r\n",tempstr);
-  exit_error(s);
-}
-return 1;
+  bg_pics = res_falloc_read(tempstr);
+  if (!bg_pics) {
+    sprintf(s, "Cannot Read %s\r\n", tempstr);
+    exit_error(s);
+  }
+  return 1;
 }
 /*=========================================================================*/
 void view_screen(int num) {
@@ -947,126 +957,134 @@ void show_screen(void) {
   display_actors();
 }
 //===========================================================================
-void show_bg(void){
-int x,p;
-char str[21];
+void show_bg(void) {
+  int x, p;
+  char str[21];
 
-MSHIDE;
-xfillrectangle(0,192,320,230,PAGE0,0);
-for(x=0;x<20;x++){
-   p=x+current_bg;
-   if(p>229) p-=230;
-     xfput(x*16,200,PAGE0,(char far *) (bg_pics + (p * 262)));
-}
-xbox(hilite_bg*16,200,(hilite_bg*16)+15,216,15,PAGE0);
-p=current_bg+hilite_bg;
-if(p>229) p-=230;
-itoa(p,str,10);
-xprint(0,218,"TILE:",15,PAGE0);
-xprint(5*8,218,str,14,PAGE0);
-show_current_object();
-MSSHOW;
+  MSHIDE;
+  xfillrectangle(0, 192, 320, 230, PAGE0, 0);
+  for (x = 0; x < 20; x++){
+    p = x + current_bg;
+    if (p > 229) {
+      p -= 230;
+    }
+    xfput(x * 16, 200, PAGE0, (char far*)(bg_pics + (p * 262)));
+  }
+  xbox(hilite_bg * 16, 200, (hilite_bg * 16) + 15, 216, 15, PAGE0);
+  p = current_bg + hilite_bg;
+  if (p > 229) {
+    p -= 230;
+  }
+  itoa(p, str, 10);
+  xprint(0, 218, "TILE:", 15, PAGE0);
+  xprint(5 * 8, 218, str, 14, PAGE0);
+  show_current_object();
+  MSSHOW;
 }
 //===========================================================================
-void change_bg_color(void){
-int i;
-char str[21];
+void change_bg_color(void) {
+  int i;
+  char str[21];
 
-status_line("Enter New BG Tile: ",14);
-flush_buff();
-itoa(scrn.bg_color,str,10);
-if(!xinput(20*8,231,str,15,4,3,1,PAGE0)){
+  status_line("Enter New BG Tile: ", 14);
+  flush_buff();
+  itoa(scrn.bg_color, str, 10);
+  if (!xinput(20 * 8, 231, str, 15, 4, 3, 1, PAGE0)) {
+    display_help(0);
+    return;
+  }
+  i = atoi(str);
+  if (i < 0 || i > 229) {
+    status_line("Out of Range...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
+  scrn.bg_color = i;
+  changed = 1;
+  show_screen();
+  show_objects();
   display_help(0);
-  return;
-}
-i=atoi(str);
-if(i<0 || i >229){
-  status_line("Out of Range...Press Any Key.",12);
-  getch();
-  display_help(0);
-  return;
-}
-scrn.bg_color=i;
-changed=1;
-show_screen();
-show_objects();
-display_help(0);
 }
 //===========================================================================
-void fill_screen(int fill){
-int x,y;
+void fill_screen(int fill) {
+  int x, y;
 
-if(!are_you_sure("FILL")){
-  display_help(0);
-  return;
-}
-MSHIDE;
-for(x=0;x<20;x++){
-   for(y=0;y<12;y++){
-      xfillrectangle(x*16,y*16,(x*16)+16,(y*16)+16,PAGE0,0);
-      xfput(x*16,y*16,PAGE0,(char far *) (bg_pics+(fill*262)));
-      scrn.icon[y][x]=fill;
-   }
-}
-changed=1;
-show_screen();
-show_objects();
-display_actors();
-MSSHOW;
+  if (!are_you_sure("FILL")) {
+    display_help(0);
+    return;
+  }
+  MSHIDE;
+  for (x = 0; x < 20; x++) {
+    for (y = 0; y < 12; y++) {
+      xfillrectangle(x * 16, y * 16, (x * 16) + 16, (y * 16) + 16, PAGE0, 0);
+      xfput(x * 16, y * 16, PAGE0, (char far *)(bg_pics + (fill * 262)));
+      scrn.icon[y][x] = fill;
+    }
+  }
+  changed = 1;
+  show_screen();
+  show_objects();
+  display_actors();
+  MSSHOW;
 }
 //===========================================================================
-void add_actor(void){
-int i,type,num;
+void add_actor(void) {
+  int i, type, num;
 
-for(i=0;i<LEVEL_MAX_ACTOR;i++){
-   if(!scrn.actor_type[i]){
-     num=i;
-     break;
-   }
-}
-if(i==LEVEL_MAX_ACTOR){
-  beep();
-  return;
-}
+  for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
+    if (!scrn.actor_type[i]) {
+      num = i;
+      break;
+    }
+  }
+  if (i == LEVEL_MAX_ACTOR) {
+    beep();
+    return;
+  }
 
-i=select_actor();
+  i = select_actor();
 
-type=i;
-if(i<0) return;
+  type = i;
+  if (i < 0) {
+    return;
+  }
 
-status_line("POINT TO LOCATION AND CLICK LEFT BUTTON",14);
-while(1){
-     for(i=0;i<LEVEL_MAX_ACTOR;i++){
-        if(!scrn.actor_type[i]){
-          num=i;
-          break;
-        }
-     }
-     if(i==LEVEL_MAX_ACTOR){
-       beep();
-       return;
-     }
-     xmouse_stat(&mouse);
-     if(mx!=mouse.x || my!=mouse.y){
-       MSHIDE;
-       mx=mouse.x;
-       my=mouse.y;
-       MSSHOW;
-     }
-     if(XMOUSE_RIGHT(mouse)) break;
-     if(XMOUSE_LEFT(mouse)){
-       scrn.actor_type[num]=type;
-       scrn.actor_loc[num]=(mouse.x/16)+((mouse.y/16)*20);
-       display_actors();
-       no_button();
-     }
-}
-done:
-show_screen();
-show_objects();
-display_help(0);
-no_button();
-changed=1;
+  status_line("POINT TO LOCATION AND CLICK LEFT BUTTON", 14);
+  while (1) {
+    for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
+      if (!scrn.actor_type[i]) {
+        num = i;
+        break;
+      }
+    }
+    if (i == LEVEL_MAX_ACTOR) {
+      beep();
+      return;
+    }
+    xmouse_stat(&mouse);
+    if (mx != mouse.x || my != mouse.y) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      break;
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      scrn.actor_type[num] = type;
+      scrn.actor_loc[num] = (mouse.x / 16) + ((mouse.y / 16) * 20);
+      display_actors();
+      no_button();
+    }
+  }
+  done:
+  show_screen();
+  show_objects();
+  display_help(0);
+  no_button();
+  changed=1;
 }
 //===========================================================================
 void display_actors(void) {
@@ -1129,61 +1147,67 @@ void display_actors(void) {
   MSSHOW;
 }
 //===========================================================================
-void delete_actor(void){
-int i;
+void delete_actor(void) {
+  int i;
 
-while(1){
-  status_line("CLICK ON ACTOR TO DELETE",14);
-  i=pick_actor();
-  if(i>=0){
-    scrn.actor_type[i]=0;
-    scrn.actor_loc[i]=0;
-    scrn.actor_value[i]=0;
-    scrn.actor_dir[i]=0;
-    changed=1;
-    show_screen();
-    show_objects();
-    display_help(0);
-    no_button();
+  while (1) {
+    status_line("CLICK ON ACTOR TO DELETE", 14);
+    i = pick_actor();
+    if (i >= 0) {
+      scrn.actor_type[i] = 0;
+      scrn.actor_loc[i] = 0;
+      scrn.actor_value[i] = 0;
+      scrn.actor_dir[i] = 0;
+      changed = 1;
+      show_screen();
+      show_objects();
+      display_help(0);
+      no_button();
+    }
+    else {
+      break;
+    }
   }
-  else break;
-}
 }
 //===========================================================================
-void flip_actor(void){
-int i,x,y,d;
+void flip_actor(void) {
+  int i, x, y, d;
 
-status_line("CLICK ON ACTOR TO FLIP",14);
-while(1){
-     xmouse_stat(&mouse);
-     if(mx!=mouse.x || my!=mouse.y){
-       MSHIDE;
-       mx=mouse.x;
-       my=mouse.y;
-       MSSHOW;
-     }
-     if(XMOUSE_RIGHT(mouse)) break;
-     if(XMOUSE_LEFT(mouse)){
-       x=(mouse.x & 0xfff0);
-       y=(mouse.y & 0xfff0);
-       for(i=0;i<LEVEL_MAX_ACTOR;i++){
-          if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
+  status_line("CLICK ON ACTOR TO FLIP", 14);
+  while (1) {
+    xmouse_stat(&mouse);
+    if (mx != mouse.x || my != mouse.y) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      break;
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      x = (mouse.x & 0xfff0);
+      y = (mouse.y & 0xfff0);
+      for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
+        if ((x / 16) + ((y / 16) * 20) == scrn.actor_loc[i]) {
 //          if(x==scrn.actor_x[i] && y==scrn.actor_y[i]){
-            d=scrn.actor_dir[i];
-            d++;
-            if(d>3) d=0;
-            scrn.actor_dir[i]=d;
-            changed=1;
-            break;
+          d = scrn.actor_dir[i];
+          d++;
+          if (d > 3) {
+            d = 0;
           }
-       }
-       break;
-     }
-}
-show_screen();
-show_objects();
-display_help(0);
-no_button();
+          scrn.actor_dir[i] = d;
+          changed = 1;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  show_screen();
+  show_objects();
+  display_help(0);
+  no_button();
 }
 //===========================================================================
 void show_objects(void) {
@@ -1204,43 +1228,47 @@ void show_objects(void) {
   MSSHOW;
 }
 //============================================================================
-int load_objects(void){
-char s[80];
+int load_objects(void) {
+  char s[80];
 
-if(res_read("OBJECTS",(char far *) objects)<0){
-  sprintf(s,"Cannot Read OBJECTS\r\n",tempstr);
-  exit_error(s);
-}
-return 1;
-}
-//===========================================================================
-void show_current_object(void){
-
-MSHIDE;
-xfillrectangle(304,216,320,232,PAGE0,0);
-xfput(304,216,PAGE0,(char far *) objects[current_object]);
-MSSHOW;
+  if (res_read("OBJECTS", (char far*)objects) < 0) {
+    sprintf(s, "Cannot Read OBJECTS\r\n", tempstr);
+    exit_error(s);
+  }
+  return 1;
 }
 //===========================================================================
-void inc_object(void){
-
-current_object++;
-if(current_object>31) current_object=0;
-show_current_object();
+void show_current_object(void) {
+  MSHIDE;
+  xfillrectangle(304, 216, 320, 232, PAGE0, 0);
+  xfput(304, 216, PAGE0, (char far*)objects[current_object]);
+  MSSHOW;
 }
 //===========================================================================
-void dec_object(void){
-
-current_object--;
-if(current_object<0) current_object=31;
-show_current_object();
+void inc_object(void) {
+  current_object++;
+  if (current_object > 31) {
+    current_object = 0;
+  }
+  show_current_object();
 }
 //===========================================================================
-int find_empty_object(void){
-int i;
-
-for(i=0;i<32;i++) if(scrn.static_obj[i]==0) return i;
-return -1;
+void dec_object(void) {
+  current_object--;
+  if (current_object < 0) {
+    current_object = 31;
+  }
+  show_current_object();
+}
+//===========================================================================
+int find_empty_object(void) {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if (scrn.static_obj[i] == 0) {
+      return i;
+    }
+  }
+  return -1;
 }
 //===========================================================================
 void place_object(void) {
@@ -1299,11 +1327,10 @@ void delete_object(void) {
   no_button();
 }
 //===========================================================================
-void beep(void){
-
-sound(1000);
-delay(200);
-nosound();
+void beep(void) {
+  sound(1000);
+  delay(200);
+  nosound();
 }
 //===========================================================================
 void edit_level_data(void){
@@ -1366,332 +1393,360 @@ MSSHOW;
 }
 //===========================================================================
 void edit_pal_data(void){
-int i,y;
-char s[21];
-char pal;
+  int i, y;
+  char s[21];
+  char pal;
 
-MSHIDE;
+  MSHIDE;
 
-xcls(0,PAGE1);
-xshowpage(PAGE1);
-xprint(10*8,0,"SCREEN PALETTE EDIT",14,PAGE1);
-y=16;
+  xcls(0, PAGE1);
+  xshowpage(PAGE1);
+  xprint(10 * 8, 0, "SCREEN PALETTE EDIT", 14, PAGE1);
+  y = 16;
 
-for(i=0;i<3;i++){
-   pal=scrn.pal_colors[i];
-   strcpy(tempstr,"COLOR ");
-   itoa(i+1,s,10);
-   strcat(tempstr,s);
-   strcat(tempstr,":");
-   xprint(0,y,tempstr,15,PAGE1);
-   itoa(pal,s,10);
-get_again1:
-   if(!xinput(11*8,y,s,15,4,3,1,PAGE1)){
-     display_help(0);
-     xshowpage(PAGE0);
-     MSSHOW;
-     return;
-   }
-   pal=atoi(s);
-   scrn.pal_colors[i]=pal;
-   y+=10;
-}
-display_help(0);
-xshowpage(PAGE0);
-set_screen_pal();
-changed=1;
-MSSHOW;
-}
-//===========================================================================
-int load_sd_data(void){
-char s[80];
-
-itoa(area_num,s,10);
-strcpy(tempstr,"SDAT");
-strcat(tempstr,s);
-
-sd_data=res_falloc_read(tempstr);
-if(!sd_data){
-  sprintf(s,"Cannot Read %s\r\n",tempstr);
-  exit_error(s);
-}
-//_fmemset(sd_data,0,61440u);
-
-return 1;
-}
-//===========================================================================
-int save_sd_data(void){
-char s[80];
-
-itoa(area_num,s,10);
-strcpy(tempstr,"SDAT");
-strcat(tempstr,s);
-
-movedata(FP_SEG(&scrn),FP_OFF(&scrn),
-         FP_SEG(sd_data+(current_screen*512)),
-         FP_OFF(sd_data+(current_screen*512)),512);
-
-res_delete_file(tempstr);
-if(res_write(tempstr,sd_data,61440l,1)<0){
-  sprintf(s,"Cannot Save %s\r\n",tempstr);
-  status_line(s,12);
-  getch();
+  for (i = 0; i < 3; i++) {
+    pal = scrn.pal_colors[i];
+    strcpy(tempstr, "COLOR ");
+    itoa(i + 1, s, 10);
+    strcat(tempstr, s);
+    strcat(tempstr, ":");
+    xprint(0, y, tempstr, 15, PAGE1);
+    itoa(pal, s, 10);
+  get_again1:
+    if (!xinput(11 * 8, y, s, 15, 4, 3, 1, PAGE1)) {
+      display_help(0);
+      xshowpage(PAGE0);
+      MSSHOW;
+      return;
+    }
+    pal = atoi(s);
+    scrn.pal_colors[i] = pal;
+    y += 10;
+  }
   display_help(0);
-  return 0;
-}
-changed=0;
-return 1;
-}
-//===========================================================================
-void pickup_tile(void){
-int x,y,ret;
-
-xmouse_stat(&mouse);
-if(point_within(mouse.x,mouse.y,0,0,320,192)){
-  x=mouse.x/16;
-  y=mouse.y/16;
-  ret=scrn.icon[y][x];
-  current_bg=ret-10;
-  if(current_bg<0) current_bg+=230;
-  hilite_bg=10;
-  show_bg();
-  no_button();
-}
+  xshowpage(PAGE0);
+  set_screen_pal();
+  changed = 1;
+  MSSHOW;
 }
 //===========================================================================
-int load_actors(void){
-int i;
-char s[21];
+int load_sd_data(void) {
+  char s[80];
 
-memset(actor_flag,0,100);
-memset(actor_nf,0,100);
+  itoa(area_num, s, 10);
+  strcpy(tempstr, "SDAT");
+  strcat(tempstr, s);
 
-for(i=1;i<100;i++){
-   strcpy(tempstr,"ACTOR");
-   itoa(i,s,10);
-   strcat(tempstr,s);
-   if(res_read(tempstr,(char far *) &actor_buff)<0) continue;
-   MSHIDE;
-   if(actor_buff.actor_info.type){
-     actor_nf[i]=actor_buff.actor_info.frames*actor_buff.actor_info.directions;
-     actor_nf[i]+=actor_buff.shot_info.frames*actor_buff.shot_info.directions;
-     actor_flag[i]=1;
-    // TODO this seems unnecessary and is slow
-    //  xfillrectangle(0,0,16,16,PAGE0,0);
-    //  r=0;
-    //  for(y=0;y<16;y++){
-    //     for(x=0;x<16;x++){
-    //        xpset(x,y,PAGE0,actor_buff.pic[1][r++]);
-    //     }
-    //  }
-    //  xget(0,0,15,15,PAGE0,actor[i],0);
-   }
-   MSSHOW;
+  sd_data = res_falloc_read(tempstr);
+  if (!sd_data) {
+    sprintf(s, "Cannot Read %s\r\n", tempstr);
+    exit_error(s);
+  }
+  //_fmemset(sd_data,0,61440u);
+
+  return 1;
 }
-return 1;
+//===========================================================================
+int save_sd_data(void) {
+  char s[80];
+
+  itoa(area_num, s, 10);
+  strcpy(tempstr, "SDAT");
+  strcat(tempstr, s);
+
+  movedata(
+    FP_SEG(&scrn),
+    FP_OFF(&scrn),
+    FP_SEG(sd_data+(current_screen*512)),
+    FP_OFF(sd_data+(current_screen*512)),
+    512
+  );
+
+  res_delete_file(tempstr);
+  if (res_write(tempstr, sd_data, 61440l, 1) < 0) {
+    sprintf(s, "Cannot Save %s\r\n", tempstr);
+    status_line(s, 12);
+    getch();
+    display_help(0);
+    return 0;
+  }
+  changed = 0;
+  return 1;
+}
+//===========================================================================
+void pickup_tile(void) {
+  int x, y, ret;
+
+  xmouse_stat(&mouse);
+  if (point_within(mouse.x, mouse.y, 0, 0, 320,192)) {
+    x = mouse.x / 16;
+    y = mouse.y / 16;
+    ret = scrn.icon[y][x];
+    current_bg = ret - 10;
+    if (current_bg < 0) {
+      current_bg += 230;
+    }
+    hilite_bg = 10;
+    show_bg();
+    no_button();
+  }
+}
+//===========================================================================
+int load_actors(void) {
+  int i;
+  char s[21];
+
+  memset(actor_flag, 0, 100);
+  memset(actor_nf, 0, 100);
+
+  for (i = 1; i < 100; i++) {
+    strcpy(tempstr, "ACTOR");
+    itoa(i, s, 10);
+    strcat(tempstr, s);
+    if (res_read(tempstr, (char far*)&actor_buff) < 0) {
+      continue;
+    }
+    MSHIDE;
+    if (actor_buff.actor_info.type) {
+      actor_nf[i] = actor_buff.actor_info.frames * actor_buff.actor_info.directions;
+      actor_nf[i] += actor_buff.shot_info.frames * actor_buff.shot_info.directions;
+      actor_flag[i] = 1;
+      // TODO this seems unnecessary and is slow
+      //  xfillrectangle(0,0,16,16,PAGE0,0);
+      //  r=0;
+      //  for(y=0;y<16;y++){
+      //     for(x=0;x<16;x++){
+      //        xpset(x,y,PAGE0,actor_buff.pic[1][r++]);
+      //     }
+      //  }
+      //  xget(0,0,15,15,PAGE0,actor[i],0);
+    }
+    MSSHOW;
+  }
+  return 1;
 }
 /*=========================================================================*/
-int select_actor(void){
-int x,y,i,li,fn;
-char s[21];
+int select_actor(void) {
+  int x, y, i, li, fn;
+  char s[21];
 
-MSHIDE;
+  MSHIDE;
 
-x=y=0;
-xcls(0,PAGE1);
-for(i=0;i<100;i++){
-   if(actor_flag[i]) xput(x*16,y*16,PAGE1,actor[i]);
-   x++;
-   if(x>=20){
-     x=0;
-     y++;
-   }
-}
-xcopyd2d(0,0,8,8,0,0,PAGE1,PAGE2,320,320);
-xcopyd2dmasked(0,0,8,8,0,0,&mouse_image,PAGE1,320);
-x=y=0;
-xshowpage(PAGE1);
-xprint(0,218,"FRAMES NEEDED:",15,PAGE1);
-xprint(0,228,"  FRAMES LEFT:",15,PAGE1);
-itoa(frames_left,s,10);
-xprint(15*8,228,s,14,PAGE1);
+  x = y = 0;
+  xcls(0, PAGE1);
+  for (i = 0; i < 100; i++) {
+    if (actor_flag[i]) {
+      xput(x * 16, y * 16, PAGE1, actor[i]);
+    }
+    x++;
+    if (x >= 20) {
+      x = 0;
+      y++;
+    }
+  }
+  xcopyd2d(0, 0, 8, 8, 0, 0, PAGE1, PAGE2, 320, 320);
+  xcopyd2dmasked(0, 0, 8, 8, 0, 0, &mouse_image, PAGE1, 320);
+  x = y = 0;
+  xshowpage(PAGE1);
+  xprint(0, 218, "FRAMES NEEDED:", 15, PAGE1);
+  xprint(0, 228, "  FRAMES LEFT:", 15, PAGE1);
+  itoa(frames_left, s, 10);
+  xprint(15 * 8, 228, s, 14, PAGE1);
 
-li=-1;
-i=-1;
-while(1){
-     if(kbhit()){
-       if(getch()==27){
-         i=-1;
-         break;
-       }
-     }
-     xmouse_stat(&mouse);
-     if(mouse.x!=x || mouse.y !=y){
-       xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE1,320,320);
-       x=mouse.x;
-       y=mouse.y;
-       xcopyd2d(x,y,x+8,y+8,x,y,PAGE1,PAGE2,320,320);
-       xcopyd2dmasked(0,0,8,8,x,y,&mouse_image,PAGE1,320);
-       i=((y/16)*20)+(x/16);
-       if((i!=li) && (i<100)){
-         i=((y/16)*20)+(x/16);
-         li=i;
-         xfillrectangle(120,218,320,228,PAGE1,0);
-         fn=actor_nf[i];
-         if(afb[i]==1) fn=0;
-         itoa(fn,s,10);
-         xprint(15*8,218,s,14,PAGE1);
-         if(fn==0 && actor_nf[i])  xprint(18*8,218,"(ALREADY USED)",14,PAGE1);
-
-       }
-     }
-     if(XMOUSE_LEFT(mouse)){
-       if(i<0) break;
-       if(actor_flag[i] && fn<=frames_left) break;
-       beep();
-     }
-     if(XMOUSE_RIGHT(mouse)){ i=-1;break;}
-}
-xcls(0,PAGE1);
-xshowpage(PAGE0);
-MSSHOW;
-no_button();
-return i;
-}
-//===========================================================================
-void actor_value(void){
-int i,x,y;
-
-status_line("CLICK ON ACTOR TO CHANGE",14);
-while(1){
-     xmouse_stat(&mouse);
-     if(mx!=mouse.x || my!=mouse.y){
-       MSHIDE;
-       mx=mouse.x;
-       my=mouse.y;
-       MSSHOW;
-     }
-     if(XMOUSE_RIGHT(mouse)) break;
-     if(XMOUSE_LEFT(mouse)){
-       x=(mouse.x & 0xfff0);
-       y=(mouse.y & 0xfff0);
-       for(i=0;i<LEVEL_MAX_ACTOR;i++){
-          if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
-            edit_actor_value(i);
-            changed=1;
-            break;
-          }
-       }
-       break;
-     }
-}
-show_screen();
-show_objects();
-display_help(0);
-no_button();
+  li = -1;
+  i = -1;
+  while (1) {
+    if (kbhit()) {
+      if (getch() == 27) {
+        i = -1;
+        break;
+      }
+    }
+    xmouse_stat(&mouse);
+    if (mouse.x != x || mouse.y != y) {
+      xcopyd2d(x, y, x + 8, y + 8, x, y, PAGE2, PAGE1, 320, 320);
+      x = mouse.x;
+      y = mouse.y;
+      xcopyd2d(x, y, x + 8, y + 8, x, y, PAGE1, PAGE2, 320, 320);
+      xcopyd2dmasked(0, 0, 8, 8, x, y, &mouse_image, PAGE1, 320);
+      i = ((y / 16) * 20) + (x / 16);
+      if ((i != li) && (i < 100)) {
+        i = ((y / 16) * 20) + (x / 16);
+        li = i;
+        xfillrectangle(120, 218, 320, 228, PAGE1, 0);
+        fn = actor_nf[i];
+        if (afb[i] == 1) {
+          fn = 0;
+        }
+        itoa(fn, s, 10);
+        xprint(15 * 8, 218, s, 14, PAGE1);
+        if (fn == 0 && actor_nf[i]) {
+          xprint(18 * 8, 218, "(ALREADY USED)", 14, PAGE1);
+        }
+      }
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      if (i < 0) {
+        break;
+      }
+      if (actor_flag[i] && fn <= frames_left) {
+        break;
+      }
+      beep();
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      i = -1;
+      break;
+    }
+  }
+  xcls(0, PAGE1);
+  xshowpage(PAGE0);
+  MSSHOW;
+  no_button();
+  return i;
 }
 //===========================================================================
-void edit_actor_value(int num){
-char str[21];
+void actor_value(void) {
+  int i, x, y;
 
-status_line("ACTOR VALUE: ",14);
-flush_buff();
-
-itoa(scrn.actor_value[num],str,10);
-if(!xinput(13*8,231,str,15,4,5,1,PAGE0)){
+  status_line("CLICK ON ACTOR TO CHANGE", 14);
+  while (1) {
+    xmouse_stat(&mouse);
+    if (mx != mouse.x || my != mouse.y) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      break;
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      x = (mouse.x & 0xfff0);
+      y = (mouse.y & 0xfff0);
+      for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
+        if ((x / 16) + ((y / 16) * 20) == scrn.actor_loc[i]) {
+          edit_actor_value(i);
+          changed = 1;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  show_screen();
+  show_objects();
   display_help(0);
-  return;
-}
-scrn.actor_value[num]=atoi(str);
+  no_button();
 }
 //===========================================================================
-int pick_tile(void){
-int lx,ly,x,y,key,hl;
-char s[21];
+void edit_actor_value(int num) {
+  char str[21];
 
-no_button();
-lx=-1;
-ly=-1;
+  status_line("ACTOR VALUE: ", 14);
+  flush_buff();
 
-while(1){
-     if(kbhit()){
-       key=getch();
-       hl=0;
-       in.h.ah = 2;
-       int86(0x16,&in,&out);
-       if(out.h.al & 1) hl=1;         //shift
-       else if(out.h.al & 2) hl=1;    //shift
-       switch(key){
-         case 27: return -1;
-         case 77:       //right
-            if(hl){
-              if(current_screen<119){
-                save_screen();
-                current_screen++;
-                view_screen(current_screen);
-              }
-            }
-            break;
-         case 75:      //left
-            if(hl){
-              if(current_screen>0){
-                save_screen();
-                current_screen--;
-                view_screen(current_screen);
-              }
-            }
-            break;
-         case 72:       //up
-            if(hl){
-              if(current_screen>9){
-                save_screen();
-                current_screen-=10;
-                view_screen(current_screen);
-              }
-            }
-            break;
-         case 80:      //down
-            if(hl){
-              if(current_screen<110){
-                save_screen();
-                current_screen+=10;
-                view_screen(current_screen);
-              }
-            }
-            break;
-       }
-     }
-     xmouse_stat(&mouse);
-     if(mouse.x!=mx || mouse.y!=my){
-	MSHIDE;
-	mx=mouse.x;
-	my=mouse.y;
-	MSSHOW;
-     }
-     x=mx/16;
-     y=my/16;
-     if(y!=ly || x!=lx){
-       itoa(scrn.icon[y][x],s,10);
-       xfillrectangle(10*8,218,32*8,226,PAGE0,0);
-       xprint(10*8,218,"CURRENT:",15,PAGE0);
-       xprint(18*8,218,s,14,PAGE0);
-       lx=x;
-       ly=y;
-       if(((y*20)+x)<240){
-         itoa((y*20)+x,s,10);
-         xprint(24*8,218,"POS:",15,PAGE0);
-         xprint(28*8,218,s,14,PAGE0);
-       }
-     }
-     if(XMOUSE_LEFT(mouse)){
-	if(point_within(mx,my,0,0,320,192)){
-          x=mx/16;
-          y=my/16;
-          if(y<12 && x<20) return (y*20)+x;
-       }
-     }
-     if(XMOUSE_RIGHT(mouse)) return -1;
+  itoa(scrn.actor_value[num], str, 10);
+  if (!xinput(13 * 8, 231, str, 15, 4, 5, 1, PAGE0)) {
+    display_help(0);
+    return;
+  }
+  scrn.actor_value[num] = atoi(str);
 }
+//===========================================================================
+int pick_tile(void) {
+  int lx, ly, x, y, key, hl;
+  char s[21];
+
+  no_button();
+  lx = -1;
+  ly = -1;
+
+  while (1) {
+    if (kbhit()) {
+      key = getch();
+      hl =0;
+      in.h.ah = 2;
+      int86(0x16, &in, &out);
+      //shift
+      if ((out.h.al & 1) || (out.h.al & 2)) {
+        hl=1;
+      }
+      switch (key) {
+      case 27: return -1;
+      case 77:       //right
+          if (hl) {
+            if (current_screen < 119) {
+              save_screen();
+              current_screen++;
+              view_screen(current_screen);
+            }
+          }
+          break;
+      case 75:      //left
+          if (hl) {
+            if (current_screen > 0) {
+              save_screen();
+              current_screen--;
+              view_screen(current_screen);
+            }
+          }
+          break;
+      case 72:       //up
+          if (hl) {
+            if (current_screen > 9) {
+              save_screen();
+              current_screen -= 10;
+              view_screen(current_screen);
+            }
+          }
+          break;
+      case 80:      //down
+          if (hl) {
+            if (current_screen < 110) {
+              save_screen();
+              current_screen += 10;
+              view_screen(current_screen);
+            }
+          }
+          break;
+      }
+    }
+    xmouse_stat(&mouse);
+    if (mouse.x != mx || mouse.y != my) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    x = mx / 16;
+    y = my / 16;
+    if (y != ly || x != lx) {
+      itoa(scrn.icon[y][x], s, 10);
+      xfillrectangle(10 * 8, 218, 32 * 8, 226, PAGE0, 0);
+      xprint(10 * 8, 218, "CURRENT:", 15, PAGE0);
+      xprint(18 * 8, 218, s, 14, PAGE0);
+      lx = x;
+      ly = y;
+      if (((y * 20) + x) < 240) {
+        itoa((y * 20) + x, s, 10);
+        xprint(24 * 8, 218, "POS:", 15, PAGE0);
+        xprint(28 * 8, 218, s, 14, PAGE0);
+      }
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      if (point_within(mx, my, 0, 0, 320, 192)) {
+        x = mx / 16;
+        y = my / 16;
+        if (y < 12 && x < 20) {
+          return (y * 20) + x;
+        }
+      }
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      return -1;
+    }
+  }
 }
 //===========================================================================
 void pick_warp(void){
@@ -1743,241 +1798,264 @@ no_button();
 */
 }
 //=========================================================================
-int get_line(char far *src,char far *dst){
-int cnt;
+int get_line(char far* src, char far*dst) {
+  int cnt;
 
-cnt=0;
-while(*src!=13){
-   if(*src!=10){
-     *dst=*src;
-     dst++;
-   }
-   cnt++;
-   src++;
-}
-*dst=0;
-cnt++;
-src++;
-return cnt;
-}
-//===========================================================================
-int pick_actor(void){
-int i,x,y,ret;
-
-while(1){
-     xmouse_stat(&mouse);
-     if(mx!=mouse.x || my!=mouse.y){
-       MSHIDE;
-       mx=mouse.x;
-       my=mouse.y;
-       MSSHOW;
-     }
-     if(XMOUSE_RIGHT(mouse)){ret=-1;break;}
-     if(XMOUSE_LEFT(mouse)){
-       x=(mouse.x & 0xfff0);
-       y=(mouse.y & 0xfff0);
-       for(i=0;i<LEVEL_MAX_ACTOR;i++){
-          if((x/16)+((y/16)*20)==scrn.actor_loc[i]){
-            ret=i;
-            goto done;
-          }
-       }
-     }
-}
-done:
-show_screen();
-show_objects();
-display_help(0);
-no_button();
-return ret;
-}
-//===========================================================================
-void actor_script(void){
-int sel,key;
-char far *tbuff;
-char far *bp;
-char far *ap;
-char far *tp;
-char far *op;
-char s[21];
-int cnt;
-char tmps[256];
-FILE *fp;
-FILE *fp2;
-char wf;
-long index;
-char ch;
-union REGS regset;
-
-fp=(FILE *) 0;
-fp2=(FILE *) 0;
-if(area_num==1) return;
-
-status_line("Pick Actor to Edit",12);
-sel=pick_actor();
-if(sel==-1) return;
-sel+=3;
-
-tbuff=farmalloc(30000l);
-if(!tbuff){
-  status_line("Out of Memeory...Press Any Key.",12);
-  getch();
-  display_help(0);
-  return;
-}
-itoa(area_num,s,10);
-strcpy(tempstr,"SPEECH");
-strcat(tempstr,s);
-if(res_read(tempstr,(char far *) tbuff)<0){
-  status_line("File Open Error...Press Any Key.",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-index=(long) current_screen;
-index=index*1000;
-index+=(long) sel;
-
-ltoa(index,s,10);
-strcpy(tempstr,"|");
-strcat(tempstr,s);
-
-fp=fopen("BL$$$$$$.TMP","wt");
-if(!fp){
-  status_line("Cannot Open Temporary file 1...Press Any Key.",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-
-ap=(char far *) 0;
-bp=(char far *) 0;
-tp=tbuff;
-wf=0;
-while(1){
-  if(!wf) bp=tp;
-  cnt=get_line(tp,(char far *)tmps);
-  tp+=cnt;
-  if(!strcmp(tmps,"|EOF")){
-    if(!wf){
-      fputs(tempstr,fp);
-      fputs("\n'put script here\n",fp);
-      fputs("|STOP\n",fp);
-      ap=bp+1;
+  cnt = 0;
+  while (*src != 13) {
+    if (*src != 10) {
+      *dst = *src;
+      dst++;
     }
-    break;
+    cnt++;
+    src++;
   }
-  if(!wf && !strcmp(tmps,tempstr)) wf=1;
-  if(wf==1){
-    fputs(tmps,fp);
-    fputs("\n",fp);
-  }
-  if(wf==1 && !strcmp(tmps,"|STOP")){
-    wf=2;
-    ap=tp+1;
-  }
-}
-fclose(fp);
-fp=(FILE *) 0;
-
-regset.x.ax = 0x0003; int86(0x10, &regset, &regset);
-// system("BLEDIT BL$$$$$$.TMP");
-reset_mode();
-
-status_line("Save Changes to Script? (Y/N)",12);
-flush_buff();
-while(1){
-     key=toupper(getch());
-     if(key=='Y') break;
-     else if(key=='N') goto done;
-}
-fp=fopen("BL$$$$$$.TXT","wb");
-if(!fp){
-  status_line("Cannot Open Temporary file 2...Press Any Key.",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-fp2=fopen("BL$$$$$$.TMP","rt");
-if(!fp2){
-  status_line("Cannot Open Temporary file 1 (again)...Press Any Key.",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-op=tbuff;
-while(op<=bp){
-  ch=*op;
-  fwrite(&ch,1,1,fp);
-  op++;
-}
-while(1){
-  if(!fgets(tmps,255,fp2)) break;
-  ch=strlen(tmps)-1;
-  tmps[ch++]=13;
-  tmps[ch++]=10;
-  tmps[ch++]=0;
-  fwrite(tmps,1,strlen(tmps),fp);
-}
-op=ap;
-while(op!=tp){
-  ch=*op;
-  fwrite(&ch,1,1,fp);
-  op++;
-}
-fclose(fp);
-fp=(FILE *) 0;
-fclose(fp2);
-fp2=(FILE *) 0;
-
-itoa(area_num,s,10);
-strcpy(tempstr,"SPEECH");
-strcat(tempstr,s);
-if(res_delete_file(tempstr)<0){
-  status_line("Cannot Delete Resource...Press Any Key.",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-if(res_add_file("BL$$$$$$.TXT",tempstr,1)<0){
-  status_line("Cannot Add Resource: BL$$$$$$.TXT",12);
-  getch();
-  display_help(0);
-  goto done;
-}
-res_close();
-if(res_open(res_file)<0){
-  sprintf(tempstr,"Cannot Open: %s\r\n\r\n",res_file);
-  exit_error(tempstr);
-}
-unlink("BL$$$$$$.TMP");
-unlink("BL$$$$$$.TXT");
-
-done:
-if(fp) fclose(fp);
-if(fp2) fclose(fp2);
-if(tbuff) farfree(tbuff);
+  *dst = 0;
+  cnt++;
+  src++;
+  return cnt;
 }
 //===========================================================================
-void reset_mode(void){
+int pick_actor(void) {
+  int i, x, y, ret;
 
-xsetmode();
-xmouse_init();
-xmouse_off();
-xmouse_set_bounds(0,0,624,231);
-xmouse_set_pos(320,120);
-xmouse_stat(&mouse);
-if(xcreatmaskimage(&mouse_image,PAGE3,mcursor,8,8,mmask)==0){
-  exit_code();
-  exit(0);
+  while (1) {
+    xmouse_stat(&mouse);
+    if (mx != mouse.x || my != mouse.y) {
+      MSHIDE;
+      mx = mouse.x;
+      my = mouse.y;
+      MSSHOW;
+    }
+    if (XMOUSE_RIGHT(mouse)) {
+      ret = -1;
+      break;
+    }
+    if (XMOUSE_LEFT(mouse)) {
+      x = (mouse.x & 0xfff0);
+      y = (mouse.y & 0xfff0);
+      for (i = 0; i < LEVEL_MAX_ACTOR; i++) {
+        if ((x / 16) + ((y / 16) * 20) == scrn.actor_loc[i]) {
+          ret = i;
+          goto done;
+        }
+      }
+    }
+  }
+  done:
+  show_screen();
+  show_objects();
+  display_help(0);
+  no_button();
+  return ret;
 }
+//===========================================================================
+void actor_script(void) {
+  int sel, key;
+  char far* tbuff;
+  char far* bp;
+  char far* ap;
+  char far* tp;
+  char far* op;
+  char s[21];
+  int cnt;
+  char tmps[256];
+  FILE* fp;
+  FILE* fp2;
+  char wf;
+  long index;
+  char ch;
+  union REGS regset;
 
-//setup background
-xshowpage(PAGE0);
-display_help(0);
-load_palette();
-show_screen();
-show_objects();
-show_bg();
-show_current_object();
+  fp = (FILE*)0;
+  fp2 = (FILE*)0;
+  if (area_num == 1) {
+    return;
+  }
+
+  status_line("Pick Actor to Edit", 12);
+  sel = pick_actor();
+  if (sel == -1) {
+    return;
+  }
+  sel += 3;
+
+  tbuff = farmalloc(30000l);
+  if (!tbuff) {
+    status_line("Out of Memeory...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    return;
+  }
+  itoa(area_num, s, 10);
+  strcpy(tempstr, "SPEECH");
+  strcat(tempstr, s);
+  if (res_read(tempstr, (char far*)tbuff) < 0) {
+    status_line("File Open Error...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+  index = (long)current_screen;
+  index = index * 1000;
+  index += (long)sel;
+
+  ltoa(index, s, 10);
+  strcpy(tempstr, "|");
+  strcat(tempstr, s);
+
+  fp = fopen("BL$$$$$$.TMP", "wt");
+  if (!fp) {
+    status_line("Cannot Open Temporary file 1...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+
+  ap = (char far*)0;
+  bp = (char far*)0;
+  tp = tbuff;
+  wf = 0;
+  while (1) {
+    if (!wf) {
+      bp = tp;
+    }
+    cnt = get_line(tp, (char far*)tmps);
+    tp += cnt;
+    if (!strcmp(tmps, "|EOF")) {
+      if (!wf) {
+        fputs(tempstr, fp);
+        fputs("\n'put script here\n", fp);
+        fputs("|STOP\n", fp);
+        ap = bp + 1;
+      }
+      break;
+    }
+    if (!wf && !strcmp(tmps, tempstr)) {
+      wf = 1;
+    }
+    if (wf == 1) {
+      fputs(tmps, fp);
+      fputs("\n", fp);
+    }
+    if (wf == 1 && !strcmp(tmps, "|STOP")) {
+      wf = 2;
+      ap = tp + 1;
+    }
+  }
+  fclose(fp);
+  fp = (FILE*)0;
+
+  regset.x.ax = 0x0003;
+  int86(0x10, &regset, &regset);
+  // system("BLEDIT BL$$$$$$.TMP");
+  reset_mode();
+
+  status_line("Save Changes to Script? (Y/N)", 12);
+  flush_buff();
+  while (1) {
+    key = toupper(getch());
+    if (key == 'Y') {
+      break;
+    }
+    else if (key == 'N') {
+      goto done;
+    }
+  }
+  fp = fopen("BL$$$$$$.TXT", "wb");
+  if (!fp) {
+    status_line("Cannot Open Temporary file 2...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+  fp2 = fopen("BL$$$$$$.TMP", "rt");
+  if (!fp2) {
+    status_line("Cannot Open Temporary file 1 (again)...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+  op = tbuff;
+  while (op <= bp) {
+    ch = *op;
+    fwrite(&ch, 1, 1, fp);
+    op++;
+  }
+  while (1) {
+    if (!fgets(tmps, 255, fp2)) {
+      break;
+    }
+    ch = strlen(tmps) - 1;
+    tmps[ch++] = 13;
+    tmps[ch++] = 10;
+    tmps[ch++] = 0;
+    fwrite(tmps, 1, strlen(tmps), fp);
+  }
+  op = ap;
+  while (op != tp) {
+    ch = *op;
+    fwrite(&ch, 1, 1, fp);
+    op++;
+  }
+  fclose(fp);
+  fp = (FILE*)0;
+  fclose(fp2);
+  fp2 = (FILE*)0;
+
+  itoa(area_num, s, 10);
+  strcpy(tempstr, "SPEECH");
+  strcat(tempstr, s);
+  if (res_delete_file(tempstr) < 0) {
+    status_line("Cannot Delete Resource...Press Any Key.", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+  if (res_add_file("BL$$$$$$.TXT", tempstr, 1) < 0) {
+    status_line("Cannot Add Resource: BL$$$$$$.TXT", 12);
+    getch();
+    display_help(0);
+    goto done;
+  }
+  res_close();
+  if (res_open(res_file) < 0) {
+    sprintf(tempstr, "Cannot Open: %s\r\n\r\n", res_file);
+    exit_error(tempstr);
+  }
+  unlink("BL$$$$$$.TMP");
+  unlink("BL$$$$$$.TXT");
+
+  done:
+  if (fp) {
+    fclose(fp);
+  }
+  if (fp2) {
+    fclose(fp2);
+  }
+  if (tbuff) {
+    farfree(tbuff);
+  }
+}
+//===========================================================================
+void reset_mode(void) {
+  xsetmode();
+  xmouse_init();
+  xmouse_off();
+  xmouse_set_bounds(0, 0, 624, 231);
+  xmouse_set_pos(320, 120);
+  xmouse_stat(&mouse);
+  if (xcreatmaskimage(&mouse_image, PAGE3, mcursor, 8, 8, mmask) == 0) {
+    exit_code();
+    exit(0);
+  }
+
+  //setup background
+  xshowpage(PAGE0);
+  display_help(0);
+  load_palette();
+  show_screen();
+  show_objects();
+  show_bg();
+  show_current_object();
 }
