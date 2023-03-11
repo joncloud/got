@@ -32,6 +32,7 @@ extern char level_type,slow_mode;
 extern int  boss_active;
 extern char area;
 extern char test_sdf[];
+extern long song_length;
 extern char far *song;
 extern char far *lzss_buff;
 extern char *options_yesno[];
