@@ -32,6 +32,7 @@ extern char level_type,slow_mode;
 extern int  boss_active;
 extern char area;
 extern char test_sdf[];
+extern long song_length;
 extern char far *song;
 extern char far *lzss_buff;
 extern char *options_yesno[];
@@ -295,28 +296,22 @@ return res_header[num].length;
 }
 */
 //==========================================================================
-int load_music(int num){
+int load_music(int num) {
+  char* names[] = {
+    "SONG1", "SONG2", "SONG3",
+    "SONG4", "WINSONG", "BOSSSONG",
+    "OPENSONG",
+  };
+  long length;
+  if (num < 0 || num > 6) {
+    return 0;
+  }
 
-switch(num){
-  case 0:
-    res_read("SONG1",song);
-    break;
-  case 1:
-    res_read("SONG2",song);
-    break;
-  case 2:
-    res_read("SONG3",song);
-    break;
-  case 3:
-    res_read("SONG4",song);
-    break;
-  case 4:
-    res_read("WINSONG",song);
-    break;
-  case 5:
-    res_read("BOSSSONG",song);
-    break;
-}
-if(!song) return 0;
-return 1;
+  length = res_read(names[num], song);
+  if (!song || length < 0) {
+    return 0;
+  }
+
+  song_length = length;
+  return 1;
 }

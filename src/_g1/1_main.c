@@ -46,6 +46,7 @@ char object_index[240];
 char far *bleep;
 char thor_icon1,thor_icon2,thor_icon3,thor_icon4;
 char level_type;
+long song_length;
 char far *song;
 char music_current;
 char boss_loaded;

@@ -647,7 +647,6 @@ char far *buff;
 fade_out();
 xfillrectangle(0,0,320,240,38400u,0);
 xshowpage(38400u);
-if(res_read("OPENSONG",(char far*)song)<0) return;
 if(res_read("STORY1",(char far*)tmp_buff)<0) return;
 if(res_read("OPENBACK",(char far*)back)<0) return;
 if(res_read("STORYPIC",(char far*)back)<0) return;
@@ -730,7 +729,7 @@ pg=0u;
 fade_out();
 xshowpage(pg);
 music_current=0;
-music_play(0,1);
+music_play(7, 1);
 fade_in();
 
 timer_cnt=0;

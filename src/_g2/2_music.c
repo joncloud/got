@@ -10,7 +10,9 @@
 #include "2_define.h"
 #include "2_proto.h"
 #include "res_man.h"
+#include "mu_man.h"
 
+extern long song_length;
 extern char far *song;
 extern char music_current;
 extern struct sup setup;
@@ -22,14 +24,17 @@ music_current=-1;
 return 1;
 }
 //=========================================================================
-void music_play(int num,int override){
-
-if(!setup.music) return;
-if((num!=music_current) || override){
-  if(num!=music_current) load_music(num);
-  MU_StartMusic(song,1);
-  music_current=num;
-}
+void music_play(int num, int override) {
+  if (!setup.music) {
+    return;
+  }
+  if ((num != music_current) || override){
+    if (num != music_current) {
+      load_music(num);
+    }
+    MU_StartMusic(song, song_length);
+    music_current = num;
+  }
 }
 //=========================================================================
 void music_pause(void){

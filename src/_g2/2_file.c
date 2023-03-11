@@ -223,34 +223,22 @@ return res_header[num].length;
 }
 */
 //==========================================================================
-int load_music(int num){
+int load_music(int num) {
+  char* names[] = {
+    "SONG21", "SONG22", "SONG23",
+    "SONG24", "SONG35", "SONG25",
+    "WINSONG", "BOSSSONG", "OPENSONG",
+  };
+  long length;
+  if (num < 0 || num > 8) {
+    return 0;
+  }
 
-switch(num){
-  case 0:
-    res_read("SONG21",song);
-    break;
-  case 1:
-    res_read("SONG22",song);
-    break;
-  case 2:
-    res_read("SONG23",song);
-    break;
-  case 3:
-    res_read("SONG24",song);
-    break;
-  case 4:
-    res_read("SONG35",song);
-    break;
-  case 5:
-    res_read("SONG25",song);
-    break;
-  case 6:
-    res_read("WINSONG",song);
-    break;
-  case 7:
-    res_read("BOSSSONG",song);
-    break;
-}
-if(!song) return 0;
-return 1;
+  length = res_read(names[num], song);
+  if (!song || length < 0) {
+    return 0;
+  }
+
+  song_length = length;
+  return 1;
 }

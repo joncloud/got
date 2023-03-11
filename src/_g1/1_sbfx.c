@@ -12,6 +12,7 @@
 #include "1_proto.h"
 #include "digisnd.h"
 #include "fx_man.h"
+#include "mu_man.h"
 
 extern SETUP setup;
 extern bool AdLibPresent;
