@@ -1,5 +1,7 @@
 #include "fx_man.h"
 
+// https://github.com/joncloud/got/issues/5
+
 void FX_ServicePC(void) {
   // TODO
 }

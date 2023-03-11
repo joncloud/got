@@ -14,7 +14,7 @@ This program is contains all of the code to play the first episode - Part II: No
 
 ### _G3.EXE
 
-This program is contains all of the code to play the first episode - Part II: Lookin' for Loki.
+This program is contains all of the code to play the first episode - Part III: Lookin' for Loki.
 
 ### GOTRES.DAT
 

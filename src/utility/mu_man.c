@@ -90,6 +90,7 @@ void MU_Service(void) {
     MU_FMNote = MU_FMMusic->loop_offset;
 
     // TODO length should take into account when loop_offset > 0
+    // https://github.com/joncloud/got/issues/4
     MU_DataLeft = MU_FMMusic->length;
     MU_TicksElapsed = MU_NextEventTime = 0;
   }

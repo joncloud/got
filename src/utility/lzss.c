@@ -105,6 +105,6 @@ long lzss_compress(long origsize, char far* src, char far* dst) {
   (void)origsize;
   (void)src;
   (void)dst;
-  // TODO
+  // TODO https://github.com/joncloud/got/issues/3
   return 0;
 }
