@@ -53,6 +53,7 @@ void xcopyd2dmasked(int SourceStartX,
      int SourceStartY, int SourceEndX, int SourceEndY,
      int DestStartX, int DestStartY, MaskedImage * Source,
      unsigned int DestPageBase, int DestBitmapWidth) {
+  // TODO https://github.com/joncloud/got/issues/1
   int i, j, k;
   int sourceWidth, sourceHeight;
   int destWidth, destHeight;

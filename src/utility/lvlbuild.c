@@ -150,7 +150,7 @@ LEVEL scrn;
 ACTOR_DATA actor_buff;
 char afb[100];
 
-char actor[100][262];
+char actor[100][256];
 char actor_flag[100];
 char actor_nf[100];
 int  frames_left;
@@ -163,6 +163,7 @@ int current_object;
 char far *sd_data;
 char current_screen;
 char far *fb;
+
 //==========================================================================
 void main(int argc, char *argv[]) {
   int i, ret, x, y;
@@ -585,25 +586,26 @@ int point_within(int x, int y, int x1, int y1, int x2, int y2) {
 void xmouse_show(int x, int y){
   (void)x;
   (void)y;
-// TODO this makes the program unpredictable
-// if (xmouse_cnt == 1) {
-//   xcopyd2d(x, y, x + 8, y + 8, x, y, PAGE0, PAGE2, 320, 320);
-//   xcopyd2dmasked(0, 0, 8, 8, x, y, &mouse_image, 0, 320);
-//   xmouse_cnt = 0;
-// }
-// else {
-//   xmouse_cnt--;
-// }
+  if (xmouse_cnt == 1) {
+    // TODO https://github.com/joncloud/got/issues/1
+    // xcopyd2d(x, y, x + 8, y + 8, x, y, PAGE0, PAGE2, 320, 320);
+    // TODO this makes the program unpredictable
+    // xcopyd2dmasked(0, 0, 8, 8, x, y, &mouse_image, 0, 320);
+    xmouse_cnt = 0;
+  }
+  else {
+    xmouse_cnt--;
+  }
 }
 /*=========================================================================*/
 void xmouse_hide(int x, int y) {
   (void)x;
   (void)y;
-// TODO this makes the program unpredictable
-// if (xmouse_cnt == 0) {
-//   xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
-// }
-// xmouse_cnt++;
+  if (xmouse_cnt == 0) {
+    // TODO https://github.com/joncloud/got/issues/1
+    // xcopyd2d(x,y,x+8,y+8,x,y,PAGE2,PAGE0,320,320);
+  }
+  xmouse_cnt++;
 }
 /*=========================================================================*/
 void xbox(int x1, int y1, int x2, int y2, int color, unsigned page) {
@@ -1105,7 +1107,8 @@ void display_actors(void) {
     afb[scrn.actor_type[i]] = 1;
     y = (scrn.actor_loc[i] / 20) * 16;
     x = (scrn.actor_loc[i] % 20) * 16;
-    xput(x, y, PAGE0, actor[scrn.actor_type[i]]);
+    // TODO https://github.com/joncloud/got/issues/2
+    // xput(x, y, PAGE0, actor[scrn.actor_type[i]]);
     d = scrn.actor_dir[i];
     switch (d) {
     case 0:
@@ -1235,6 +1238,7 @@ int load_objects(void) {
     sprintf(s, "Cannot Read OBJECTS\r\n", tempstr);
     exit_error(s);
   }
+
   return 1;
 }
 //===========================================================================
@@ -1493,7 +1497,7 @@ void pickup_tile(void) {
 }
 //===========================================================================
 int load_actors(void) {
-  int i;
+  int i, x, y, r;
   char s[21];
 
   memset(actor_flag, 0, 100);
@@ -1511,18 +1515,26 @@ int load_actors(void) {
       actor_nf[i] = actor_buff.actor_info.frames * actor_buff.actor_info.directions;
       actor_nf[i] += actor_buff.shot_info.frames * actor_buff.shot_info.directions;
       actor_flag[i] = 1;
-      // TODO this seems unnecessary and is slow
-      //  xfillrectangle(0,0,16,16,PAGE0,0);
-      //  r=0;
-      //  for(y=0;y<16;y++){
-      //     for(x=0;x<16;x++){
-      //        xpset(x,y,PAGE0,actor_buff.pic[1][r++]);
-      //     }
-      //  }
-      //  xget(0,0,15,15,PAGE0,actor[i],0);
+
+      // Draw the image to the screen, and then copy
+      // the screen layout to memory
+      xfillrectangle(0,0,16,16,PAGE0,0);
+      r = 0;
+      for (y = 0; y < 16; y++) {
+        for (x = 0; x < 16; x++) {
+          xpset(x, y, PAGE0, actor_buff.pic[1][r++]);
+        }
+      }
+
+      // TODO https://github.com/joncloud/got/issues/2
+      if (i != 4) {
+        xget(0, 0, 16, 16, PAGE0, actor[i], 0);
+      }
+
     }
     MSSHOW;
   }
+
   return 1;
 }
 /*=========================================================================*/
