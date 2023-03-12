@@ -48,7 +48,7 @@ else outportb(0x20,0x20);   // Do the EOI
 //===========================================================================
 int sbfx_init(void){
 unsigned speed;
-char far* sberr;
+char* sberr;
 
 t0OldService = getvect(8);
 setvect(8,t0Service);

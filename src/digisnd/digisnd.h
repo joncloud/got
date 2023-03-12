@@ -45,7 +45,6 @@ typedef word wbool;
 // after including the game's 'types.h' header, so the game's own type
 // definitions take effect in the client code instead of the library's.
 
-
 typedef void (far *SoundFinishedCallback)(void);
 typedef void (far *NewVocSectionCallback)(word, dword, byte huge*);
 
@@ -71,20 +70,13 @@ typedef void (far *NewVocSectionCallback)(word, dword, byte huge*);
 extern far bool AdLibPresent;
 extern far bool SoundBlasterPresent;
 
-#ifdef SNDLIB_SRC_BUILD
 char* SB_Init(char* blasterEnvVar);
-#else
-char far* SB_Init(char far* blasterEnvVar);
-#endif
-
 void SB_Shutdown(void);
-
 void SB_PlaySample(byte huge* data, long sampleRate, dword length);
 void SB_PlaySilence(long sampleRate, dword length);
 wbool SB_IsSamplePlaying(void);
 void SB_StopSound(void);
 void SB_SetSoundFinishedCallback(SoundFinishedCallback callback);
-
 void SB_PlayVoc(byte huge* data, bool includesHeader);
 wbool SB_IsVocPlaying(void);
 void SB_SetNewVocSectionCallback(NewVocSectionCallback callback);
