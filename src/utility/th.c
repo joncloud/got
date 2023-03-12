@@ -105,7 +105,6 @@ void copy_image(int x1,int y1,int x2,int y2,char *buff1,char *buff2);
 void load_palette(void);
 int reverse_direction(XOBJECT *obj);
 void output_sound(char far* buff,int priority);
-void output_voice(char far* buff);
 void split_screen(void);
 int load_bg_pics(void);
 int load_sd_data(void);
@@ -1708,10 +1707,6 @@ else{
   output_voice(buff);
   sound_priority=priority;
 }
-}
-//===========================================================================
-void output_voice(char far* buff) {
-  (void)buff;
 }
 //===========================================================================
 void split_screen(void){
