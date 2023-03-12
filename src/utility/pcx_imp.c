@@ -1,10 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <conio.h>
-#include <dos.h>
 #include <string.h>
-#include <dir.h>
 
 #include "eg_proto.h"
 #undef outportb
@@ -14,19 +10,17 @@
 //===========================================================================
 char tempstr[255];
 //===========================================================================
-void main(int argc, char *argv[]){
-FILE *fp;
+void main(int argc, char *argv[]) {
+  (void)argc;
 
-setvga();
-initgraf(18,0,0);
+  setvga();
+  initgraf(18, 0, 0);
 
-strcpy(tempstr,argv[1]);
-strcat(tempstr,".pcx");
-strupr(tempstr);
-pcx_load(tempstr);
+  strcpy(tempstr, argv[1]);
+  strcat(tempstr, ".pcx");
+  strupr(tempstr);
+  pcx_load(tempstr);
 
-
-
-getch();
-textmode(C80);
+  getch();
+  textmode(C80);
 }

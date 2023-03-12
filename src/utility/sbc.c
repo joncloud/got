@@ -24,7 +24,7 @@ void ctvm_stop(void) {
 }
 
 void ctvm_output(char far* buffer) {
-
+  (void)buffer;
 }
 
 void ctvm_terminate(void) {
@@ -40,7 +40,7 @@ void start_music(void) {
 }
 
 int sbfm_read_status(void) {
-
+  return 0;
 }
 
 void play_cmf_file(const char* filename) {

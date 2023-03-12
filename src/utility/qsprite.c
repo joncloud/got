@@ -2487,29 +2487,37 @@ for(y=0;y<64;y++){
 fclose(fp);
 }
 //===========================================================================
-void make_rli(int x1, int y1){
-int x,y,c,i;
-char ch;
-FILE *fp;
-char img_buff[256];
-char rli_buff[1024];
+void make_rli(int x1, int y1) {
+  int x, y, c, i;
+  FILE* fp;
+  char img_buff[256];
+  char rli_buff[1024];
 
-c=0;
-for(y=0;y<16;y++){
-   for(x=0;x<16;x++){
-	  img_buff[c]=xpoint(x1+x,y1+y,PAGE0);
-	  if(img_buff[c]==15) img_buff[c]=0;
-	  c++;
-//	  delay(10);
-	  xpset(x1+x,y1+y,PAGE0,15);
-   }
-}
-i=RLI_MakePlanar((char far *) img_buff,(char far *) rli_buff,16,16);
+  c = 0;
+  for (y = 0; y < 16; y++) {
+    for (x = 0; x < 16; x++) {
+      img_buff[c] = xpoint(x1 + x, y1 + y, PAGE0);
+      if (img_buff[c] == 15) {
+        img_buff[c] = 0;
+      }
+      c++;
+      // delay(10);
+      xpset(x1 + x, y1 + y, PAGE0, 15);
+    }
+  }
+  i = RLI_MakePlanar(
+    (char far*)img_buff,
+    (char far*)rli_buff,
+    16,
+    16
+  );
 
-fp=fopen("\\bc\\rli.bin","wb");
-if(!fp) return;
-fwrite(rli_buff,i,1,fp);
-fclose(fp);
+  fp = fopen("\\bc\\rli.bin", "wb");
+  if (!fp) {
+    return;
+  }
+  fwrite(rli_buff, i, 1, fp);
+  fclose(fp);
 }
 //===========================================================================
 int pcx_imp(void){
@@ -2636,45 +2644,56 @@ if(px>319){
 }
 }
 //===========================================================================
-int xpcx_load(char *fname){
-int x,y,sx,sy;
-int count,i;
-char ch;
-PCX pcx;
-FILE *fp;
-char pal[768];
+int xpcx_load(char* fname) {
+  int sx,sy;
+  int count, i;
+  char ch;
+  PCX pcx;
+  FILE* fp;
+  char pal[768];
 
-xcls(PAGE0,0);
+  xcls(PAGE0, 0);
 
-fp=fopen(fname,"rb");
-if(!fp) return 0;
-
-if(fread(&pcx,128,1,fp) !=1){
-  fclose(fp);
-  return 0;
-}
-sx=(pcx.x2-pcx.x1)+1;
-sy=(pcx.y2-pcx.y1)+1;
-
-px=py=0;
-while(py<sy && px<sx){
-  if(fread(&ch,1,1,fp)!=1) return 0;
-  if(ch >191){
-    count=ch & 63;
-    if(fread(&ch,1,1,fp)!=1) return 0;
+  fp = fopen(fname, "rb");
+  if (!fp) {
+    return 0;
   }
-  else count=1;
-  for(i=0;i<count;i++) pcx_pset(ch);
-}
-//read palette
-  fseek(fp,-768l,SEEK_END);
-  fread(pal,1,768,fp);
+
+  if (fread(&pcx, 128, 1, fp) != 1){
+    fclose(fp);
+    return 0;
+  }
+  sx = (pcx.x2 -pcx.x1) + 1;
+  sy = (pcx.y2 -pcx.y1) + 1;
+
+  px = py = 0;
+  while (py < sy && px < sx) {
+    if (fread(&ch, 1, 1, fp) != 1) {
+      return 0;
+    }
+    if (ch > 191) {
+      count = ch & 63;
+      if (fread(&ch, 1, 1, fp) != 1) {
+        return 0;
+      }
+    }
+    else {
+      count = 1;
+    }
+    for (i = 0; i < count; i++) {
+      pcx_pset(ch);
+    }
+  }
+
+  //read palette
+  fseek(fp, -768l, SEEK_END);
+  fread(pal, 1, 768, fp);
   fclose(fp);
-  fp=fopen("\\bc\\girl.pal","wb");
-  fwrite(pal,1,768,fp);
-//
-fclose(fp);
-return 1;
+  fp = fopen("\\bc\\girl.pal", "wb");
+  fwrite(pal, 1, 768, fp);
+  //
+  fclose(fp);
+  return 1;
 }
 
 int RLI_MakePlanar(char far* img, char far* rli, int x, int y) {

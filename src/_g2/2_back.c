@@ -11,6 +11,7 @@
 
 #include "2_define.h"
 #include "2_proto.h"
+#include "res_man.h"
 //===========================================================================
 extern char far *bg_pics;
 extern int warp_flag;

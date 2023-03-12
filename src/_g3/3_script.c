@@ -13,6 +13,7 @@
 
 #include "3_define.h"
 #include "3_proto.h"
+#include "res_man.h"
 //====================== Functions Declarations============================
 int  read_script_file(void);
 void script_error(int err_num);
@@ -932,7 +933,7 @@ _fstrcpy(str_var[1],reason[r]);
 //=========================================================================
 void scr_func1(void);
 
-void (*scr_func[])() =
+void (*scr_func[])(void) =
      { scr_func1,
        scr_func2,
      };

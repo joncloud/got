@@ -13,6 +13,7 @@
 
 #include "2_define.h"
 #include "2_proto.h"
+#include "res_man.h"
 //====================== Functions Declarations============================
 int  read_script_file(void);
 void script_error(int err_num);
@@ -26,6 +27,7 @@ int  get_internal_variable(void);
 int  exec_command(int num);
 void script_entry(void);
 void script_exit(void);
+int  cmd_exec(void);
 //============================ Externals ==================================
 extern ACTOR *thor;
 extern THOR_INFO thor_info;
@@ -992,7 +994,7 @@ thunder_flag=60;
 //=========================================================================
 void scr_func1(void);
 
-void (*scr_func[])() =
+void (*scr_func[])(void) =
      { scr_func1,
        scr_func2,
        scr_func3,

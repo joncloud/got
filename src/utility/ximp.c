@@ -1,7 +1,9 @@
 #include "ximp.h"
 #include "g_define.h"
+#include <conio.h>
 #include <string.h>
 //===========================================================================
+int  xpoint(int X, int Y, unsigned int PageBase);
 void xbox(int x1,int y1,int x2,int y2,unsigned page,int color);
 //===========================================================================
 #define NULL 0

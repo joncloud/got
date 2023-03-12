@@ -31,7 +31,7 @@ char tempstr[255];
 
 void devcdump(int a, int b, int c, int d, int e, int f, int g);
 void clearscr(int a);
-void file_read(const char* src_file, char* dst, size_t total_size, size_t record_size);
+void file_read(const char* src_file, char far* dst, long total_size, size_t record_size);
 void setprnth(void);
 
 //===========================================================================
@@ -49,7 +49,12 @@ clearscr(0);
 for(i=0;i<120;i++){
    x=i%10;
    y=i/10;
-   file_read("ressd11.dat",&scrn,128l+(long) (i*sizeof(LEVEL)),sizeof(LEVEL));
+   file_read(
+    "ressd11.dat",
+    (char far*)&scrn,
+    128l+(long) (i*sizeof(LEVEL)),
+    sizeof(LEVEL)
+  );
    for(r=0;r<12;r++){
       for(l=0;l<20;l++){
         if(l==0 || l==19 || r==0 || r==11){
@@ -85,7 +90,7 @@ void clearscr(int a) {
   (void)a;
 }
 
-void file_read(const char* src_file, char* dst, size_t total_size, size_t record_size) {
+void file_read(const char* src_file, char far* dst, long total_size, size_t record_size) {
   // TODO
   (void)src_file;
   (void)dst;

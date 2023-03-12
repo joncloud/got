@@ -323,7 +323,7 @@ ph_flag=0;
 fp=fopen("\\PG\\text.dat","rb");
 if(!fp) exit(0);
 for(i=0;i<60;i++){
-   if(fread(text[i],72,1,fp) !=1){
+   if(fread((char*)text[i],72,1,fp) !=1){
      fclose(fp);
      exit_code();
      printf("Cannot Read File: TEXT.DAT\r\n");

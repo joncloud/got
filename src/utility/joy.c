@@ -11,6 +11,7 @@ void read_joystick(joystick_input* joy) {
   asm cli
 
   // Any random number tell hardware to start
+  al = inportb(dx);
   outportb(dx, al);
 
   do {

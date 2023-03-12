@@ -13,6 +13,7 @@
 #include "digisnd.h"
 #include "fx_man.h"
 #include "mu_man.h"
+#include "adlib.h"
 
 extern SETUP setup;
 extern bool AdLibPresent;
@@ -47,7 +48,7 @@ else outportb(0x20,0x20);   // Do the EOI
 //===========================================================================
 int sbfx_init(void){
 unsigned speed;
-char *sberr;
+char far* sberr;
 
 t0OldService = getvect(8);
 setvect(8,t0Service);

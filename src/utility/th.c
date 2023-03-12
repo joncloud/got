@@ -82,6 +82,7 @@ int  movement_one(XOBJECT *obj);
 int  movement_two(XOBJECT *obj);
 int  movement_three(XOBJECT *obj);
 int  movement_four(XOBJECT *obj);
+int  movement_six(XOBJECT *obj);
 void thor_shoots(void);
 void xprint(int x,int y,char *string,int color,unsigned int page);
 int  check_for_hit(XOBJECT *obj,int num);
@@ -104,6 +105,7 @@ void copy_image(int x1,int y1,int x2,int y2,char *buff1,char *buff2);
 void load_palette(void);
 int reverse_direction(XOBJECT *obj);
 void output_sound(char far* buff,int priority);
+void output_voice(char far* buff);
 void split_screen(void);
 int load_bg_pics(void);
 int load_sd_data(void);
@@ -232,11 +234,7 @@ int current_level;
 //==========================================================================
 void main(void){
 int i;
-unsigned int u;
 FILE *fp;
-int x,y,sx;
-char buff[255];
-char ch;
 
 #ifdef COMPILING
   chdir("\\thor");
@@ -1072,9 +1070,6 @@ if(key_flag[UP]){
     if(check_movement(x,y,obj)){ next_frame(obj);return d;}
 }
 return d;
-
-if(check_movement(x,y,obj)) next_frame(obj);
-return d;
 }
 //===========================================================================
 int check_movement(int x,int y,XOBJECT *obj){
@@ -1276,8 +1271,6 @@ else{
 //  }
   return d;
 }
-next_frame(obj);
-return d;
 }
 //===========================================================================
 void move_object(int num){
@@ -1638,35 +1631,35 @@ return 1;
 void interrupt timer_int(void){
 
 return;
-if(sound_level>0){
-  sound_cnt--;
-  if(sound_cnt>0) return;
-  word=*sound_ptr++;
-  sound_cnt=*sound_ptr++;
-  if(sound_cnt==0){
-    sound_level=0;
-    byte=inportb(0x61);
-    byte &= 0xfc;
-    outportb(0x61,byte);
-    return;
-  }
-  if(word){
-    byte=inportb(0x61);
-    byte |= 3;
-    outportb(0x61,byte);
-    outportb(0x43,0xb6);              //10110110B
-    byte=word;
-    outportb(0x42,byte);
-    word=word >> 8;
-    byte=word;
-    outportb(0x42,byte);
-  }
-  else{
-      byte=inportb(0x61);
-      byte &= 0xfc;
-      outportb(0x61,byte);
-  }
-}
+// if(sound_level>0){
+//   sound_cnt--;
+//   if(sound_cnt>0) return;
+//   word=*sound_ptr++;
+//   sound_cnt=*sound_ptr++;
+//   if(sound_cnt==0){
+//     sound_level=0;
+//     byte=inportb(0x61);
+//     byte &= 0xfc;
+//     outportb(0x61,byte);
+//     return;
+//   }
+//   if(word){
+//     byte=inportb(0x61);
+//     byte |= 3;
+//     outportb(0x61,byte);
+//     outportb(0x43,0xb6);              //10110110B
+//     byte=word;
+//     outportb(0x42,byte);
+//     word=word >> 8;
+//     byte=word;
+//     outportb(0x42,byte);
+//   }
+//   else{
+//       byte=inportb(0x61);
+//       byte &= 0xfc;
+//       outportb(0x61,byte);
+//   }
+// }
 }
 //===========================================================================
 void load_palette(void){
@@ -1715,6 +1708,10 @@ else{
   output_voice(buff);
   sound_priority=priority;
 }
+}
+//===========================================================================
+void output_voice(char far* buff) {
+  (void)buff;
 }
 //===========================================================================
 void split_screen(void){
@@ -1774,7 +1771,6 @@ int load_bg_pics(void){
 //===========================================================================
 int load_sd_data(void){
        FILE *fp;
-       int i;
        unsigned int  total,bytes;
        char buff[256];
        char far *p;

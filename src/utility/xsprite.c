@@ -1513,7 +1513,7 @@ if(!bg_loaded){
 //  if(bg_buff) farfree(bg_buff);
 ///  if(obj_buff) farfree(obj_buff);
 //  res_close();
-  if(res_read(tempstr,bg_buff)!=60260){
+  if(res_read(tempstr,bg_buff)!=60260l){
     sprintf(tempstr,"Cannot Read %s...Press Any Key.",tempstr);
     status_line(tempstr,12);
     getch();
@@ -1964,6 +1964,7 @@ return 1;
 void pcx_import(void){
 int i,ret;
 FILE *fp;
+ret = 0;
 
 status_line("PCX FILE:",14);
 strcpy(tempstr,pcx_filename);

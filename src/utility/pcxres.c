@@ -63,6 +63,15 @@ setvect(num,faddr);
 void interrupt do_save(unsigned bp,unsigned di,unsigned si,unsigned ds,
                        unsigned es,unsigned dx,unsigned cx,unsigned bx,
                        unsigned ax){
+  (void)bp;
+  (void)di;
+  (void)si;
+  (void)ds;
+  (void)es;
+  (void)dx;
+  (void)cx;
+  (void)bx;
+  (void)ax;
 save_pcx();
 }
 /*=========================================================================*/
