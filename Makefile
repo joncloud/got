@@ -12,24 +12,9 @@ clean:
 
 OBJ=build/res.o build/modern.o build/lzss.o build/res_abrt.o build/res_add.o build/res_crea.o\
 	build/res_del.o build/res_enco.o build/res_find.o build/res_err.o build/res_extr.o\
-	build/res_init.o build/res_pack.o build/res_renm.o build/res_repl.o
+	build/res_init.o build/res_int.o build/res_pack.o build/res_renm.o build/res_repl.o
 build/res: $(OBJ)
 	$(CC) $(LINKFLAGS) $(OBJ) -o build/res
-
-# build/lzss.o: src/utility/lzss.c
-# 	$(CC) $(CFLAGS) -c $< -o build/lzss.o
-
-# build/modern.o: src/utility/modern.c
-# 	$(CC) $(CFLAGS) -c $< -o build/modern.o
-
-# build/res.o: src/utility/res.c
-# 	$(CC) $(CFLAGS) -c $< -o build/res.o
-
-# build/res_abrt.o: src/utility/res_abrt.c
-# 	$(CC) $(CFLAGS) -c $< -o build/res_abrt.o
-
-# build/res_add.o: src/utility/res_add.c
-# 	$(CC) $(CFLAGS) -c $< -o build/res_add.o
 
 build/%.o: src/utility/%.c
 	$(CC) $(CFLAGS) -c $< -o build/$*.o

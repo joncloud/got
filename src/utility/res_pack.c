@@ -4,7 +4,9 @@
 #include "modern.h"
 
 #ifdef modern
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #endif
 
 #include "res_man.h"

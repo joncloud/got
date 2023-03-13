@@ -1,6 +1,7 @@
 #ifndef RES_MAN_H_
 #define RES_MAN_H_
 
+#include <stdio.h>
 #include "modern.h"
 
 typedef struct{
