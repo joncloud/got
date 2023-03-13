@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "modern.h"
+
+#ifndef modern
 #include <alloc.h>
+#endif
 
 #include "res_man.h"
 

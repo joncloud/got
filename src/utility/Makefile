@@ -32,6 +32,7 @@ OBJ=\
 	res_fall.obj\
 	res_find.obj\
 	res_init.obj\
+	res_int.obj\
 	res_pack.obj\
 	res_read.obj\
 	res_renm.obj\
@@ -79,6 +80,7 @@ res_enco.obj+
 res_fall.obj+
 res_find.obj+
 res_init.obj+
+res_int.obj+
 res_read.obj+
 res_writ.obj+
 xmouse.obj+
@@ -132,6 +134,7 @@ res_del.obj+
 res_enco.obj+
 res_find.obj+
 res_init.obj+
+res_int.obj+
 res_read.obj+
 res_writ.obj+
 xmouse.obj+
@@ -154,6 +157,7 @@ res_find.obj+
 res_err.obj+
 res_extr.obj+
 res_init.obj+
+res_int.obj+
 res_pack.obj+
 res_renm.obj+
 res_repl.obj
@@ -204,6 +208,7 @@ res_del.obj+
 res_enco.obj+
 res_find.obj+
 res_init.obj+
+res_int.obj+
 res_read.obj+
 res_writ.obj+
 xmouse.obj+

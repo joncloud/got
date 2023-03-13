@@ -1,6 +1,7 @@
 #ifndef RES_MAN_H_
 #define RES_MAN_H_
 
+#include <stdio.h>
 #include "modern.h"
 
 typedef struct{
@@ -12,24 +13,24 @@ typedef struct{
   /**
    * The offset within the archive that this entry's data is at.
    */
-  long offset;
+  uint32_t offset;
   /**
    * The total length of the data within the archive.
    */
-  long length;
+  uint32_t length;
   /**
    * The total length of the data after uncompressing.
    * This value is the same as @ref length when data is
    * not compressed.
    */
-  long original_size;
+  uint32_t original_size;
 
   /**
    * This stores a boolean value of 0 when data is not
    * compressed, and 1 when data is compressed using
    * an LZSS algorithm.
    */
-  int  key;
+  uint16_t key;
 } RES_HEADER;
 
 #define RES_MAX_ENTRIES 256  //max # of elements
@@ -114,7 +115,7 @@ int res_close(void);
  * @param len The length of the memory buffer.
  * @param key The key for XORing the data.
  */
-void res_encrypt(char far* buff, long len, char key);
+void res_encrypt(char far* buff, long len, unsigned char key);
 
 /**
  * Decodes the memory buffer with a simple XOR algorithm with @ref key.
@@ -124,7 +125,7 @@ void res_encrypt(char far* buff, long len, char key);
  * @param len The length of the memory buffer.
  * @param key The key for XORing the data.
  */
-void res_decrypt(char far* buff, long len, char key);
+void res_decrypt(char far* buff, long len, unsigned char key);
 
 /**
  * This function should be called when a program needs to abort

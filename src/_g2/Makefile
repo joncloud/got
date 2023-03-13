@@ -68,6 +68,7 @@ C:\tc\lib\c0m.obj+
 ..\utility\res_fall.obj+
 ..\utility\res_find.obj+
 ..\utility\res_init.obj+
+..\utility\res_int.obj+
 ..\utility\res_read.obj+
 ..\digisnd\digisnd.obj
 _g2,_g2

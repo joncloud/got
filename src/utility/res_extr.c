@@ -1,6 +1,17 @@
-#include <alloc.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "modern.h"
+
+#ifdef modern
+
+#include <stdlib.h>
+
+#else
+
+#include <alloc.h>
+
+#endif
 
 #include "res_man.h"
 #include "lzss.h"

@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "modern.h"
+
 #include "res_man.h"
+#include "res_int.h"
 
 FILE* res_fp;
 RES_HEADER res_header[RES_MAX_ENTRIES];
@@ -25,12 +28,10 @@ int res_open(const char* filename) {
   if (!(res_fp = fopen(filename, "rb+"))) {
     return RES_CANT_OPEN;
   }
-  if (fread(&res_header, 1, RES_MAX_ENTRIES * sizeof(RES_HEADER),
-             res_fp) != RES_MAX_ENTRIES * sizeof(RES_HEADER)) {
+  if (!res_rentries()) {
     fclose(res_fp);
     return RES_CANT_READ;
   }
-  res_decrypt((char far*)&res_header, RES_MAX_ENTRIES * sizeof(RES_HEADER), 128);
   res_changed = 0;
   return 1;
 }
@@ -40,12 +41,10 @@ int res_close(void) {
     return RES_NOT_ACTIVE;
   }
   if (res_changed) {
-    res_encrypt((char far*)&res_header, RES_MAX_ENTRIES * sizeof(RES_HEADER), 128);
     if (fseek(res_fp, 0l, SEEK_SET)) {
       return RES_CANT_SEEK;
     }
-    if (fwrite(&res_header, 1, RES_MAX_ENTRIES * sizeof(RES_HEADER),
-                res_fp) != RES_MAX_ENTRIES * sizeof(RES_HEADER)) {
+    if (!res_wentries()) {
       fclose(res_fp);
       return RES_CANT_WRITE;
     }
@@ -58,7 +57,7 @@ int res_close(void) {
   return RES_CANT_CLOSE;
 }
 
-void res_encrypt(char far* buff, long len, char key) {
+void res_encrypt(char far* buff, long len, unsigned char key) {
   while (len) {
     len--;
     *buff ^= key;
@@ -67,7 +66,7 @@ void res_encrypt(char far* buff, long len, char key) {
   }
 }
 
-void res_decrypt(char far* buff, long len, char key) {
+void res_decrypt(char far* buff, long len, unsigned char key) {
   while (len) {
     len--;
     *buff ^= key;
