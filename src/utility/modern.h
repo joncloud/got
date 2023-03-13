@@ -13,6 +13,10 @@
 #define farmalloc malloc
 #define strcmpi   strcasecmp
 
+#ifdef _WIN32
+#define strcmpi   _stricmp
+#endif
+
 char* strupr(char* s);
 
 #define randomize()
