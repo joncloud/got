@@ -1467,7 +1467,8 @@ int save_sd_data(void) {
   );
 
   res_delete_file(tempstr);
-  if (res_write(tempstr, sd_data, 61440l, 1) < 0) {
+  // TODO set the encode_flag = 1 after https://github.com/joncloud/got/issues/3 is fixed
+  if (res_write(tempstr, sd_data, 61440l, 0) < 0) {
     sprintf(s, "Cannot Save %s\r\n", tempstr);
     status_line(s, 12);
     getch();
