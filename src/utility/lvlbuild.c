@@ -1528,9 +1528,9 @@ int load_actors(void) {
       }
 
       // TODO https://github.com/joncloud/got/issues/2
-      if (i != 4) {
-        xget(0, 0, 16, 16, PAGE0, actor[i], 0);
-      }
+      // if (i != 4) {
+      //   xget(0, 0, 16, 16, PAGE0, actor[i], 0);
+      // }
 
     }
     MSSHOW;
