@@ -48,6 +48,8 @@ jobs:
 
     - name: 'Prepare Assets'
       run: |
+        npm ci
+        npx ts-node src/assets/index.ts
         node scripts/generateAssetsBatch.js assets build/assets.bat
         cat build/assets.bat
 

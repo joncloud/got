@@ -13,12 +13,16 @@ if (!srcFolder || !dstBatchFile) {
   process.exit(1);
 }
 
-const files = await readdir(srcFolder);
+const results = await readdir(srcFolder, { withFileTypes: true });
 
 let batch = 'res.exe \\build\\gotres.dat c > build\\assets.txt\r\n';
 
 // TODO eventually allow encoding / lzss compression of files
-for (const file of files) {
+for (const result of results) {
+  if (!result.isFile()) {
+    continue;
+  }
+  const file = result.name;
   batch += `res.exe \\build\\gotres.dat a \\${srcFolder}\\${file} ${file} 0 >> build\\assets.txt\r\n`;
 }
 

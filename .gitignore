@@ -10,3 +10,4 @@ build
 *.sym
 *.SYM
 got
+node_modules
