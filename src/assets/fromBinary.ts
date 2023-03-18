@@ -18,7 +18,29 @@ async function copy(dstSuffix: string, extension: string, filename: string, src:
   console.log('writing', target);
 }
 
-export const fileMatchers = [
+const filePriority = [
+  [/PALETTE|STORYPAL/, 0],
+  [/.*/, 1],
+] as const;
+
+function sortFilenames(filenames: string[]) {
+  const priorities: number[] = [];
+  for (const filename of filenames) {
+    for (const [pattern, priority] of filePriority) {
+      if (!pattern.test(filename)) {
+        continue;
+      }
+      priorities.push(priority);
+      break;
+    }
+  }
+
+  return filenames.map((x, i) => [x, priorities[i]] as const)
+    .sort((x, y) => x[1] - y[1])
+    .map(([x]) => x);
+}
+
+const fileMatchers = [
   [/ACTOR\d+/, actors],
   [/PALETTE|STORYPAL/, palettes],
   [/DIGSOUND/, sounds],
@@ -28,7 +50,7 @@ export const fileMatchers = [
 
 export async function fromBinary(src: string, dst: string) {
   const filenames = await readdir(src);
-  for (const filename of filenames) {
+  for (const filename of sortFilenames(filenames)) {
     for (const [pattern, processor] of fileMatchers) {
       if (!pattern.test(filename)) {
         continue;
