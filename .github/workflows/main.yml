@@ -50,7 +50,7 @@ jobs:
       run: |
         npm ci
         npx ts-node src/assets/index.ts
-        node scripts/generateAssetsBatch.js assets build/assets.bat
+        npx ts-node scripts/generateAssetsBatch.ts assets build/assets.bat
         cat build/assets.bat
 
     - name: 'Compile'
