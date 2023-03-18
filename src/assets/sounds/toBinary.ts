@@ -4,18 +4,18 @@ import { HeaderList } from './HeaderList';
 
 export async function toBinary(filename: string, src: string, dst: string) {
   const files = [];
-  for (const filename of await readdir(src)) {
-    if (!filename.startsWith(filename)) {
+  for (const vocFilename of await readdir(src)) {
+    if (!vocFilename.startsWith(filename)) {
       continue;
     }
 
-    const res = /\d+/.exec(filename);
+    const res = /\d+/.exec(vocFilename);
     if (!res) {
       continue;
     }
     const index = parseInt(res[0], 10);
-    const { size } = await stat(join(src, filename));
-    const buffer = await readFile(join(src, filename));
+    const { size } = await stat(join(src, vocFilename));
+    const buffer = await readFile(join(src, vocFilename));
 
     files.push([index, size, buffer] as const);
   }
