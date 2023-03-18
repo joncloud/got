@@ -2,6 +2,7 @@ import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { toBinary as actorProcessor } from './actors';
 import { toBinary as paletteProcessor } from './palettes';
+import { toBinary as soundProcessor } from './sounds';
 import { mkdirIfNotExists } from './files';
 
 export async function toBinary(src: string, dst: string) {
@@ -24,4 +25,11 @@ export async function toBinary(src: string, dst: string) {
 
     await paletteProcessor(filename, palettes, dst);
   }
+
+  const sounds = join(src, 'sounds');
+  await mkdirIfNotExists(sounds);
+
+  await soundProcessor('digsound', sounds, dst);
+
+  // TODO copy boss sounds as-is
 }
