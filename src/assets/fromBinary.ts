@@ -1,8 +1,10 @@
 import { readdir } from 'fs/promises';
 import { fromBinary as actors } from './actors';
+import { fromBinary as palettes } from './palettes';
 
 export const fileMatchers = [
   [/ACTOR\d+/, actors],
+  [/PALETTE|STORYPAL/, palettes],
 ] as const;
 
 export async function fromBinary(src: string, dst: string) {
