@@ -8,9 +8,9 @@ import {
 } from '../encode';
 
 export async function toTs(resource: ActorData, name: string, dst: string) {
-  let js = '';
+  let ts = '';
   function appendLine(line: string) {
-    js += `${line}\n`;
+    ts += `${line}\n`;
   }
   function appendNfo(nfo: ActorNfo) {
     appendLine(`  move: ${nfo.move},`);
@@ -42,8 +42,6 @@ export async function toTs(resource: ActorData, name: string, dst: string) {
     appendLine(`  future1: ${encodeArray(nfo.future1)},`);
   }
 
-  appendLine('\'use strict\';');
-  appendLine('');
   appendLine(`const pic = ${encodeBase64(resource.pic)} as const;`);
   appendLine(`const shot = ${encodeBase64(resource.shot)} as const;`);
   appendLine('');
@@ -66,6 +64,6 @@ export async function toTs(resource: ActorData, name: string, dst: string) {
   appendLine('');
 
   const target = join(dst, `${name}.ts`);
-  await writeFile(target, js);
+  await writeFile(target, ts);
   console.log('writing', target);
 }
