@@ -3,6 +3,7 @@ import { join, parse } from 'path';
 import { toBinary as actorProcessor } from './actors';
 import { toBinary as paletteProcessor } from './palettes';
 import { toBinary as soundProcessor } from './sounds';
+import { toBinary as fontProcessor } from './fonts';
 import { mkdirIfNotExists } from './files';
 
 const toCopy = [
@@ -51,5 +52,15 @@ export async function toBinary(src: string, dst: string) {
       );
       console.log('writing', target);
     }
+  }
+
+  const fonts = join(src, 'fonts');
+  await mkdirIfNotExists(fonts);
+  for (const filename of await readdir(fonts)) {
+    if (!filename.endsWith('.png')) {
+      continue;
+    }
+
+    await fontProcessor(filename, fonts, dst);
   }
 }

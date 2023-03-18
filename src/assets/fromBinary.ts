@@ -4,6 +4,7 @@ import { fromBinary as actors } from './actors';
 import { mkdirIfNotExists } from './files';
 import { fromBinary as palettes } from './palettes';
 import { fromBinary as sounds } from './sounds';
+import { fromBinary as fonts } from './fonts';
 
 async function copy(dstSuffix: string, extension: string, filename: string, src: string, dst: string) {
   const dstDir = join(dst, dstSuffix);
@@ -22,6 +23,7 @@ export const fileMatchers = [
   [/PALETTE|STORYPAL/, palettes],
   [/DIGSOUND/, sounds],
   [/BOSSV/, copy.bind(null, 'sounds', '.voc')],
+  [/TEXT/, fonts],
 ] as const;
 
 export async function fromBinary(src: string, dst: string) {
