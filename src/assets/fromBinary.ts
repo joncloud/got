@@ -1,11 +1,11 @@
 import { readdir, copyFile } from 'fs/promises';
 import { join } from 'path';
-import { fromBinary as actors } from './actors';
+import { fromBinary as actorProcessor } from './actors';
 import { mkdirIfNotExists } from './files';
-import { fromBinary as palettes } from './palettes';
-import { fromBinary as sounds } from './sounds';
-import { fromBinary as fonts } from './fonts';
-import { fromBinary as tilesets } from './tilesets';
+import { fromBinary as paletteProcessor } from './palettes';
+import { fromBinary as soundProcessor } from './sounds';
+import { fromBinary as fontProcessor } from './fonts';
+import { fromBinary as tilesetProcessor } from './tilesets';
 
 async function copy(dstSuffix: string, extension: string, filename: string, src: string, dst: string) {
   const dstDir = join(dst, dstSuffix);
@@ -19,47 +19,25 @@ async function copy(dstSuffix: string, extension: string, filename: string, src:
   console.log('writing', target);
 }
 
-const filePriority = [
-  [/PALETTE|STORYPAL/, 0],
-  [/.*/, 1],
-] as const;
+type FileProcessor = (filename: string, src: string, dst: string) => Promise<void>;
 
-function sortFilenames(filenames: string[]) {
-  const priorities: number[] = [];
+async function processFiles(pattern: RegExp, filenames: string[], src: string, dst: string, processor: FileProcessor) {
   for (const filename of filenames) {
-    for (const [pattern, priority] of filePriority) {
-      if (!pattern.test(filename)) {
-        continue;
-      }
-      priorities.push(priority);
-      break;
+    if (!pattern.test(filename)) {
+      continue;
     }
+
+    await processor(filename, src, dst);
   }
-
-  return filenames.map((x, i) => [x, priorities[i]] as const)
-    .sort((x, y) => x[1] - y[1])
-    .map(([x]) => x);
 }
-
-const fileMatchers = [
-  [/ACTOR\d+/, actors],
-  [/PALETTE|STORYPAL/, palettes],
-  [/DIGSOUND/, sounds],
-  [/BOSSV/, copy.bind(null, 'sounds', '.voc')],
-  [/TEXT/, fonts],
-  [/BPICS/, tilesets],
-] as const;
 
 export async function fromBinary(src: string, dst: string) {
   const filenames = await readdir(src);
-  for (const filename of sortFilenames(filenames)) {
-    for (const [pattern, processor] of fileMatchers) {
-      if (!pattern.test(filename)) {
-        continue;
-      }
 
-      await processor(filename, src, dst);
-      break;
-    }
-  }
+  await processFiles(/PALETTE|STORYPAL/, filenames, src, dst, paletteProcessor);
+  await processFiles(/ACTOR\d+/, filenames, src, dst, actorProcessor);
+  await processFiles(/DIGSOUND/, filenames, src, dst, soundProcessor);
+  await processFiles(/BOSSV\d+/, filenames, src, dst, copy.bind(null, 'sounds', '.voc'));
+  await processFiles(/TEXT/, filenames, src, dst, fontProcessor);
+  await processFiles(/BPICS/, filenames, src, dst, tilesetProcessor);
 }
