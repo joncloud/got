@@ -6,6 +6,7 @@ import { fromBinary as paletteProcessor } from './palettes';
 import { fromBinary as soundProcessor } from './sounds';
 import { fromBinary as fontProcessor } from './fonts';
 import { fromBinary as tilesetProcessor } from './tilesets';
+import { fromBinary as faceProcessor } from './faces';
 
 async function copy(dstSuffix: string, extension: string, filename: string, src: string, dst: string) {
   const dstDir = join(dst, dstSuffix);
@@ -40,4 +41,5 @@ export async function fromBinary(src: string, dst: string) {
   await processFiles(/BOSSV\d+/, filenames, src, dst, copy.bind(null, 'sounds', '.voc'));
   await processFiles(/TEXT/, filenames, src, dst, fontProcessor);
   await processFiles(/BPICS/, filenames, src, dst, tilesetProcessor);
+  await faceProcessor('FACE', src, dst);
 }
