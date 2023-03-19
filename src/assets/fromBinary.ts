@@ -5,6 +5,7 @@ import { mkdirIfNotExists } from './files';
 import { fromBinary as palettes } from './palettes';
 import { fromBinary as sounds } from './sounds';
 import { fromBinary as fonts } from './fonts';
+import { fromBinary as tilesets } from './tilesets';
 
 async function copy(dstSuffix: string, extension: string, filename: string, src: string, dst: string) {
   const dstDir = join(dst, dstSuffix);
@@ -46,6 +47,7 @@ const fileMatchers = [
   [/DIGSOUND/, sounds],
   [/BOSSV/, copy.bind(null, 'sounds', '.voc')],
   [/TEXT/, fonts],
+  [/BPICS/, tilesets],
 ] as const;
 
 export async function fromBinary(src: string, dst: string) {
