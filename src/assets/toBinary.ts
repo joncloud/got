@@ -6,6 +6,7 @@ import { toBinary as soundProcessor } from './sounds';
 import { toBinary as fontProcessor } from './fonts';
 import { toBinary as tilesetProcessor } from './tilesets';
 import { toBinary as faceProcessor } from './faces';
+import { toBinary as objectProcessor } from './objects';
 import { mkdirIfNotExists } from './files';
 
 const toCopy = [
@@ -81,6 +82,8 @@ export async function toBinary(src: string, dst: string) {
   for (const filename of await readdir(images)) {
     if (filename === 'face.png') {
       await faceProcessor(filename, images, dst);
+    } else if (filename === 'objects.png') {
+      await objectProcessor(filename, images, dst);
     }
   }
 }

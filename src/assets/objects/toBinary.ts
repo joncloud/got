@@ -10,7 +10,7 @@ export async function toBinary(filename: string, src: string, dst: string) {
     join(src, filename),
     16, 16,
     0xFF,
-    23,
+    8,
     paletteList,
   );
 
