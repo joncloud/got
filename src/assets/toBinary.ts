@@ -7,6 +7,7 @@ import { toBinary as fontProcessor } from './fonts';
 import { toBinary as tilesetProcessor } from './tilesets';
 import { toBinary as faceProcessor } from './faces';
 import { toBinary as objectProcessor } from './objects';
+import { toBinary as statusProcessor } from './status';
 import { mkdirIfNotExists } from './files';
 
 const toCopy = [
@@ -84,6 +85,8 @@ export async function toBinary(src: string, dst: string) {
       await faceProcessor(filename, images, dst);
     } else if (filename === 'objects.png') {
       await objectProcessor(filename, images, dst);
+    } else if (filename === 'status.png') {
+      await statusProcessor(filename, images, dst);
     }
   }
 }
