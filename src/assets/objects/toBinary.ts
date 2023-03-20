@@ -4,7 +4,7 @@ import { toRawTileset } from '../image';
 import { fromTs } from '../palettes';
 
 export async function toBinary(filename: string, src: string, dst: string) {
-  const paletteList = await fromTs(join(src, '..', '..', 'palettes', 'palette.ts'));
+  const paletteList = await fromTs(join(src, '..', 'palettes', 'palette.ts'));
 
   const buffer = await toRawTileset(
     join(src, filename),
