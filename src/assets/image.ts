@@ -100,9 +100,12 @@ export async function toRawTileset(filenameOrImg: string | Jimp, tileWidth: numb
   let total = img.getWidth() * img.getHeight();
   let xOffset = 0, yOffset = 0;
   while (total) {
-    buffer.push(tileWidth / 4);
-    buffer.push(tileHeight);
-    buffer.push(flag);
+    const header = TileHeader.encode({
+      width: tileWidth / 4,
+      height: tileHeight,
+      flag,
+    });
+    buffer.push(...new Uint8Array(header.buffer));
 
     let x = 0, y = 0, remaining = tileWidth * tileHeight;
     const passes = 4;
