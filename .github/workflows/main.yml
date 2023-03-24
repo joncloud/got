@@ -48,7 +48,9 @@ jobs:
 
     - name: 'Prepare Assets'
       run: |
-        node scripts/generateAssetsBatch.js assets build/assets.bat
+        npm ci
+        npx ts-node src/assets/index.ts --to-binary
+        npx ts-node scripts/generateAssetsBatch.ts assets build/assets.bat
         cat build/assets.bat
 
     - name: 'Compile'

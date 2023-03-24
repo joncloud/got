@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(lldb) Launch",
+      "name": "launch res",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/res",
@@ -14,8 +14,36 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "assets from-binary",
+      "type": "node",
+      "request": "launch",
+      "program": "src/assets/index.ts",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": ["--from-binary"],
+      "stopOnEntry": false,
+      "cwd": "${workspaceFolder}",
+      "runtimeVersion": "18"
+    },
+    {
+      "name": "assets to-binary",
+      "type": "node",
+      "request": "launch",
+      "program": "src/assets/index.ts",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": ["--to-binary"],
+      "stopOnEntry": false,
+      "cwd": "${workspaceFolder}",
+      "runtimeVersion": "18"
     }
-
   ]
 }
