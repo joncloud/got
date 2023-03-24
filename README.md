@@ -8,13 +8,41 @@ This is a copy of the MS-DOS Game God of Thunder. The intention of this project 
 
 This program is contains all of the code to play the first episode - Part I: Serpent Surprise.
 
+#### Arguments
+
+* `/SAVEGAME:{save_filename}` - The name of the save game file to load from, given that the file has more than 32 bytes of data
+* `/JOY:{lx,hx,ly,hy}` - Joystick configuration
+* `/VOLSTAGG` - Sets the `cheat` flag to `1`, which enables additional functionality:
+  * The `1` key will allow thor to walk through various tiles that he wouldn't otherwise be able to
+  * The `2` key will sleep for 2500 milliseconds
+  * The `3` key will invoke a block of assembly
+  * The `4` key will prevent thor from being damaged
+  * The `B` key will stop script execution when interacting with actors
+  * The `K` key will dump the screen
+  * The `X` key will prevent saving the game on exit.
+  * The `Z` key will add 150 magic
+  * The level number will be printed on the screen
+  * If a script runs into an error, the error message is printed to the screen, and a sound is played
+* `/NOJOY` - Sets the `nojoy` flag to `1`
+* `/GR` - Sets the `gr` flag to `1`. It is passed forward to `GOT.EXE`.
+* `/DEMO` - Sets the `demo` and `cheat` flags to `1`. Records keyboard input for demo playback writing to `demo.got`.
+* `/NOAL` - Sets the `noal` flag to `1`, and sets `music_flag` and `sound_flag` to `0`
+* `/NOSB` - Sets the `nosb` flag to `1`, the `sound_flag` to `0` and the `pcsound_flag` to `1`
+* `/RDEMO` - Sets `rdemo`, `demo` and `cheat` flags to `1`. It reads in the `demo.got` file, and uses this to automatically send commands into the game instead of taking keyboard input.
+* `/IDE` - Sets the `ide_run` flag to `1`. It influences whether or not `GOT.EXE` should be called if the `/SAVEGAME` argument was not passed.
+* `/S:{current_level}` - Determines which screen to initially load within the game. For Episode I the first screen is 23.
+
 ### _G2.EXE
 
 This program is contains all of the code to play the first episode - Part II: Non-Stick Nognir.
 
+_G2.EXE share the same arguments as _G1.EXE.
+
 ### _G3.EXE
 
 This program is contains all of the code to play the first episode - Part III: Lookin' for Loki.
+
+_G3.EXE share the same arguments as _G1.EXE.
 
 ### GOTRES.DAT
 
